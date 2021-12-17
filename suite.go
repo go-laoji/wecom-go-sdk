@@ -304,3 +304,67 @@ func (ww weWork) buildCorpQueryToken(corpId uint) url.Values {
 	}
 	return queryParams
 }
+
+type GetUserInfo3rdResponse struct {
+	internal.BizResponse
+	CorpId     string `json:"CorpId"`
+	UserId     string `json:"UserId"`
+	DeviceId   string `json:"DeviceId"`
+	UserTicket string `json:"user_ticket"`
+	ExpiresIn  int    `json:"expires_in"`
+	OpenUserId string `json:"open_userid"`
+}
+
+// GetUserInfo3rd 获取访问用户身份
+// https://open.work.weixin.qq.com/api/doc/90001/90143/91121
+func (ww weWork) GetUserInfo3rd(code string) (resp GetUserInfo3rdResponse) {
+	queryParams := url.Values{}
+	queryParams.Add("suite_access_token", ww.getSuiteAccessToken())
+	queryParams.Add("code", code)
+	apiUrl := fmt.Sprintf("/cgi-bin/service/getuserinfo3rd?%s", queryParams.Encode())
+	body, err := internal.HttpGet(apiUrl)
+	if err != nil {
+		logger.Sugar().Error(err)
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+		return
+	}
+	if err = json.Unmarshal(body, &resp); err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	}
+	return
+}
+
+type GetUserInfoDetail3rdResponse struct {
+	internal.BizResponse
+	CorpId string `json:"corpid"`
+	UserId string `json:"userid"`
+	Name   string `json:"name"`
+	Gender string `json:"gender"`
+	Avatar string `json:"avatar"`
+	QrCode string `json:"qr_code"`
+}
+
+// GetUserInfoDetail3rd 获取访问用户敏感信息
+// https://open.work.weixin.qq.com/api/doc/90001/90143/91122
+func (ww weWork) GetUserInfoDetail3rd(userTicket string) (resp GetUserInfoDetail3rdResponse) {
+	queryParams := url.Values{}
+	queryParams.Add("suite_access_token", ww.getSuiteAccessToken())
+	apiUrl := fmt.Sprintf("/cgi-bin/service/getuserdetail3rd?%s", queryParams.Encode())
+	h := H{}
+	h["user_ticket"] = userTicket
+
+	body, err := internal.HttpPost(apiUrl, h)
+	if err != nil {
+		logger.Sugar().Error(err)
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+		return
+	}
+	if err = json.Unmarshal(body, &resp); err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	}
+	return
+}

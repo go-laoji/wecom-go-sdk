@@ -17,6 +17,10 @@ type IWeWork interface {
 	GetSuiteEncodingAesKey() string
 	Logger() *zap.Logger
 
+	GetLoginInfo(authCode string) (resp GetLoginInfoResponse)
+	GetUserInfo3rd(code string) (resp GetUserInfo3rdResponse)
+	GetUserInfoDetail3rd(userTicket string) (resp GetUserInfoDetail3rdResponse)
+
 	UpdateSuiteTicket(ticket string)
 	getSuiteAccessToken() string
 	GetPreAuthCode() (resp GetPreAuthCodeResponse)
