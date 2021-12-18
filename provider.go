@@ -2,8 +2,10 @@ package wework
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/dgraph-io/badger/v2"
 	"github.com/go-laoji/wework/internal"
+	"net/url"
 	"time"
 )
 
@@ -62,4 +64,47 @@ func (ww weWork) getProviderToken() (token string) {
 		}
 	}
 	return token
+}
+
+type GetLoginInfoResponse struct {
+	internal.BizResponse
+	UserType int `json:"usertype"`
+	UserInfo struct {
+	} `json:"user_info"`
+	CorpInfo struct {
+		CorpId string `json:"corpid"`
+	} `json:"corp_info"`
+	Agent []struct {
+		AgentId  int `json:"agentid"`
+		AuthType int `json:"auth_type"`
+	} `json:"agent"`
+	AuthInfo []struct {
+		Department []struct {
+			Id       int  `json:"id"`
+			Writable bool `json:"writable"`
+		} `json:"department"`
+	} `json:"auth_info"`
+}
+
+// GetLoginInfo 获取登录用户信息
+// https://open.work.weixin.qq.com/api/doc/90001/90143/91125
+func (ww weWork) GetLoginInfo(authCode string) (resp GetLoginInfoResponse) {
+	queryParams := url.Values{}
+	queryParams.Add("access_token", ww.getProviderToken())
+	apiUrl := fmt.Sprintf("/cgi-bin/service/get_login_info?%s", queryParams.Encode())
+	h := H{}
+	h["auth_code"] = authCode
+
+	body, err := internal.HttpPost(apiUrl, h)
+	if err != nil {
+		logger.Sugar().Error(err)
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+		return
+	}
+	if err = json.Unmarshal(body, &resp); err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	}
+	return
 }

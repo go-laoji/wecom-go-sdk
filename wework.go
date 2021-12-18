@@ -17,6 +17,10 @@ type IWeWork interface {
 	GetSuiteEncodingAesKey() string
 	Logger() *zap.Logger
 
+	GetLoginInfo(authCode string) (resp GetLoginInfoResponse)
+	GetUserInfo3rd(code string) (resp GetUserInfo3rdResponse)
+	GetUserInfoDetail3rd(userTicket string) (resp GetUserInfoDetail3rdResponse)
+
 	UpdateSuiteTicket(ticket string)
 	getSuiteAccessToken() string
 	GetPreAuthCode() (resp GetPreAuthCodeResponse)
@@ -61,6 +65,22 @@ type IWeWork interface {
 	GetGroupMsgTask(corpId uint, filter GroupMsgTaskFilter) (resp GetGroupMsgTaskResponse)
 	GetGroupMsgSendResult(corpId uint, filter GroupMsgSendResultFilter) (resp GetGroupMsgSendResultResponse)
 	SendWelcomeMsg(corpId uint, msg ExternalMsg) (resp internal.BizResponse)
+
+	GetUserBehaviorData(corpId uint, filter GetUserBehaviorFilter) (resp GetUserBehaviorDataResponse)
+	GroupChatStatistic(corpId uint, filter GroupChatStatisticFilter) (resp GroupChatStatisticResponse)
+	GroupChatStatisticGroupByDay(corpId uint, filter GroupChatStatisticGroupByDayFilter) (resp GroupChatStatisticResponse)
+
+	AddProductAlbum(corpId uint, product Product) (resp AddProductAlbumResponse)
+	GetProductAlbum(corpId uint, productId string) (resp GetProductAlbumResponse)
+	GetProductAlbumList(corpId uint, limit int, cursor string) (resp GetProductAlbumListResponse)
+	UpdateProductAlbum(corpId uint, request ProductUpdateRequest) (resp internal.BizResponse)
+	DeleteProductAlbum(corpId uint, productId string) (resp internal.BizResponse)
+
+	AddInterceptRule(corpId uint, interceptRule InterceptRule) (resp AddInterceptRuleResponse)
+	GetInterceptRuleList(corpId uint) (resp GetInterceptRuleListResponse)
+	GetInterceptRule(corpId uint, ruleId string) (resp GetInterceptRuleResponse)
+	UpdateInterceptRule(corpId uint, request UpdateInterceptRuleRequest) (resp internal.BizResponse)
+	DeleteInterceptRule(corpId uint, ruleId string) (resp internal.BizResponse)
 
 	GroupChatList(corpId uint, filter GroupChatListFilter) (resp GroupChatListResponse)
 	GroupChat(corpId uint, request GroupChatRequest) (resp GroupChatResponse)
