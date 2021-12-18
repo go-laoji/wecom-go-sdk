@@ -66,6 +66,10 @@ type IWeWork interface {
 	GetGroupMsgSendResult(corpId uint, filter GroupMsgSendResultFilter) (resp GetGroupMsgSendResultResponse)
 	SendWelcomeMsg(corpId uint, msg ExternalMsg) (resp internal.BizResponse)
 
+	GetUserBehaviorData(corpId uint, filter GetUserBehaviorFilter) (resp GetUserBehaviorDataResponse)
+	GroupChatStatistic(corpId uint, filter GroupChatStatisticFilter) (resp GroupChatStatisticResponse)
+	GroupChatStatisticGroupByDay(corpId uint, filter GroupChatStatisticGroupByDayFilter) (resp GroupChatStatisticResponse)
+
 	GroupChatList(corpId uint, filter GroupChatListFilter) (resp GroupChatListResponse)
 	GroupChat(corpId uint, request GroupChatRequest) (resp GroupChatResponse)
 	GroupOpengId2ChatId(corpId uint, opengid string) (resp GroupOpengId2ChatIdResponse)
