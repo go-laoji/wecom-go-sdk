@@ -76,6 +76,12 @@ type IWeWork interface {
 	UpdateProductAlbum(corpId uint, request ProductUpdateRequest) (resp internal.BizResponse)
 	DeleteProductAlbum(corpId uint, productId string) (resp internal.BizResponse)
 
+	AddInterceptRule(corpId uint, interceptRule InterceptRule) (resp AddInterceptRuleResponse)
+	GetInterceptRuleList(corpId uint) (resp GetInterceptRuleListResponse)
+	GetInterceptRule(corpId uint, ruleId string) (resp GetInterceptRuleResponse)
+	UpdateInterceptRule(corpId uint, request UpdateInterceptRuleRequest) (resp internal.BizResponse)
+	DeleteInterceptRule(corpId uint, ruleId string) (resp internal.BizResponse)
+
 	GroupChatList(corpId uint, filter GroupChatListFilter) (resp GroupChatListResponse)
 	GroupChat(corpId uint, request GroupChatRequest) (resp GroupChatResponse)
 	GroupOpengId2ChatId(corpId uint, opengid string) (resp GroupOpengId2ChatIdResponse)
