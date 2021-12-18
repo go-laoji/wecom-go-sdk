@@ -70,6 +70,12 @@ type IWeWork interface {
 	GroupChatStatistic(corpId uint, filter GroupChatStatisticFilter) (resp GroupChatStatisticResponse)
 	GroupChatStatisticGroupByDay(corpId uint, filter GroupChatStatisticGroupByDayFilter) (resp GroupChatStatisticResponse)
 
+	AddProductAlbum(corpId uint, product Product) (resp AddProductAlbumResponse)
+	GetProductAlbum(corpId uint, productId string) (resp GetProductAlbumResponse)
+	GetProductAlbumList(corpId uint, limit int, cursor string) (resp GetProductAlbumListResponse)
+	UpdateProductAlbum(corpId uint, request ProductUpdateRequest) (resp internal.BizResponse)
+	DeleteProductAlbum(corpId uint, productId string) (resp internal.BizResponse)
+
 	GroupChatList(corpId uint, filter GroupChatListFilter) (resp GroupChatListResponse)
 	GroupChat(corpId uint, request GroupChatRequest) (resp GroupChatResponse)
 	GroupOpengId2ChatId(corpId uint, opengid string) (resp GroupOpengId2ChatIdResponse)
