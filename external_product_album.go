@@ -93,8 +93,8 @@ func (ww weWork) GetProductAlbumList(corpId uint, limit int, cursor string) (res
 
 type ProductUpdateRequest struct {
 	ProductId   string `json:"product_id" validate:"required"`
-	Description string `json:"description,omitempty" validate:"required,max=300"`
-	Price       int    `json:"price,omitempty" validate:"required,max=5000000"`
+	Description string `json:"description,omitempty" validate:"omitempty,max=300"`
+	Price       int    `json:"price,omitempty" validate:"omitempty,max=5000000"`
 	ProductSn   string `json:"product_sn,omitempty" validate:"omitempty,max=128,"`
 	Attachments []struct {
 		Type  string `json:"type"`
