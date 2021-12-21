@@ -1,0 +1,238 @@
+{
+	"info": {
+		"_postman_id": "b01cd393-8b0a-4ec9-8956-fc37f4a1ac35",
+		"name": "wework",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "test_user_get",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"get user\",function(){",
+							"    var body = pm.response.json();",
+							"    var test_user_id = pm.variables.get(\"test_user_id\");",
+							"    pm.expect(body.userid.toLowerCase()).to.eq(test_user_id)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{DemoHost}}/api/demo/user?userid={{test_user_id}}",
+					"host": [
+						"{{DemoHost}}"
+					],
+					"path": [
+						"api",
+						"demo",
+						"user"
+					],
+					"query": [
+						{
+							"key": "userid",
+							"value": "{{test_user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test_user_simplelist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"usersimplelist status ok\",function(){",
+							"    var body = pm.response.json();",
+							"    pm.expect(body.errmsg).to.eq(\"ok\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{DemoHost}}/api/demo/usersimplelist",
+					"host": [
+						"{{DemoHost}}"
+					],
+					"path": [
+						"api",
+						"demo",
+						"usersimplelist"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test_user_list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"userlist status ok\",function(){",
+							"    var body = pm.response.json();",
+							"    pm.expect(body.errmsg).to.eq(\"ok\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{DemoHost}}/api/demo/userlist",
+					"host": [
+						"{{DemoHost}}"
+					],
+					"path": [
+						"api",
+						"demo",
+						"userlist"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test_userid2openid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"userid2openid status ok\",function(){",
+							"    var body = pm.response.json();",
+							"    pm.expect(body.errmsg).to.eq(\"ok\")",
+							"    pm.environment.set(\"test_openid\", body.openid);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{DemoHost}}/api/demo/userid2openid?userid={{test_user_id}}",
+					"host": [
+						"{{DemoHost}}"
+					],
+					"path": [
+						"api",
+						"demo",
+						"userid2openid"
+					],
+					"query": [
+						{
+							"key": "userid",
+							"value": "{{test_user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test_openid2userid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"openid2userid status ok\",function(){",
+							"    var body = pm.response.json();",
+							"    pm.expect(body.errmsg).to.eq(\"ok\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{DemoHost}}/api/demo/openid2userid?openid={{test_openid}}",
+					"host": [
+						"{{DemoHost}}"
+					],
+					"path": [
+						"api",
+						"demo",
+						"openid2userid"
+					],
+					"query": [
+						{
+							"key": "openid",
+							"value": "{{test_openid}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test_listmemberauth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"listmemberauth status ok\",function(){",
+							"    var body = pm.response.json();",
+							"    if(body.errcode == 60218){",
+							"        console.error(\"仅支持成员授权模式的应用可调用\");",
+							"    }else{",
+							"        pm.expect(body.errmsg).to.eq(\"ok\")        ",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{DemoHost}}/api/demo/listmemberauth",
+					"host": [
+						"{{DemoHost}}"
+					],
+					"path": [
+						"api",
+						"demo",
+						"listmemberauth"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

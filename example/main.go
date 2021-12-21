@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-laoji/wework"
 	"github.com/go-laoji/wework/config"
+	"github.com/go-laoji/wework/pkg/demo"
 	"github.com/go-laoji/wework/pkg/svr"
 	"log"
 	"net/http"
@@ -28,6 +29,7 @@ func main() {
 	ww := wework.NewWeWork(wwconfig)
 
 	router := svr.InjectRouter(ww)
+	demo.InjectRouter(router)
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"data": ww.UserGet(1, "jifengwei")})
 	})
