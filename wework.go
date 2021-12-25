@@ -120,6 +120,11 @@ type IWeWork interface {
 	TransferCustomerResigned(corpId uint, request TransferCustomerRequest) (resp TransferCustomerResponse)
 	TransferResultResigned(corpId uint, request TransferResultRequest) (resp TransferResultResponse)
 	TransferGroupChat(corpId uint, request GroupChatTransferRequest) (resp GroupChatTransferResponse)
+
+	GetInvoiceInfo(corpId uint, query InvoiceInfoQuery) (resp GetInvoiceInfoResponse)
+	GetInvoiceInfoBatch(corpId uint, query InvoiceInfoQueryBatch) (resp GetInvoiceInfoBatchResponse)
+	UpdateInvoiceStatus(corpId uint, request UpdateInvoiceStatusRequest) (resp internal.BizResponse)
+	UpdateInvoiceStatusBatch(corpId uint, request UpdateInvoiceStatusBatchRequest) (resp internal.BizResponse)
 }
 
 type weWork struct {
