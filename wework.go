@@ -21,6 +21,9 @@ type IWeWork interface {
 	GetUserInfo3rd(code string) (resp GetUserInfo3rdResponse)
 	GetUserInfoDetail3rd(userTicket string) (resp GetUserInfoDetail3rdResponse)
 
+	AgentGet(corpId uint, agentId int) (resp AgentGetResponse)
+	AgentList(corpId uint) (resp AgentListResponse)
+
 	UpdateSuiteTicket(ticket string)
 	getSuiteAccessToken() string
 	GetPreAuthCode() (resp GetPreAuthCodeResponse)
@@ -117,6 +120,11 @@ type IWeWork interface {
 	TransferCustomerResigned(corpId uint, request TransferCustomerRequest) (resp TransferCustomerResponse)
 	TransferResultResigned(corpId uint, request TransferResultRequest) (resp TransferResultResponse)
 	TransferGroupChat(corpId uint, request GroupChatTransferRequest) (resp GroupChatTransferResponse)
+
+	GetInvoiceInfo(corpId uint, query InvoiceInfoQuery) (resp GetInvoiceInfoResponse)
+	GetInvoiceInfoBatch(corpId uint, query InvoiceInfoQueryBatch) (resp GetInvoiceInfoBatchResponse)
+	UpdateInvoiceStatus(corpId uint, request UpdateInvoiceStatusRequest) (resp internal.BizResponse)
+	UpdateInvoiceStatusBatch(corpId uint, request UpdateInvoiceStatusBatchRequest) (resp internal.BizResponse)
 }
 
 type weWork struct {
@@ -161,18 +169,22 @@ func (ww weWork) Logger() *zap.Logger {
 	return ww.logger
 }
 
+// GetCorpId 返回服务商corpId
 func (ww weWork) GetCorpId() string {
 	return ww.corpId
 }
 
+// GetSuiteId 返回服务商SuiteId
 func (ww weWork) GetSuiteId() string {
 	return ww.suiteId
 }
 
+// GetSuiteToken 返回服务商配置的SuiteToken
 func (ww weWork) GetSuiteToken() string {
 	return ww.suiteToken
 }
 
+// GetSuiteEncodingAesKey 返回服务商配置的EncodingAesKey
 func (ww weWork) GetSuiteEncodingAesKey() string {
 	return ww.suiteEncodingAesKey
 }
