@@ -125,6 +125,13 @@ type IWeWork interface {
 	GetInvoiceInfoBatch(corpId uint, query InvoiceInfoQueryBatch) (resp GetInvoiceInfoBatchResponse)
 	UpdateInvoiceStatus(corpId uint, request UpdateInvoiceStatusRequest) (resp internal.BizResponse)
 	UpdateInvoiceStatusBatch(corpId uint, request UpdateInvoiceStatusBatchRequest) (resp internal.BizResponse)
+
+	CreateStudent(corpId uint, student Student) (resp internal.BizResponse)
+	BatchCreateStudent(corpId uint, students []Student) (resp BatchStudentResponse)
+	DeleteStudent(corpId uint, userId string) (resp internal.BizResponse)
+	BatchDeleteStudent(corpId uint, userIdList []string) (resp BatchStudentResponse)
+	UpdateStudent(corpId uint, student Student) (resp internal.BizResponse)
+	BatchUpdateStudent(corpId uint, students []Student) (resp BatchStudentResponse)
 }
 
 type weWork struct {
