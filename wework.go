@@ -125,6 +125,38 @@ type IWeWork interface {
 	GetInvoiceInfoBatch(corpId uint, query InvoiceInfoQueryBatch) (resp GetInvoiceInfoBatchResponse)
 	UpdateInvoiceStatus(corpId uint, request UpdateInvoiceStatusRequest) (resp internal.BizResponse)
 	UpdateInvoiceStatusBatch(corpId uint, request UpdateInvoiceStatusBatchRequest) (resp internal.BizResponse)
+
+	CreateStudent(corpId uint, student Student) (resp internal.BizResponse)
+	BatchCreateStudent(corpId uint, students []Student) (resp BatchStudentResponse)
+	DeleteStudent(corpId uint, userId string) (resp internal.BizResponse)
+	BatchDeleteStudent(corpId uint, userIdList []string) (resp BatchStudentResponse)
+	UpdateStudent(corpId uint, student Student) (resp internal.BizResponse)
+	BatchUpdateStudent(corpId uint, students []Student) (resp BatchStudentResponse)
+
+	CreateParent(corpId uint, parent Parent) (resp internal.BizResponse)
+	BatchCreateParent(corpId uint, parents []Parent) (resp BatchParentResponse)
+	DeleteParent(corpId uint, userId string) (resp internal.BizResponse)
+	BatchDeleteParent(corpId uint, userIdList []string) (resp BatchParentResponse)
+	UpdateParent(corpId uint, parent Parent) (resp internal.BizResponse)
+	BatchUpdateParent(corpId uint, parents []Parent) (resp BatchParentResponse)
+	ListParentWithDepartmentId(corpId uint, departmentId int32) (resp ListParentWithDepartmentIdResponse)
+
+	SchoolUserGet(corpId uint, userId string) (resp SchoolUserGetResponse)
+	SchoolUserList(corpId uint, departmentId uint32, fetchChild int) (resp SchoolUserListResponse)
+	SetArchSyncMode(corpId uint, mode int) (resp internal.BizResponse)
+	GetSubScribeQrCode(corpId uint) (resp GetSubScribeQrCodeResponse)
+	SetSubScribeMode(corpId uint, mode int) (resp internal.BizResponse)
+	GetSubScribeMode(corpId uint) (resp GetSubScribeModeResponse)
+	BatchToExternalUserId(corpId uint, mobiles []string) (resp BatchToExternalUserIdResponse)
+	SetTeacherViewMode(corpId uint, mode int) (resp internal.BizResponse)
+	GetTeacherViewMode(corpId uint) (resp GetTeacherViewModeResponse)
+	GetAllowScope(corpId uint, agentId int) (resp GetAllowScopeResponse)
+	SetUpgradeInfo(corpId uint, request UpgradeRequest) (resp UpgradeInfoResponse)
+
+	SchoolDepartmentCreate(corpId uint, department SchoolDepartment) (resp SchoolDepartmentCreateResponse)
+	SchoolDepartmentUpdate(corpId uint, department SchoolDepartment) (resp internal.BizResponse)
+	SchoolDepartmentDelete(corpId uint, departmentId int32) (resp internal.BizResponse)
+	SchoolDepartmentList(corpId uint, departmentId int32) (resp SchoolDepartmentListResponse)
 }
 
 type weWork struct {
