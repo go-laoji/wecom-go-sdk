@@ -132,6 +132,14 @@ type IWeWork interface {
 	BatchDeleteStudent(corpId uint, userIdList []string) (resp BatchStudentResponse)
 	UpdateStudent(corpId uint, student Student) (resp internal.BizResponse)
 	BatchUpdateStudent(corpId uint, students []Student) (resp BatchStudentResponse)
+
+	CreateParent(corpId uint, parent Parent) (resp internal.BizResponse)
+	BatchCreateParent(corpId uint, parents []Parent) (resp BatchParentResponse)
+	DeleteParent(corpId uint, userId string) (resp internal.BizResponse)
+	BatchDeleteParent(corpId uint, userIdList []string) (resp BatchParentResponse)
+	UpdateParent(corpId uint, parent Parent) (resp internal.BizResponse)
+	BatchUpdateParent(corpId uint, parents []Parent) (resp BatchParentResponse)
+	ListParentWithDepartmentId(corpId uint, departmentId int32) (resp ListParentWithDepartmentIdResponse)
 }
 
 type weWork struct {
