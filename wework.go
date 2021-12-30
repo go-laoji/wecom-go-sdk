@@ -140,6 +140,18 @@ type IWeWork interface {
 	UpdateParent(corpId uint, parent Parent) (resp internal.BizResponse)
 	BatchUpdateParent(corpId uint, parents []Parent) (resp BatchParentResponse)
 	ListParentWithDepartmentId(corpId uint, departmentId int32) (resp ListParentWithDepartmentIdResponse)
+
+	SchoolUserGet(corpId uint, userId string) (resp SchoolUserGetResponse)
+	SchoolUserList(corpId uint, departmentId uint32, fetchChild int) (resp SchoolUserListResponse)
+	SetArchSyncMode(corpId uint, mode int) (resp internal.BizResponse)
+	GetSubScribeQrCode(corpId uint) (resp GetSubScribeQrCodeResponse)
+	SetSubScribeMode(corpId uint, mode int) (resp internal.BizResponse)
+	GetSubScribeMode(corpId uint) (resp GetSubScribeModeResponse)
+	BatchToExternalUserId(corpId uint, mobiles []string) (resp BatchToExternalUserIdResponse)
+	SetTeacherViewMode(corpId uint, mode int) (resp internal.BizResponse)
+	GetTeacherViewMode(corpId uint) (resp GetTeacherViewModeResponse)
+	GetAllowScope(corpId uint, agentId int) (resp GetAllowScopeResponse)
+	SetUpgradeInfo(corpId uint, request UpgradeRequest) (resp UpgradeInfoResponse)
 }
 
 type weWork struct {
