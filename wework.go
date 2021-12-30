@@ -152,6 +152,11 @@ type IWeWork interface {
 	GetTeacherViewMode(corpId uint) (resp GetTeacherViewModeResponse)
 	GetAllowScope(corpId uint, agentId int) (resp GetAllowScopeResponse)
 	SetUpgradeInfo(corpId uint, request UpgradeRequest) (resp UpgradeInfoResponse)
+
+	SchoolDepartmentCreate(corpId uint, department SchoolDepartment) (resp SchoolDepartmentCreateResponse)
+	SchoolDepartmentUpdate(corpId uint, department SchoolDepartment) (resp internal.BizResponse)
+	SchoolDepartmentDelete(corpId uint, departmentId int32) (resp internal.BizResponse)
+	SchoolDepartmentList(corpId uint, departmentId int32) (resp SchoolDepartmentListResponse)
 }
 
 type weWork struct {
