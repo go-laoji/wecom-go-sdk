@@ -6,6 +6,7 @@ require (
 	github.com/dgraph-io/badger/v2 v2.2007.4
 	github.com/gin-gonic/gin v1.7.4
 	github.com/go-laoji/wxbizmsgcrypt v1.0.0
+	github.com/go-playground/validator/v10 v10.4.1
 	github.com/jinzhu/copier v0.3.2
 	go.uber.org/zap v1.19.1
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
@@ -22,7 +23,6 @@ require (
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
-	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/golang/protobuf v1.3.3 // indirect
 	github.com/golang/snappy v0.0.3 // indirect

@@ -1,6 +1,12 @@
 
 版本变更日志参见 [`CHANGELOG.md`](CHANGELOG.md)
 
+[![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg "logo")](https://jb.gg/OpenSourceSupport)
+
+`更多相关文章将会在公众号分享，欢迎关注！`
+
+![GoToB](./qrcode.bmp)
+
 ## 配置文件格式
 
     CorpId: wwxxx
@@ -234,3 +240,13 @@
     - [x] 删除部门
     - [x] 获取部门列表
     - [x] 修改自动升年级的配置
+- [x] 学校应用
+  - [x] 上课直播
+    - [x] 获取老师直播ID列表
+    - [x] 获取直播详情
+    - [x] 获取观看直播统计
+    - [x] 获取未观看直播统计
+    - [x] 删除直播回放
+  - [x] 班级收款
+    - [x] 获取学生付款结果
+    - [x] 获取订单详情
