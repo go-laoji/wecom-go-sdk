@@ -163,6 +163,9 @@ type IWeWork interface {
 	GetWatchStat(corpId uint, request GetWatchStatRequest) (resp GetWatchStatResponse)
 	GetUnWatchStat(corpId uint, request GetWatchStatRequest) (resp GetUnWatchStatResponse)
 	DeleteReplayData(corpId uint, livingId string) (resp internal.BizResponse)
+
+	GetPaymentResult(corpId uint, paymentId string) (resp GetPaymentResultResponse)
+	GetTrade(corpId uint, request GetTradeRequest) (resp GetTradeResponse)
 }
 
 type weWork struct {
