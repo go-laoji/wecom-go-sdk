@@ -157,6 +157,12 @@ type IWeWork interface {
 	SchoolDepartmentUpdate(corpId uint, department SchoolDepartment) (resp internal.BizResponse)
 	SchoolDepartmentDelete(corpId uint, departmentId int32) (resp internal.BizResponse)
 	SchoolDepartmentList(corpId uint, departmentId int32) (resp SchoolDepartmentListResponse)
+
+	GetUserAllLivingId(corpId uint, request GetUserAllLivingIdRequest) (resp GetUserAllLivingIdResponse)
+	GetLivingInfo(corpId uint, liveId string) (resp GetLivingInfoResponse)
+	GetWatchStat(corpId uint, request GetWatchStatRequest) (resp GetWatchStatResponse)
+	GetUnWatchStat(corpId uint, request GetWatchStatRequest) (resp GetUnWatchStatResponse)
+	DeleteReplayData(corpId uint, livingId string) (resp internal.BizResponse)
 }
 
 type weWork struct {
