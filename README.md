@@ -1,6 +1,12 @@
 
 版本变更日志参见 [`CHANGELOG.md`](CHANGELOG.md)
 
+[![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg "logo")](https://jb.gg/OpenSourceSupport)
+
+`更多相关文章将会在公众号分享，欢迎关注！`
+
+![GoToB](./qrcode.bmp)
+
 ## 配置文件格式
 
     CorpId: wwxxx
