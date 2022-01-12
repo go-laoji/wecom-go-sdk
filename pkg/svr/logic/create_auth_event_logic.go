@@ -10,6 +10,7 @@ import (
 type CreateAuthEvent struct {
 	BizEvent
 	AuthCode string `xml:"AuthCode"`
+	State    string `xml:"State"`
 }
 
 // CreateAuthEventLogic 第三方应用管理员授权逻辑
