@@ -176,6 +176,7 @@ type GetPermanentCodeResponse struct {
 	} `json:"auth_info"`
 	AuthUserInfo     AuthUserInfo     `json:"auth_user_info"`
 	RegisterCodeInfo RegisterCodeInfo `json:"register_code_info"`
+	State            string           `json:"state"`
 }
 
 // GetPermanentCode 获取企业永久授权码
@@ -365,6 +366,39 @@ func (ww weWork) GetUserInfoDetail3rd(userTicket string) (resp GetUserInfoDetail
 	if err = json.Unmarshal(body, &resp); err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
+	}
+	return
+}
+
+type GetAppQrCodeRequest struct {
+	SuiteID    string `json:"suite_id"`
+	Appid      int    `json:"appid,omitempty"`
+	State      string `json:"state,omitempty"`
+	Style      int    `json:"style,omitempty" validate:"omitempty,oneof=0 1 2 3 4"`
+	ResultType int    `json:"result_type" validate:"required,oneof=2"`
+}
+
+type GetAppQrCodeResponse struct {
+	internal.BizResponse
+	QrCode string `json:"qrcode"`
+}
+
+// GetAppQrCode 获取应用二维码 仅支持二维码地址返回
+// https://developer.work.weixin.qq.com/document/path/95430#36592
+func (ww weWork) GetAppQrCode(request GetAppQrCodeRequest) (resp GetAppQrCodeResponse) {
+	if ok := validate.Struct(request); ok != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = ok.Error()
+		return
+	}
+	queryParams := url.Values{}
+	queryParams.Add("suite_access_token", ww.GetSuiteToken())
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/service/get_app_qrcode?%s", queryParams.Encode()), request)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
 	}
 	return
 }

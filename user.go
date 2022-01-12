@@ -17,6 +17,7 @@ type User struct {
 	Position       string   `json:"position,omitempty"`
 	Gender         string   `json:"gender,omitempty" validate:"omitempty,oneof=1 2"`
 	Email          string   `json:"email"  validate:"required_without=Mobile,omitempty,email"`
+	BizEmail       string   `json:"biz_email"`
 	IsLeaderInDept []int    `json:"is_leader_in_dept,omitempty"`
 	DirectLeader   []string `json:"direct_leader"`
 	Enable         int      `json:"enable"`

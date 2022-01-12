@@ -29,6 +29,7 @@ type IWeWork interface {
 	GetPreAuthCode() (resp GetPreAuthCodeResponse)
 	GetPermanentCode(authCode string) (resp GetPermanentCodeResponse)
 	GetAuthInfo(authCorpId, permanentCode string) (resp GetAuthInfoResponse)
+	GetAppQrCode(request GetAppQrCodeRequest) (resp GetAppQrCodeResponse)
 
 	UserGet(corpId uint, userId string) (resp UserGetResponse)
 	UserSimpleList(corpId uint, departId int32, fetchChild int) (resp UserSimpleListResponse)
@@ -47,6 +48,8 @@ type IWeWork interface {
 	MarkTag(corpId uint, userId string, externalUserId string, addTag []int, removeTag []int) (resp internal.BizResponse)
 
 	DepartmentList(corpId uint, id uint) (resp DepartmentListResponse)
+	DepartmentSimpleList(corpId uint, id int32) (resp DepartmentSimpleListResponse)
+	DepartmentGet(corpId uint, id int32) (resp DepartmentGetResponse)
 
 	ExternalContactGetFollowUserList(corpId uint) (resp ExternalContactGetFollowUserListResponse)
 	ExternalContactList(corpId uint, userId string) (resp ExternalContactListResponse)
