@@ -29,6 +29,7 @@ type IWeWork interface {
 	GetPreAuthCode() (resp GetPreAuthCodeResponse)
 	GetPermanentCode(authCode string) (resp GetPermanentCodeResponse)
 	GetAuthInfo(authCorpId, permanentCode string) (resp GetAuthInfoResponse)
+	GetAppQrCode(request GetAppQrCodeRequest) (resp GetAppQrCodeResponse)
 
 	UserGet(corpId uint, userId string) (resp UserGetResponse)
 	UserSimpleList(corpId uint, departId int32, fetchChild int) (resp UserSimpleListResponse)
