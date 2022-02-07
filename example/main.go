@@ -8,6 +8,8 @@ import (
 	"github.com/go-laoji/wework/config"
 	"github.com/go-laoji/wework/pkg/demo"
 	"github.com/go-laoji/wework/pkg/svr"
+	"github.com/go-laoji/wework/pkg/svr/logic"
+	"github.com/go-laoji/wework/pkg/svr/middleware"
 	"log"
 	"net/http"
 	"os"
@@ -26,9 +28,13 @@ func main() {
 		SuiteEncodingAesKey: c.SuiteEncodingAesKey,
 		Dsn:                 c.Dsn,
 	}
-	ww := wework.NewWeWork(wwconfig)
 
-	router := svr.InjectRouter(ww)
+	router := gin.Default()
+	ww := wework.NewWeWork(wwconfig)
+	logic.Migrate(wwconfig.Dsn)
+	router.Use(middleware.InjectSdk(ww))
+
+	svr.InjectRouter(router)
 	demo.InjectRouter(router)
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"data": ww.UserGet(1, "jifengwei")})
