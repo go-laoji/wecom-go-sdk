@@ -2,7 +2,6 @@ package logic
 
 import (
 	"encoding/xml"
-	"github.com/go-laoji/wework/config"
 	"github.com/go-laoji/wework/pkg/svr/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -44,10 +43,10 @@ type BizData struct {
 
 var engine *gorm.DB
 
-func init() {
+func Migrate(dsn string) {
+
 	var err error
-	c := config.ParseFile("")
-	engine, err = gorm.Open(mysql.Open(c.Dsn), &gorm.Config{})
+	engine, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}

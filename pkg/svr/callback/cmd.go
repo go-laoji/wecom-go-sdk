@@ -53,6 +53,8 @@ func CmdPostHandler(c *gin.Context) {
 					var bizEvent logic.BizEvent
 					if e := xml.Unmarshal(msg, &bizEvent); e != nil {
 						ww.Logger().Sugar().Error(e)
+						c.JSON(http.StatusOK, gin.H{"errno": 500, "errmsg": err.ErrMsg})
+						return
 					}
 					switch bizEvent.InfoType {
 					case logic.SuiteTicket:
