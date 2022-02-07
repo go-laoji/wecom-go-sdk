@@ -242,17 +242,28 @@ type getCorpTokenResponse struct {
 
 // 从数据库查询永久授权码和授权企业的企业微信id，获取对应的access token
 func (ww weWork) requestCorpToken(corpId uint) (resp getCorpTokenResponse) {
-	queryParams := url.Values{}
-	queryParams.Add("suite_access_token", ww.getSuiteAccessToken())
-	apiUrl := fmt.Sprintf("/cgi-bin/service/get_corp_token?%s", queryParams.Encode())
 	var authCorp models.CorpPermanentCode
 	ww.engine.Model(models.CorpPermanentCode{}).
 		Where(models.CorpPermanentCode{CorpId: corpId}).
 		First(&authCorp)
-	h := H{}
-	h["auth_corpid"] = authCorp.AuthCorpId
-	h["permanent_code"] = authCorp.PermanentCode
-	body, err := internal.HttpPost(apiUrl, h)
+	queryParams := url.Values{}
+	var apiUrl string
+	var body []byte
+	var err error
+	// 兼容代开发应用的token获取
+	if authCorp.IsCustomizedApp {
+		queryParams.Add("corpid", authCorp.AuthCorpId)
+		queryParams.Add("corpsecret", authCorp.PermanentCode)
+		apiUrl = fmt.Sprintf("/cgi-bin/gettoken?%s", queryParams.Encode())
+		body, err = internal.HttpGet(apiUrl)
+	} else {
+		queryParams.Add("suite_access_token", ww.getSuiteAccessToken())
+		apiUrl = fmt.Sprintf("/cgi-bin/service/get_corp_token?%s", queryParams.Encode())
+		h := H{}
+		h["auth_corpid"] = authCorp.AuthCorpId
+		h["permanent_code"] = authCorp.PermanentCode
+		body, err = internal.HttpPost(apiUrl, h)
+	}
 	if err != nil {
 		logger.Sugar().Error(err)
 		resp.ErrCode = 500
