@@ -40,6 +40,7 @@ func CreateAuthEventLogic(data []byte, ww wework.IWeWork) {
 	corpPermanentCode.CorpId = corpInfo.ID
 	corpPermanentCode.AuthCorpId = corpInfo.CorpId
 	corpPermanentCode.PermanentCode = resp.PermanentCode
+	corpPermanentCode.IsCustomizedApp = resp.AuthInfo.Agent[0].IsCustomizedApp
 	engine.Save(&corpPermanentCode)
 	//TODO:将授权企业的首次access token 写入缓存
 	ww.Logger().Sugar().Info(resp)
