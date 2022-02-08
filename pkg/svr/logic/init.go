@@ -12,15 +12,17 @@ type EventPushQueryBinding struct {
 	Timestamp string `form:"timestamp" binding:"required"`
 	Nonce     string `form:"nonce" binding:"required"`
 	EchoStr   string `form:"echostr"`
+	CorpId    string `form:"corpid"`
 }
 
 type InfoType string
 
 const (
-	SuiteTicket InfoType = "suite_ticket"
-	CreateAuth  InfoType = "create_auth"
-	ChangeAuth  InfoType = "change_auth"
-	CancelAuth  InfoType = "cancel_auth"
+	SuiteTicket        InfoType = "suite_ticket"
+	CreateAuth         InfoType = "create_auth"
+	ChangeAuth         InfoType = "change_auth"
+	CancelAuth         InfoType = "cancel_auth"
+	ResetPermanentCode InfoType = "reset_permanent_code"
 )
 
 type BizEvent struct {

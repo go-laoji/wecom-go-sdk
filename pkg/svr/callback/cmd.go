@@ -15,10 +15,14 @@ import (
 
 func CmdGetHandler(c *gin.Context) {
 	if ww, exists := c.Keys["ww"].(wework.IWeWork); exists {
-		wxcpt := wxbizmsgcrypt.NewWXBizMsgCrypt(ww.GetSuiteToken(), ww.GetSuiteEncodingAesKey(),
-			ww.GetCorpId(), wxbizmsgcrypt.XmlType)
 		var params logic.EventPushQueryBinding
 		if ok := c.ShouldBindQuery(&params); ok == nil {
+			receiveId := params.CorpId
+			if receiveId == "" {
+				receiveId = ww.GetCorpId()
+			}
+			wxcpt := wxbizmsgcrypt.NewWXBizMsgCrypt(ww.GetSuiteToken(), ww.GetSuiteEncodingAesKey(),
+				receiveId, wxbizmsgcrypt.XmlType)
 			echoStr, cryptErr := wxcpt.VerifyURL(params.MsgSign, params.Timestamp, params.Nonce, params.EchoStr)
 			if nil != cryptErr {
 				ww.Logger().Sugar().Error(cryptErr)
@@ -67,6 +71,9 @@ func CmdPostHandler(c *gin.Context) {
 						break
 					case logic.CancelAuth:
 						go logic.CancelAuthEventLogic(msg, ww)
+						break
+					case logic.ResetPermanentCode:
+						go logic.ResetPermanentCodeEventLogic(msg, ww)
 						break
 					}
 					c.Writer.WriteString("success")
