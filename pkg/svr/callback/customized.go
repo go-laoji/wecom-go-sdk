@@ -11,9 +11,9 @@ import (
 	"net/http"
 )
 
-// 指令回调配置
-
-func CmdGetHandler(c *gin.Context) {
+// CustomizedGetHandler 代开发自建应用回调配置
+// /callback/customized?corpid=$CORPID$
+func CustomizedGetHandler(c *gin.Context) {
 	if ww, exists := c.Keys["ww"].(wework.IWeWork); exists {
 		var params logic.EventPushQueryBinding
 		if ok := c.ShouldBindQuery(&params); ok == nil {
@@ -36,7 +36,7 @@ func CmdGetHandler(c *gin.Context) {
 	}
 }
 
-func CmdPostHandler(c *gin.Context) {
+func CustomizedPostHandler(c *gin.Context) {
 	if ww, exists := c.Keys["ww"].(wework.IWeWork); exists {
 		var params logic.EventPushQueryBinding
 		if ok := c.ShouldBindQuery(&params); ok == nil {
@@ -46,8 +46,11 @@ func CmdPostHandler(c *gin.Context) {
 				c.JSON(http.StatusOK, gin.H{"errno": 500, "errmsg": err.Error()})
 				return
 			} else {
+				var bizData logic.BizData
+				xml.Unmarshal(body, &bizData)
+				// TODO:根据不同企业配置不同的token和aeskey
 				wxcpt := wxbizmsgcrypt.NewWXBizMsgCrypt(ww.GetSuiteToken(), ww.GetSuiteEncodingAesKey(),
-					ww.GetSuiteId(), wxbizmsgcrypt.XmlType)
+					bizData.ToUserName, wxbizmsgcrypt.XmlType)
 				if msg, err := wxcpt.DecryptMsg(params.MsgSign, params.Timestamp, params.Nonce, body); err != nil {
 					ww.Logger().Sugar().Error(err)
 					c.JSON(http.StatusOK, gin.H{"errno": 500, "errmsg": err.ErrMsg})
@@ -59,22 +62,6 @@ func CmdPostHandler(c *gin.Context) {
 						ww.Logger().Sugar().Error(e)
 						c.JSON(http.StatusOK, gin.H{"errno": 500, "errmsg": err.ErrMsg})
 						return
-					}
-					switch bizEvent.InfoType {
-					case logic.SuiteTicket:
-						go logic.SuiteTicketEventLogic(msg, ww)
-						break
-					case logic.CreateAuth:
-						// 服务商的响应必须在1000ms内完成，以保证用户安装应用的体验。
-						// 建议在接收到此事件时，先记录下AuthCode，并立即回应企业微信，之后再做相关业务的处理。
-						go logic.CreateAuthEventLogic(msg, ww)
-						break
-					case logic.CancelAuth:
-						go logic.CancelAuthEventLogic(msg, ww)
-						break
-					case logic.ResetPermanentCode:
-						go logic.ResetPermanentCodeEventLogic(msg, ww)
-						break
 					}
 					c.Writer.WriteString("success")
 				}

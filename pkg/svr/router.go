@@ -14,6 +14,8 @@ func InjectRouter(e *gin.Engine) {
 		callbackGroup.POST("/data", callback.DataPostHandler)
 		callbackGroup.GET("/cmd", callback.CmdGetHandler)
 		callbackGroup.POST("/cmd", callback.CmdPostHandler)
+		callbackGroup.GET("/customized", callback.CustomizedGetHandler)
+		callbackGroup.POST("/customized", callback.CustomizedPostHandler)
 	}
 	suite := e.Group("/suite")
 	{
