@@ -3,7 +3,7 @@ package wework
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/go-laoji/wework/internal"
+	"github.com/go-laoji/wecom-go-sdk/internal"
 	"os"
 )
 

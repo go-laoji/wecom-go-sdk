@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/dgraph-io/badger/v2"
-	"github.com/go-laoji/wework/internal"
+	"github.com/go-laoji/wecom-go-sdk/internal"
 	"net/url"
 	"time"
 )

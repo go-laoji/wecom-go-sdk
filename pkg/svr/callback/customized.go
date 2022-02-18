@@ -11,12 +11,18 @@ import (
 	"net/http"
 )
 
-func DataGetHandler(c *gin.Context) {
+// CustomizedGetHandler 代开发自建应用回调配置
+// /callback/customized?corpid=$CORPID$
+func CustomizedGetHandler(c *gin.Context) {
 	if ww, exists := c.Keys["ww"].(wework.IWeWork); exists {
-		wxcpt := wxbizmsgcrypt.NewWXBizMsgCrypt(ww.GetSuiteToken(), ww.GetSuiteEncodingAesKey(),
-			ww.GetCorpId(), wxbizmsgcrypt.XmlType)
 		var params logic.EventPushQueryBinding
 		if ok := c.ShouldBindQuery(&params); ok == nil {
+			receiveId := params.CorpId
+			if receiveId == "" {
+				receiveId = ww.GetCorpId()
+			}
+			wxcpt := wxbizmsgcrypt.NewWXBizMsgCrypt(ww.GetSuiteToken(), ww.GetSuiteEncodingAesKey(),
+				receiveId, wxbizmsgcrypt.XmlType)
 			echoStr, cryptErr := wxcpt.VerifyURL(params.MsgSign, params.Timestamp, params.Nonce, params.EchoStr)
 			if nil != cryptErr {
 				ww.Logger().Sugar().Error(cryptErr)
@@ -30,7 +36,7 @@ func DataGetHandler(c *gin.Context) {
 	}
 }
 
-func DataPostHandler(c *gin.Context) {
+func CustomizedPostHandler(c *gin.Context) {
 	if ww, exists := c.Keys["ww"].(wework.IWeWork); exists {
 		var params logic.EventPushQueryBinding
 		if ok := c.ShouldBindQuery(&params); ok == nil {
@@ -42,6 +48,7 @@ func DataPostHandler(c *gin.Context) {
 			} else {
 				var bizData logic.BizData
 				xml.Unmarshal(body, &bizData)
+				// TODO:根据不同企业配置不同的token和aeskey
 				wxcpt := wxbizmsgcrypt.NewWXBizMsgCrypt(ww.GetSuiteToken(), ww.GetSuiteEncodingAesKey(),
 					bizData.ToUserName, wxbizmsgcrypt.XmlType)
 				if msg, err := wxcpt.DecryptMsg(params.MsgSign, params.Timestamp, params.Nonce, body); err != nil {
@@ -50,6 +57,12 @@ func DataPostHandler(c *gin.Context) {
 					return
 				} else {
 					ww.Logger().Sugar().Info(string(msg))
+					var bizEvent logic.BizEvent
+					if e := xml.Unmarshal(msg, &bizEvent); e != nil {
+						ww.Logger().Sugar().Error(e)
+						c.JSON(http.StatusOK, gin.H{"errno": 500, "errmsg": err.ErrMsg})
+						return
+					}
 					c.Writer.WriteString("success")
 				}
 			}

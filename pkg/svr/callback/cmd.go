@@ -3,8 +3,8 @@ package callback
 import (
 	"encoding/xml"
 	"github.com/gin-gonic/gin"
-	"github.com/go-laoji/wework"
-	"github.com/go-laoji/wework/pkg/svr/logic"
+	"github.com/go-laoji/wecom-go-sdk"
+	"github.com/go-laoji/wecom-go-sdk/pkg/svr/logic"
 	"github.com/go-laoji/wxbizmsgcrypt"
 	"io/ioutil"
 	"log"
@@ -38,8 +38,6 @@ func CmdGetHandler(c *gin.Context) {
 
 func CmdPostHandler(c *gin.Context) {
 	if ww, exists := c.Keys["ww"].(wework.IWeWork); exists {
-		wxcpt := wxbizmsgcrypt.NewWXBizMsgCrypt(ww.GetSuiteToken(), ww.GetSuiteEncodingAesKey(),
-			ww.GetSuiteId(), wxbizmsgcrypt.XmlType)
 		var params logic.EventPushQueryBinding
 		if ok := c.ShouldBindQuery(&params); ok == nil {
 			body, err := ioutil.ReadAll(c.Request.Body)
@@ -48,6 +46,8 @@ func CmdPostHandler(c *gin.Context) {
 				c.JSON(http.StatusOK, gin.H{"errno": 500, "errmsg": err.Error()})
 				return
 			} else {
+				wxcpt := wxbizmsgcrypt.NewWXBizMsgCrypt(ww.GetSuiteToken(), ww.GetSuiteEncodingAesKey(),
+					ww.GetSuiteId(), wxbizmsgcrypt.XmlType)
 				if msg, err := wxcpt.DecryptMsg(params.MsgSign, params.Timestamp, params.Nonce, body); err != nil {
 					ww.Logger().Sugar().Error(err)
 					c.JSON(http.StatusOK, gin.H{"errno": 500, "errmsg": err.ErrMsg})

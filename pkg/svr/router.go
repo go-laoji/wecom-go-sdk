@@ -2,8 +2,8 @@ package svr
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/go-laoji/wework/pkg/svr/callback"
-	"github.com/go-laoji/wework/pkg/svr/install"
+	"github.com/go-laoji/wecom-go-sdk/pkg/svr/callback"
+	"github.com/go-laoji/wecom-go-sdk/pkg/svr/install"
 )
 
 func InjectRouter(e *gin.Engine) {
@@ -14,6 +14,8 @@ func InjectRouter(e *gin.Engine) {
 		callbackGroup.POST("/data", callback.DataPostHandler)
 		callbackGroup.GET("/cmd", callback.CmdGetHandler)
 		callbackGroup.POST("/cmd", callback.CmdPostHandler)
+		callbackGroup.GET("/customized", callback.CustomizedGetHandler)
+		callbackGroup.POST("/customized", callback.CustomizedPostHandler)
 	}
 	suite := e.Group("/suite")
 	{

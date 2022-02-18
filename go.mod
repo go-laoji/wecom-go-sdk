@@ -1,4 +1,4 @@
-module github.com/go-laoji/wework
+module github.com/go-laoji/wecom-go-sdk
 
 go 1.17
 
