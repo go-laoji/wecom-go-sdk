@@ -2,7 +2,7 @@ package wework
 
 import (
 	badger "github.com/dgraph-io/badger/v2"
-	"github.com/go-laoji/wework/internal"
+	"github.com/go-laoji/wecom-go-sdk/internal"
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

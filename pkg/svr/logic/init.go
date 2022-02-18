@@ -2,7 +2,7 @@ package logic
 
 import (
 	"encoding/xml"
-	"github.com/go-laoji/wework/pkg/svr/models"
+	"github.com/go-laoji/wecom-go-sdk/pkg/svr/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
