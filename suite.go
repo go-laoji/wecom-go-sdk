@@ -252,10 +252,14 @@ func (ww weWork) requestCorpToken(corpId uint) (resp getCorpTokenResponse) {
 	var err error
 	// 兼容代开发应用的token获取
 	if authCorp.IsCustomizedApp {
-		queryParams.Add("corpid", authCorp.AuthCorpId)
-		queryParams.Add("corpsecret", authCorp.PermanentCode)
-		apiUrl = fmt.Sprintf("/cgi-bin/gettoken?%s", queryParams.Encode())
-		body, err = internal.HttpGet(apiUrl)
+		if ww.requestCustomerAppTokenFunc != nil {
+			body, err = ww.requestCustomerAppTokenFunc(corpId)
+		} else {
+			queryParams.Add("corpid", authCorp.AuthCorpId)
+			queryParams.Add("corpsecret", authCorp.PermanentCode)
+			apiUrl = fmt.Sprintf("/cgi-bin/gettoken?%s", queryParams.Encode())
+			body, err = internal.HttpGet(apiUrl)
+		}
 	} else {
 		queryParams.Add("suite_access_token", ww.getSuiteAccessToken())
 		apiUrl = fmt.Sprintf("/cgi-bin/service/get_corp_token?%s", queryParams.Encode())
@@ -275,6 +279,10 @@ func (ww weWork) requestCorpToken(corpId uint) (resp getCorpTokenResponse) {
 		resp.ErrorMsg = err.Error()
 	}
 	return
+}
+
+func (ww *weWork) SetCustomerAppTokenFunc(f func(corpId uint) (body []byte, err error)) {
+	ww.requestCustomerAppTokenFunc = f
 }
 
 func (ww weWork) getCorpToken(corpId uint) (token string) {
