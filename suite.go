@@ -289,7 +289,7 @@ func (ww weWork) requestCorpToken(corpId uint) (resp getCorpTokenResponse) {
 	return
 }
 
-func (ww *weWork) SetCustomerAppTokenFunc(f func(corpId uint) (corpid string, secret string)) {
+func (ww *weWork) SetAppSecretFunc(f func(corpId uint) (corpid string, secret string)) {
 	ww.getAppSecretFunc = f
 }
 

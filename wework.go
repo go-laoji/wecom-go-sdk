@@ -16,7 +16,7 @@ type IWeWork interface {
 	GetSuiteToken() string
 	GetSuiteEncodingAesKey() string
 	Logger() *zap.Logger
-	SetCustomerAppTokenFunc(f func(corpId uint) (corpid string, secret string))
+	SetAppSecretFunc(f func(corpId uint) (corpid string, secret string))
 
 	GetLoginInfo(authCode string) (resp GetLoginInfoResponse)
 	GetUserInfo3rd(code string) (resp GetUserInfo3rdResponse)
