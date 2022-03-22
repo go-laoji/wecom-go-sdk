@@ -397,6 +397,25 @@ func (ww weWork) GetUserInfoDetail3rd(userTicket string) (resp GetUserInfoDetail
 	return
 }
 
+type GetUserInfoResponse struct {
+	internal.BizResponse
+	UserId string `json:"UserId"`
+	OpenId string `json:"OpenId"`
+}
+
+func (ww weWork) GetUserInfo(corpId uint, code string) (resp GetUserInfoResponse) {
+	queryParams := ww.buildCorpQueryToken(corpId)
+	queryParams.Add("code", code)
+	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/user/getuserinfo?%s", queryParams.Encode()))
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
+
 type GetAppQrCodeRequest struct {
 	SuiteID    string `json:"suite_id"`
 	Appid      int    `json:"appid,omitempty"`
