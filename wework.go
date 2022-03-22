@@ -209,7 +209,9 @@ func NewWeWork(c WeWorkConfig, is3rdApp bool) IWeWork {
 	ww.cache, _ = badger.Open(badger.DefaultOptions("").WithInMemory(true))
 	ww.logger = logger
 	ww.is3rd = is3rdApp
-	ww.engine, _ = gorm.Open(mysql.Open(c.Dsn), &gorm.Config{})
+	if c.Dsn != "" {
+		ww.engine, _ = gorm.Open(mysql.Open(c.Dsn), &gorm.Config{})
+	}
 	// 默认获取企业token函数
 	return ww
 }
