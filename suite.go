@@ -240,33 +240,41 @@ type getCorpTokenResponse struct {
 	ExpiresIn   int    `json:"expires_in"`
 }
 
-// 从数据库查询永久授权码和授权企业的企业微信id，获取对应的access token
-func (ww weWork) requestCorpToken(corpId uint) (resp getCorpTokenResponse) {
+// 默认从数据库获取应用secret配置信息
+// 同一corpid(企业微信主体ID号)可以配置多个应用
+func (ww weWork) defaultAppSecretFunc(corpId uint) (corpid string, secret string) {
 	var authCorp models.CorpPermanentCode
 	ww.engine.Model(models.CorpPermanentCode{}).
 		Where(models.CorpPermanentCode{CorpId: corpId}).
 		First(&authCorp)
+	return authCorp.AuthCorpId, authCorp.PermanentCode
+}
+
+// 从数据库查询永久授权码和授权企业的企业微信id，获取对应的access token
+func (ww weWork) requestCorpToken(corpId uint) (resp getCorpTokenResponse) {
 	queryParams := url.Values{}
 	var apiUrl string
 	var body []byte
 	var err error
-	// 兼容代开发应用的token获取
-	if authCorp.IsCustomizedApp {
-		if ww.requestCustomerAppTokenFunc != nil {
-			body, err = ww.requestCustomerAppTokenFunc(corpId)
-		} else {
-			queryParams.Add("corpid", authCorp.AuthCorpId)
-			queryParams.Add("corpsecret", authCorp.PermanentCode)
-			apiUrl = fmt.Sprintf("/cgi-bin/gettoken?%s", queryParams.Encode())
-			body, err = internal.HttpGet(apiUrl)
-		}
+	var corpid, secret string
+	if ww.getAppSecretFunc != nil {
+		corpid, secret = ww.getAppSecretFunc(corpId)
 	} else {
+		corpid, secret = ww.defaultAppSecretFunc(corpId)
+	}
+	// 兼容代开发应用/自建应用/三方应用的token获取
+	if ww.is3rd {
 		queryParams.Add("suite_access_token", ww.getSuiteAccessToken())
 		apiUrl = fmt.Sprintf("/cgi-bin/service/get_corp_token?%s", queryParams.Encode())
 		h := H{}
-		h["auth_corpid"] = authCorp.AuthCorpId
-		h["permanent_code"] = authCorp.PermanentCode
+		h["auth_corpid"] = corpid
+		h["permanent_code"] = secret
 		body, err = internal.HttpPost(apiUrl, h)
+	} else {
+		queryParams.Add("corpid", corpid)
+		queryParams.Add("corpsecret", secret)
+		apiUrl = fmt.Sprintf("/cgi-bin/gettoken?%s", queryParams.Encode())
+		body, err = internal.HttpGet(apiUrl)
 	}
 	if err != nil {
 		logger.Sugar().Error(err)
@@ -281,8 +289,8 @@ func (ww weWork) requestCorpToken(corpId uint) (resp getCorpTokenResponse) {
 	return
 }
 
-func (ww *weWork) SetCustomerAppTokenFunc(f func(corpId uint) (body []byte, err error)) {
-	ww.requestCustomerAppTokenFunc = f
+func (ww *weWork) SetCustomerAppTokenFunc(f func(corpId uint) (corpid string, secret string)) {
+	ww.getAppSecretFunc = f
 }
 
 func (ww weWork) getCorpToken(corpId uint) (token string) {

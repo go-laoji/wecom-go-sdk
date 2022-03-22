@@ -16,7 +16,7 @@ type IWeWork interface {
 	GetSuiteToken() string
 	GetSuiteEncodingAesKey() string
 	Logger() *zap.Logger
-	SetCustomerAppTokenFunc(f func(corpId uint) (body []byte, err error))
+	SetCustomerAppTokenFunc(f func(corpId uint) (corpid string, secret string))
 
 	GetLoginInfo(authCode string) (resp GetLoginInfoResponse)
 	GetUserInfo3rd(code string) (resp GetUserInfo3rdResponse)
@@ -174,17 +174,18 @@ type IWeWork interface {
 
 type weWork struct {
 	IWeWork
-	corpId                      string
-	providerSecret              string
-	suiteId                     string
-	suiteSecret                 string
-	suiteTicket                 string
-	suiteToken                  string
-	suiteEncodingAesKey         string
-	cache                       *badger.DB
-	logger                      *zap.Logger
-	engine                      *gorm.DB
-	requestCustomerAppTokenFunc func(corpId uint) (body []byte, err error)
+	corpId              string
+	providerSecret      string
+	suiteId             string
+	suiteSecret         string
+	suiteTicket         string
+	suiteToken          string
+	suiteEncodingAesKey string
+	cache               *badger.DB
+	logger              *zap.Logger
+	engine              *gorm.DB
+	is3rd               bool
+	getAppSecretFunc    func(corpId uint) (corpid string, secret string)
 }
 
 type WeWorkConfig struct {
@@ -197,7 +198,7 @@ type WeWorkConfig struct {
 	Dsn                 string
 }
 
-func NewWeWork(c WeWorkConfig) IWeWork {
+func NewWeWork(c WeWorkConfig, is3rdApp bool) IWeWork {
 	var ww = new(weWork)
 	ww.corpId = c.CorpId
 	ww.providerSecret = c.ProviderSecret
@@ -207,6 +208,7 @@ func NewWeWork(c WeWorkConfig) IWeWork {
 	ww.suiteEncodingAesKey = c.SuiteEncodingAesKey
 	ww.cache, _ = badger.Open(badger.DefaultOptions("").WithInMemory(true))
 	ww.logger = logger
+	ww.is3rd = is3rdApp
 	ww.engine, _ = gorm.Open(mysql.Open(c.Dsn), &gorm.Config{})
 	// 默认获取企业token函数
 	return ww
