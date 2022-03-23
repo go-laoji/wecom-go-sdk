@@ -21,7 +21,8 @@ type User struct {
 	IsLeaderInDept []int    `json:"is_leader_in_dept,omitempty"`
 	DirectLeader   []string `json:"direct_leader"`
 	Enable         int      `json:"enable"`
-	AvatarMediaid  string   `json:"avatar_mediaid,omitempty"`
+	Avatar         string   `json:"avatar,omitempty"`
+	ThumbAvatar    string   `json:"thumb_avatar,omitempty"`
 	Telephone      string   `json:"telephone,omitempty"`
 	Address        string   `json:"address,omitempty"`
 	MainDepartment int32    `json:"main_department,omitempty"`
