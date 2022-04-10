@@ -26,6 +26,8 @@ type User struct {
 	Telephone      string   `json:"telephone,omitempty"`
 	Address        string   `json:"address,omitempty"`
 	MainDepartment int32    `json:"main_department,omitempty"`
+	Status         int      `json:"status"`
+	QrCode         string   `json:"qr_code"`
 	Extattr        struct {
 		Attrs []Attrs `json:"attrs,omitempty"`
 	} `json:"extattr,omitempty"`

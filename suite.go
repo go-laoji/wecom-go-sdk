@@ -242,12 +242,12 @@ type getCorpTokenResponse struct {
 
 // 默认从数据库获取应用secret配置信息
 // 同一corpid(企业微信主体ID号)可以配置多个应用
-func (ww weWork) defaultAppSecretFunc(corpId uint) (corpid string, secret string) {
+func (ww weWork) defaultAppSecretFunc(corpId uint) (corpid string, secret string, customizedApp bool) {
 	var authCorp models.CorpPermanentCode
 	ww.engine.Model(models.CorpPermanentCode{}).
 		Where(models.CorpPermanentCode{CorpId: corpId}).
 		First(&authCorp)
-	return authCorp.AuthCorpId, authCorp.PermanentCode
+	return authCorp.AuthCorpId, authCorp.PermanentCode, authCorp.IsCustomizedApp
 }
 
 // 从数据库查询永久授权码和授权企业的企业微信id，获取对应的access token
@@ -257,13 +257,14 @@ func (ww weWork) requestCorpToken(corpId uint) (resp getCorpTokenResponse) {
 	var body []byte
 	var err error
 	var corpid, secret string
+	var customizedApp bool
 	if ww.getAppSecretFunc != nil {
-		corpid, secret = ww.getAppSecretFunc(corpId)
+		corpid, secret, customizedApp = ww.getAppSecretFunc(corpId)
 	} else {
-		corpid, secret = ww.defaultAppSecretFunc(corpId)
+		corpid, secret, customizedApp = ww.defaultAppSecretFunc(corpId)
 	}
 	// 兼容代开发应用/自建应用/三方应用的token获取
-	if ww.is3rd {
+	if !customizedApp {
 		queryParams.Add("suite_access_token", ww.getSuiteAccessToken())
 		apiUrl = fmt.Sprintf("/cgi-bin/service/get_corp_token?%s", queryParams.Encode())
 		h := H{}
@@ -289,7 +290,7 @@ func (ww weWork) requestCorpToken(corpId uint) (resp getCorpTokenResponse) {
 	return
 }
 
-func (ww *weWork) SetAppSecretFunc(f func(corpId uint) (corpid string, secret string)) {
+func (ww *weWork) SetAppSecretFunc(f func(corpId uint) (corpid string, secret string, customizedApp bool)) {
 	ww.getAppSecretFunc = f
 }
 

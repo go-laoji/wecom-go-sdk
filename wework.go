@@ -16,7 +16,7 @@ type IWeWork interface {
 	GetSuiteToken() string
 	GetSuiteEncodingAesKey() string
 	Logger() *zap.Logger
-	SetAppSecretFunc(f func(corpId uint) (corpid string, secret string))
+	SetAppSecretFunc(f func(corpId uint) (corpid string, secret string, customizedApp bool))
 
 	GetLoginInfo(authCode string) (resp GetLoginInfoResponse)
 	GetUserInfo3rd(code string) (resp GetUserInfo3rdResponse)
@@ -185,8 +185,7 @@ type weWork struct {
 	cache               *badger.DB
 	logger              *zap.Logger
 	engine              *gorm.DB
-	is3rd               bool
-	getAppSecretFunc    func(corpId uint) (corpid string, secret string)
+	getAppSecretFunc    func(corpId uint) (corpid string, secret string, customizedApp bool)
 }
 
 type WeWorkConfig struct {
@@ -199,7 +198,7 @@ type WeWorkConfig struct {
 	Dsn                 string
 }
 
-func NewWeWork(c WeWorkConfig, is3rdApp bool) IWeWork {
+func NewWeWork(c WeWorkConfig) IWeWork {
 	var ww = new(weWork)
 	ww.corpId = c.CorpId
 	ww.providerSecret = c.ProviderSecret
@@ -209,7 +208,6 @@ func NewWeWork(c WeWorkConfig, is3rdApp bool) IWeWork {
 	ww.suiteEncodingAesKey = c.SuiteEncodingAesKey
 	ww.cache, _ = badger.Open(badger.DefaultOptions("").WithInMemory(true))
 	ww.logger = logger
-	ww.is3rd = is3rdApp
 	if c.Dsn != "" {
 		ww.engine, _ = gorm.Open(mysql.Open(c.Dsn), &gorm.Config{})
 	}
