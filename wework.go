@@ -171,6 +171,9 @@ type IWeWork interface {
 
 	GetPaymentResult(corpId uint, paymentId string) (resp GetPaymentResultResponse)
 	GetTrade(corpId uint, request GetTradeRequest) (resp GetTradeResponse)
+
+	GetJsApiTicket(corpId uint) (resp TicketResponse)
+	GetJsApiAgentTicket(corpId uint, agentId int) (resp TicketResponse)
 }
 
 type weWork struct {
