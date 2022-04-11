@@ -16,10 +16,12 @@ type IWeWork interface {
 	GetSuiteToken() string
 	GetSuiteEncodingAesKey() string
 	Logger() *zap.Logger
+	SetAppSecretFunc(f func(corpId uint) (corpid string, secret string, customizedApp bool))
 
 	GetLoginInfo(authCode string) (resp GetLoginInfoResponse)
 	GetUserInfo3rd(code string) (resp GetUserInfo3rdResponse)
 	GetUserInfoDetail3rd(userTicket string) (resp GetUserInfoDetail3rdResponse)
+	GetUserInfo(corpId uint, code string) (resp GetUserInfoResponse)
 
 	AgentGet(corpId uint, agentId int) (resp AgentGetResponse)
 	AgentList(corpId uint) (resp AgentListResponse)
@@ -169,6 +171,9 @@ type IWeWork interface {
 
 	GetPaymentResult(corpId uint, paymentId string) (resp GetPaymentResultResponse)
 	GetTrade(corpId uint, request GetTradeRequest) (resp GetTradeResponse)
+
+	GetJsApiTicket(corpId uint) (resp TicketResponse)
+	GetJsApiAgentTicket(corpId uint, agentId int) (resp TicketResponse)
 }
 
 type weWork struct {
@@ -183,6 +188,7 @@ type weWork struct {
 	cache               *badger.DB
 	logger              *zap.Logger
 	engine              *gorm.DB
+	getAppSecretFunc    func(corpId uint) (corpid string, secret string, customizedApp bool)
 }
 
 type WeWorkConfig struct {
@@ -205,7 +211,10 @@ func NewWeWork(c WeWorkConfig) IWeWork {
 	ww.suiteEncodingAesKey = c.SuiteEncodingAesKey
 	ww.cache, _ = badger.Open(badger.DefaultOptions("").WithInMemory(true))
 	ww.logger = logger
-	ww.engine, _ = gorm.Open(mysql.Open(c.Dsn), &gorm.Config{})
+	if c.Dsn != "" {
+		ww.engine, _ = gorm.Open(mysql.Open(c.Dsn), &gorm.Config{})
+	}
+	// 默认获取企业token函数
 	return ww
 }
 

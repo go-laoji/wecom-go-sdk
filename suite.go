@@ -240,29 +240,42 @@ type getCorpTokenResponse struct {
 	ExpiresIn   int    `json:"expires_in"`
 }
 
-// 从数据库查询永久授权码和授权企业的企业微信id，获取对应的access token
-func (ww weWork) requestCorpToken(corpId uint) (resp getCorpTokenResponse) {
+// 默认从数据库获取应用secret配置信息
+// 同一corpid(企业微信主体ID号)可以配置多个应用
+func (ww weWork) defaultAppSecretFunc(corpId uint) (corpid string, secret string, customizedApp bool) {
 	var authCorp models.CorpPermanentCode
 	ww.engine.Model(models.CorpPermanentCode{}).
 		Where(models.CorpPermanentCode{CorpId: corpId}).
 		First(&authCorp)
+	return authCorp.AuthCorpId, authCorp.PermanentCode, authCorp.IsCustomizedApp
+}
+
+// 从数据库查询永久授权码和授权企业的企业微信id，获取对应的access token
+func (ww weWork) requestCorpToken(corpId uint) (resp getCorpTokenResponse) {
 	queryParams := url.Values{}
 	var apiUrl string
 	var body []byte
 	var err error
-	// 兼容代开发应用的token获取
-	if authCorp.IsCustomizedApp {
-		queryParams.Add("corpid", authCorp.AuthCorpId)
-		queryParams.Add("corpsecret", authCorp.PermanentCode)
-		apiUrl = fmt.Sprintf("/cgi-bin/gettoken?%s", queryParams.Encode())
-		body, err = internal.HttpGet(apiUrl)
+	var corpid, secret string
+	var customizedApp bool
+	if ww.getAppSecretFunc != nil {
+		corpid, secret, customizedApp = ww.getAppSecretFunc(corpId)
 	} else {
+		corpid, secret, customizedApp = ww.defaultAppSecretFunc(corpId)
+	}
+	// 兼容代开发应用/自建应用/三方应用的token获取
+	if !customizedApp {
 		queryParams.Add("suite_access_token", ww.getSuiteAccessToken())
 		apiUrl = fmt.Sprintf("/cgi-bin/service/get_corp_token?%s", queryParams.Encode())
 		h := H{}
-		h["auth_corpid"] = authCorp.AuthCorpId
-		h["permanent_code"] = authCorp.PermanentCode
+		h["auth_corpid"] = corpid
+		h["permanent_code"] = secret
 		body, err = internal.HttpPost(apiUrl, h)
+	} else {
+		queryParams.Add("corpid", corpid)
+		queryParams.Add("corpsecret", secret)
+		apiUrl = fmt.Sprintf("/cgi-bin/gettoken?%s", queryParams.Encode())
+		body, err = internal.HttpGet(apiUrl)
 	}
 	if err != nil {
 		logger.Sugar().Error(err)
@@ -275,6 +288,10 @@ func (ww weWork) requestCorpToken(corpId uint) (resp getCorpTokenResponse) {
 		resp.ErrorMsg = err.Error()
 	}
 	return
+}
+
+func (ww *weWork) SetAppSecretFunc(f func(corpId uint) (corpid string, secret string, customizedApp bool)) {
+	ww.getAppSecretFunc = f
 }
 
 func (ww weWork) getCorpToken(corpId uint) (token string) {
@@ -377,6 +394,25 @@ func (ww weWork) GetUserInfoDetail3rd(userTicket string) (resp GetUserInfoDetail
 	if err = json.Unmarshal(body, &resp); err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
+	}
+	return
+}
+
+type GetUserInfoResponse struct {
+	internal.BizResponse
+	UserId string `json:"UserId"`
+	OpenId string `json:"OpenId"`
+}
+
+func (ww weWork) GetUserInfo(corpId uint, code string) (resp GetUserInfoResponse) {
+	queryParams := ww.buildCorpQueryToken(corpId)
+	queryParams.Add("code", code)
+	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/user/getuserinfo?%s", queryParams.Encode()))
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
 	}
 	return
 }
