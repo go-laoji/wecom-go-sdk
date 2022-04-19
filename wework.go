@@ -183,6 +183,8 @@ type IWeWork interface {
 	KfServicerAdd(corpId uint, request KfServicerRequest) (resp KfServicerResponse)
 	KfServicerDel(corpId uint, request KfServicerRequest) (resp KfServicerResponse)
 	KfServicerList(corpId uint, kfId string) (resp KfServicerListResponse)
+	KfServiceStateGet(corpId uint, request KfServiceStateGetRequest) (resp KfServiceStateGetResponse)
+	KfServiceStateTrans(corpId uint, request KfServiceStateTransRequest) (resp KfServiceStateTransResponse)
 }
 
 type weWork struct {

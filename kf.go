@@ -182,3 +182,60 @@ func (ww weWork) KfServicerList(corpId uint, kfId string) (resp KfServicerListRe
 	}
 	return
 }
+
+type KfServiceStateGetRequest struct {
+	OpenKfId       string `json:"open_kfid" validate:"required"`
+	ExternalUserId string `json:"external_userid" validate:"required"`
+}
+
+type KfServiceStateGetResponse struct {
+	internal.BizResponse
+	ServiceState   int    `json:"service_state"`
+	ServicerUserId string `json:"servicer_userid"`
+}
+
+func (ww weWork) KfServiceStateGet(corpId uint, request KfServiceStateGetRequest) (resp KfServiceStateGetResponse) {
+	if ok := validate.Struct(request); ok != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = ok.Error()
+		return
+	}
+	queryParams := ww.buildCorpQueryToken(corpId)
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/service_state/get?%s", queryParams.Encode()), request)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
+
+type KfServiceStateTransRequest struct {
+	OpenKfId       string `json:"open_kfid" validate:"required"`
+	ExternalUserId string `json:"external_userid" validate:"required"`
+	ServiceState   int    `json:"service_state" validate:"required,oneof=0 1 2 3 4"`
+	ServicerUserId string `json:"servicer_userid"`
+}
+
+type KfServiceStateTransResponse struct {
+	internal.BizResponse
+	MsgCode string `json:"msg_code"`
+}
+
+func (ww weWork) KfServiceStateTrans(corpId uint, request KfServiceStateTransRequest) (resp KfServiceStateTransResponse) {
+	if ok := validate.Struct(request); ok != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = ok.Error()
+		return
+	}
+	queryParams := ww.buildCorpQueryToken(corpId)
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/service_state/trans?%s", queryParams.Encode()), request)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
