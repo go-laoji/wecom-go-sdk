@@ -167,7 +167,7 @@ type KfServicerListResponse struct {
 	ServicerList []struct {
 		UserId string `json:"userid"`
 		Status uint   `json:"status"`
-	}
+	} `json:"servicer_list"`
 }
 
 func (ww weWork) KfServicerList(corpId uint, kfId string) (resp KfServicerListResponse) {
@@ -231,6 +231,125 @@ func (ww weWork) KfServiceStateTrans(corpId uint, request KfServiceStateTransReq
 	}
 	queryParams := ww.buildCorpQueryToken(corpId)
 	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/service_state/trans?%s", queryParams.Encode()), request)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
+
+type KfSyncMsgRequest struct {
+	Cursor      string `json:"cursor"`
+	Token       string `json:"token"`
+	Limit       int    `json:"limit"`
+	VoiceFormat int    `json:"voice_format"`
+}
+
+type KfSyncMsgResponse struct {
+	internal.BizResponse
+	NextCursor string `json:"next_cursor"`
+	HasMore    bool   `json:"has_more"`
+	MsgList    []struct {
+		MsgId          string          `json:"msgid"`
+		OpenKfId       string          `json:"open_kfid"`
+		ExternalUserId string          `json:"external_userid"`
+		SendTime       int             `json:"send_time"`
+		Origin         int             `json:"origin"`
+		ServicerUserId string          `json:"servicer_userid"`
+		MsgType        string          `json:"msgtype"`
+		Text           MsgText         `json:"text,omitempty"`
+		Image          MsgImage        `json:"image,omitempty"`
+		Voice          MsgVoice        `json:"voice,omitempty"`
+		Video          MsgVideo        `json:"video,omitempty"`
+		File           MsgFile         `json:"file,omitempty"`
+		Location       MsgLocation     `json:"location,omitempty"`
+		Link           MsgLink         `json:"link,omitempty"`
+		BusinessCard   MsgBusinessCard `json:"business_card,omitempty"`
+		MiniProgram    MsgMiniProgram  `json:"miniprogram,omitempty"`
+		MsgMenu        MsgMenu         `json:"msgmenu,omitempty"`
+		Event          MsgEvent        `json:"event,omitempty"`
+	} `json:"msg_list"`
+}
+
+type MsgText struct {
+	Content string `json:"content"`
+	MenuId  string `json:"menu_id"`
+}
+type MsgImage struct {
+	MediaId string `json:"media_id"`
+}
+type MsgVoice struct {
+	MediaId string `json:"media_id"`
+}
+type MsgVideo struct {
+	MediaId string `json:"media_id"`
+}
+type MsgFile struct {
+	MediaId string `json:"media_id"`
+}
+type MsgLocation struct {
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
+	Name      string  `json:"name"`
+	Address   string  `json:"address"`
+}
+type MsgLink struct {
+	Title  string `json:"title"`
+	Desc   string `json:"desc"`
+	Url    string `json:"url"`
+	PicUrl string `json:"pic_url"`
+}
+type MsgBusinessCard struct {
+	UserId string `json:"userid"`
+}
+type MsgMiniProgram struct {
+	Title        string `json:"title"`
+	AppId        string `json:"appid"`
+	PagePath     string `json:"pagepath"`
+	ThumbMediaId string `json:"thumb_media_id"`
+}
+type MsgMenu struct {
+	HeadContent string `json:"head_content"`
+	List        []struct {
+		Type  string `json:"type"`
+		Click struct {
+			ID      string `json:"id"`
+			Content string `json:"content"`
+		} `json:"click,omitempty"`
+		View struct {
+			URL     string `json:"url"`
+			Content string `json:"content"`
+		} `json:"view,omitempty"`
+		Miniprogram struct {
+			Appid    string `json:"appid"`
+			Pagepath string `json:"pagepath"`
+			Content  string `json:"content"`
+		} `json:"miniprogram,omitempty"`
+	} `json:"list"`
+	TailContent string `json:"tail_content"`
+}
+type MsgEvent struct {
+	EventType      string `json:"event_type"`
+	OpenKfid       string `json:"open_kfid"`
+	ExternalUserid string `json:"external_userid"`
+	Scene          string `json:"scene"`
+	SceneParam     string `json:"scene_param"`
+	WelcomeCode    string `json:"welcome_code"`
+	WechatChannels struct {
+		Nickname string `json:"nickname"`
+	} `json:"wechat_channels"`
+}
+
+func (ww weWork) KfSyncMsg(corpId uint, request KfSyncMsgRequest) (resp KfSyncMsgResponse) {
+	if ok := validate.Struct(request); ok != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = ok.Error()
+		return
+	}
+	queryParams := ww.buildCorpQueryToken(corpId)
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/sync_msg?%s", queryParams.Encode()), request)
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()

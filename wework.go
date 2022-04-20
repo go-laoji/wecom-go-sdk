@@ -185,6 +185,7 @@ type IWeWork interface {
 	KfServicerList(corpId uint, kfId string) (resp KfServicerListResponse)
 	KfServiceStateGet(corpId uint, request KfServiceStateGetRequest) (resp KfServiceStateGetResponse)
 	KfServiceStateTrans(corpId uint, request KfServiceStateTransRequest) (resp KfServiceStateTransResponse)
+	KfSyncMsg(corpId uint, request KfSyncMsgRequest) (resp KfSyncMsgResponse)
 }
 
 type weWork struct {
