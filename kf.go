@@ -358,3 +358,66 @@ func (ww weWork) KfSyncMsg(corpId uint, request KfSyncMsgRequest) (resp KfSyncMs
 	}
 	return
 }
+
+type SendMsgRequest struct {
+	ToUser      string          `json:"touser" validate:"required"`
+	OpenKfId    string          `json:"open_kfid" validate:"required"`
+	MsgId       string          `json:"msgid"  validate:"required"`
+	MsgType     string          `json:"msgtype"`
+	Text        *MsgText        `json:"text,omitempty"`
+	Image       *MsgImage       `json:"image,omitempty"`
+	Voice       *MsgVoice       `json:"voice,omitempty"`
+	Video       *MsgVideo       `json:"video,omitempty"`
+	File        *MsgFile        `json:"file,omitempty"`
+	Location    *MsgLocation    `json:"location,omitempty"`
+	Link        *MsgLink        `json:"link,omitempty"`
+	MiniProgram *MsgMiniProgram `json:"miniprogram,omitempty"`
+	MsgMenu     *MsgMenu        `json:"msgmenu,omitempty"`
+}
+
+type SendMsgResponse struct {
+	internal.BizResponse
+	MsgId string `json:"msgid"`
+}
+
+func (ww weWork) KfSendMsg(corpId uint, request SendMsgRequest) (resp SendMsgResponse) {
+	if ok := validate.Struct(request); ok != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = ok.Error()
+		return
+	}
+	queryParams := ww.buildCorpQueryToken(corpId)
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/send_msg?%s", queryParams.Encode()), request)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
+
+type SendMsgOnEventRequest struct {
+	Code    string   `json:"code"`
+	MsgId   string   `json:"msgid"`
+	MsgType string   `json:"msgtype" validate:"required,oneof=text msgmenu"`
+	Text    *MsgText `json:"text,omitempty"`
+	MsgMenu *MsgMenu `json:"msgmenu,omitempty"`
+}
+
+func (ww weWork) KfSendMsgOnEvent(corpId uint, request SendMsgOnEventRequest) (resp SendMsgResponse) {
+	if ok := validate.Struct(request); ok != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = ok.Error()
+		return
+	}
+	queryParams := ww.buildCorpQueryToken(corpId)
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/send_msg_on_event?%s", queryParams.Encode()), request)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
