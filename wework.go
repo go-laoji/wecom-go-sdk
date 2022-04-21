@@ -189,6 +189,11 @@ type IWeWork interface {
 	KfSendMsg(corpId uint, request SendMsgRequest) (resp SendMsgResponse)
 	KfSendMsgOnEvent(corpId uint, request SendMsgOnEventRequest) (resp SendMsgResponse)
 	KfCustomerBatchGet(corpId uint, userList []string, needEnterSessionContext int) (resp KfCustomerBatchGetResponse)
+	KfGetUpgradeServiceConfig(corpId uint) (resp KfGetUpgradeServiceConfigResponse)
+	KfUpgradeService(corpId uint, request UpgradeServiceRequest) (resp internal.BizResponse)
+	KfCancelUpgradeService(corpId uint, request CancelUpgradeServiceRequest) (resp internal.BizResponse)
+	KfGetCorpStatistic(corpId uint, filter KfGetCorpStatisticFilter) (resp KfGetCorpStatisticResponse)
+	KfGetServicerStatistic(corpId uint, filter KfGetServicerStatisticFilter) (resp KfGetServicerStatisticResponse)
 }
 
 type weWork struct {

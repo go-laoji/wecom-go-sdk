@@ -457,3 +457,169 @@ func (ww weWork) KfCustomerBatchGet(corpId uint, userList []string, needEnterSes
 	}
 	return
 }
+
+type KfGetUpgradeServiceConfigResponse struct {
+	internal.BizResponse
+	MemberRange struct {
+		UseridList       []string `json:"userid_list"`
+		DepartmentIDList []int    `json:"department_id_list"`
+	} `json:"member_range"`
+	GroupchatRange struct {
+		ChatIDList []string `json:"chat_id_list"`
+	} `json:"groupchat_range"`
+}
+
+func (ww weWork) KfGetUpgradeServiceConfig(corpId uint) (resp KfGetUpgradeServiceConfigResponse) {
+	queryParams := ww.buildCorpQueryToken(corpId)
+	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/kf/customer/get_upgrade_service_config?%s", queryParams.Encode()))
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
+
+type UpgradeServiceRequest struct {
+	OpenKfId       string                   `json:"open_kfid" validate:"required"`
+	ExternalUserId string                   `json:"external_userid" validate:"required"`
+	Type           int                      `json:"type" validate:"required,oneof=1 2"`
+	Member         *UpgradeServiceMember    `json:"member,omitempty"`
+	GroupChat      *UpgradeServiceGroupChat `json:"groupchat,omitempty"`
+}
+
+type UpgradeServiceMember struct {
+	UserId  string `json:"userid" validate:"required"`
+	Wording string `json:"wording"`
+}
+
+type UpgradeServiceGroupChat struct {
+	ChatId  string `json:"chat_id" validate:"required"`
+	Wording string `json:"wording"`
+}
+
+func (ww weWork) KfUpgradeService(corpId uint, request UpgradeServiceRequest) (resp internal.BizResponse) {
+	if ok := validate.Struct(request); ok != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = ok.Error()
+		return
+	}
+	queryParams := ww.buildCorpQueryToken(corpId)
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/customer/upgrade_service?%s", queryParams.Encode()), request)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
+
+type CancelUpgradeServiceRequest struct {
+	OpenKfId       string `json:"open_kfid" validate:"required"`
+	ExternalUserId string `json:"external_userid" validate::"required"`
+}
+
+func (ww weWork) KfCancelUpgradeService(corpId uint, request CancelUpgradeServiceRequest) (resp internal.BizResponse) {
+	if ok := validate.Struct(request); ok != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = ok.Error()
+		return
+	}
+	queryParams := ww.buildCorpQueryToken(corpId)
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/customer/cancel_upgrade_service?%s", queryParams.Encode()), request)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
+
+type KfGetCorpStatisticFilter struct {
+	OpenKfId  string `json:"open_kfid,omitempty"`
+	StartTime uint32 `json:"start_time" validate:"required"`
+	EndTime   uint32 `json:"end_time" validate:"required"`
+}
+type KfGetCorpStatisticResponse struct {
+	internal.BizResponse
+	StatisticList []struct {
+		StatTime  int `json:"stat_time"`
+		Statistic struct {
+			SessionCnt                int `json:"session_cnt"`
+			CustomerCnt               int `json:"customer_cnt"`
+			CustomerMsgCnt            int `json:"customer_msg_cnt"`
+			UpgradeServiceCustomerCnt int `json:"upgrade_service_customer_cnt"`
+			AiSessionReplyCnt         int `json:"ai_session_reply_cnt"`
+			AiTransferRate            int `json:"ai_transfer_rate"`
+			AiKnowledgeHitRate        int `json:"ai_knowledge_hit_rate"`
+		} `json:"statistic"`
+	} `json:"statistic_list"`
+}
+
+func (ww weWork) KfGetCorpStatistic(corpId uint, filter KfGetCorpStatisticFilter) (resp KfGetCorpStatisticResponse) {
+	if ok := validate.Struct(filter); ok != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = ok.Error()
+		return
+	}
+	queryParams := ww.buildCorpQueryToken(corpId)
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/get_corp_statistic?%s", queryParams.Encode()), filter)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
+
+type KfGetServicerStatisticFilter struct {
+	OpenKfId       string `json:"open_kfid,omitempty"`
+	ServicerUserId string `json:"servicer_userid,omitempty"`
+	StartTime      uint32 `json:"start_time" validate:"required"`
+	EndTime        uint32 `json:"end_time" validate:"required"`
+}
+
+type KfGetServicerStatisticResponse struct {
+	internal.BizResponse
+	StatisticList []struct {
+		StatTime  int `json:"stat_time"`
+		Statistic struct {
+			SessionCnt                         int `json:"session_cnt"`
+			CustomerCnt                        int `json:"customer_cnt"`
+			CustomerMsgCnt                     int `json:"customer_msg_cnt"`
+			ReplyRate                          int `json:"reply_rate"`
+			FirstReplyAverageSec               int `json:"first_reply_average_sec"`
+			SatisfactionInvestgateCnt          int `json:"satisfaction_investgate_cnt"`
+			SatisfactionParticipationRate      int `json:"satisfaction_participation_rate"`
+			SatisfiedRate                      int `json:"satisfied_rate"`
+			MiddlingRate                       int `json:"middling_rate"`
+			DissatisfiedRate                   int `json:"dissatisfied_rate"`
+			UpgradeServiceCustomerCnt          int `json:"upgrade_service_customer_cnt"`
+			UpgradeServiceMemberInviteCnt      int `json:"upgrade_service_member_invite_cnt"`
+			UpgradeServiceMemberCustomerCnt    int `json:"upgrade_service_member_customer_cnt"`
+			UpgradeServiceGroupchatInviteCnt   int `json:"upgrade_service_groupchat_invite_cnt"`
+			UpgradeServiceGroupchatCustomerCnt int `json:"upgrade_service_groupchat_customer_cnt"`
+		} `json:"statistic"`
+	} `json:"statistic_list"`
+}
+
+func (ww weWork) KfGetServicerStatistic(corpId uint, filter KfGetServicerStatisticFilter) (resp KfGetServicerStatisticResponse) {
+	if ok := validate.Struct(filter); ok != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = ok.Error()
+		return
+	}
+	queryParams := ww.buildCorpQueryToken(corpId)
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/get_servicer_statistic?%s", queryParams.Encode()), filter)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}

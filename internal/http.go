@@ -27,6 +27,7 @@ const (
 
 func httpRequestWithContext(ctx context.Context, request *http.Request, resChan chan<- []byte) (err error) {
 	request = request.WithContext(ctx)
+	request.Header.Set("User-Agent", "wecom-golang-sdk")
 	client := &http.Client{}
 	resp, err := client.Do(request)
 	if err != nil {
