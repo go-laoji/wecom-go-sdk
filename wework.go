@@ -188,6 +188,7 @@ type IWeWork interface {
 	KfSyncMsg(corpId uint, request KfSyncMsgRequest) (resp KfSyncMsgResponse)
 	KfSendMsg(corpId uint, request SendMsgRequest) (resp SendMsgResponse)
 	KfSendMsgOnEvent(corpId uint, request SendMsgOnEventRequest) (resp SendMsgResponse)
+	KfCustomerBatchGet(corpId uint, userList []string, needEnterSessionContext int) (resp KfCustomerBatchGetResponse)
 }
 
 type weWork struct {

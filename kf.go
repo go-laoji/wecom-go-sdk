@@ -421,3 +421,39 @@ func (ww weWork) KfSendMsgOnEvent(corpId uint, request SendMsgOnEventRequest) (r
 	}
 	return
 }
+
+type KfCustomerBatchGetResponse struct {
+	internal.BizResponse
+	CustomerList []struct {
+		ExternalUserid      string `json:"external_userid"`
+		Nickname            string `json:"nickname"`
+		Avatar              string `json:"avatar"`
+		Gender              int    `json:"gender"`
+		Unionid             string `json:"unionid"`
+		EnterSessionContext struct {
+			Scene          string `json:"scene"`
+			SceneParam     string `json:"scene_param"`
+			WechatChannels struct {
+				Nickname string `json:"nickname"`
+			} `json:"wechat_channels"`
+		} `json:"enter_session_context"`
+	} `json:"customer_list"`
+	InvalidExternalUserid []string `json:"invalid_external_userid"`
+}
+
+func (ww weWork) KfCustomerBatchGet(corpId uint, userList []string, needEnterSessionContext int) (resp KfCustomerBatchGetResponse) {
+	queryParams := ww.buildCorpQueryToken(corpId)
+	params := H{}
+	if needEnterSessionContext == 1 {
+		params["need_enter_session_context"] = 1
+	}
+	params["external_userid_list"] = userList
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/customer/batchget?%s", queryParams.Encode()), params)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
