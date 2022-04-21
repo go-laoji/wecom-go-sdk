@@ -458,6 +458,25 @@ func (ww weWork) KfCustomerBatchGet(corpId uint, userList []string, needEnterSes
 	return
 }
 
+type KfGetCorpQualificationResponse struct {
+	internal.BizResponse
+	WeChatChannelsBinding bool `json:"wechat_channels_binding"`
+}
+
+// KfGetCorpQualification 仅支持第三方应用，且需具有“微信客服->获取基础信息”权限
+func (ww weWork) KfGetCorpQualification(corpId uint) (resp KfGetCorpQualificationResponse) {
+	queryParams := ww.buildCorpQueryToken(corpId)
+
+	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/kf/get_corp_qualification?%s", queryParams.Encode()))
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
+
 type KfGetUpgradeServiceConfigResponse struct {
 	internal.BizResponse
 	MemberRange struct {
