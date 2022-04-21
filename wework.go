@@ -189,10 +189,18 @@ type IWeWork interface {
 	KfSendMsg(corpId uint, request SendMsgRequest) (resp SendMsgResponse)
 	KfSendMsgOnEvent(corpId uint, request SendMsgOnEventRequest) (resp SendMsgResponse)
 	KfCustomerBatchGet(corpId uint, userList []string, needEnterSessionContext int) (resp KfCustomerBatchGetResponse)
+	// KfGetCorpQualification 仅支持第三方应用，且需具有“微信客服->获取基础信息”权限
+	KfGetCorpQualification(corpId uint) (resp KfGetCorpQualificationResponse)
 	KfGetUpgradeServiceConfig(corpId uint) (resp KfGetUpgradeServiceConfigResponse)
 	KfUpgradeService(corpId uint, request UpgradeServiceRequest) (resp internal.BizResponse)
 	KfCancelUpgradeService(corpId uint, request CancelUpgradeServiceRequest) (resp internal.BizResponse)
+	// KfGetCorpStatistic
+	// 查询时间区间[start_time, end_time]为闭区间，最大查询跨度为31天，用户最多可获取最近180天内的数据。
+	// 当天的数据需要等到第二天才能获取，建议在第二天早上六点以后再调用此接口获取前一天的数据
 	KfGetCorpStatistic(corpId uint, filter KfGetCorpStatisticFilter) (resp KfGetCorpStatisticResponse)
+	// KfGetServicerStatistic
+	// 查询时间区间[start_time, end_time]为闭区间，最大查询跨度为31天，用户最多可获取最近180天内的数据。
+	// 当天的数据需要等到第二天才能获取，建议在第二天早上六点以后再调用此接口获取前一天的数据
 	KfGetServicerStatistic(corpId uint, filter KfGetServicerStatisticFilter) (resp KfGetServicerStatisticResponse)
 }
 
