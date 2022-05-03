@@ -91,6 +91,10 @@ type FollowUser struct {
 	State          string   `json:"state,omitempty"`
 	OperUserId     string   `json:"oper_userid,omitempty"`
 	AddWay         int      `json:"add_way,omitempty"`
+	WechatChannels struct {
+		Nickname string `json:"nickname"`
+		Source   int    `json:"source"`
+	} `json:"wechat_channels,omitempty"`
 }
 
 type ExternalContactGetResponse struct {

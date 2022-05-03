@@ -69,6 +69,10 @@ func (ww weWork) KfAccountUpdate(corpId uint, account KfAccount) (resp internal.
 	return
 }
 
+type KfAccountListRequest struct {
+	Offset uint32 `json:"offset,omitempty"`
+	Limit  uint32 `json:"limit,omitempty" validate:"max=100,min=1"`
+}
 type KfAccountListResponse struct {
 	internal.BizResponse
 	AccountList []struct {
@@ -78,9 +82,14 @@ type KfAccountListResponse struct {
 	} `json:"account_list"`
 }
 
-func (ww weWork) KfAccountList(corpId uint) (resp KfAccountListResponse) {
+func (ww weWork) KfAccountList(corpId uint, request KfAccountListRequest) (resp KfAccountListResponse) {
+	if ok := validate.Struct(request); ok != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = ok.Error()
+		return
+	}
 	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/kf/account/list?%s", queryParams.Encode()))
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/account/list?%s", queryParams.Encode()), request)
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
@@ -116,14 +125,16 @@ func (ww weWork) KfAddContactWay(corpId uint, kfId string, scene string) (resp K
 }
 
 type KfServicerRequest struct {
-	OpenKfId   string   `json:"open_kfid" validate:"required"`
-	UserIdList []string `json:"userid_list" validate:"required,max=100"`
+	OpenKfId         string   `json:"open_kfid" validate:"required"`
+	UserIdList       []string `json:"userid_list" validate:"required_without=DepartmentIdList,max=100"`
+	DepartmentIdList []uint32 `json:"department_id_list" validate:"required_without=UserIdList,max=100"`
 }
 
 type KfServicerResponse struct {
 	internal.BizResponse
 	ResultList []struct {
-		UserId string `json:"userid"`
+		UserId       string `json:"userid,omitempty"`
+		DepartmentId uint32 `json:"department_id,omitempty"`
 		internal.BizResponse
 	} `json:"result_list"`
 }
@@ -165,8 +176,9 @@ func (ww weWork) KfServicerDel(corpId uint, request KfServicerRequest) (resp KfS
 type KfServicerListResponse struct {
 	internal.BizResponse
 	ServicerList []struct {
-		UserId string `json:"userid"`
-		Status uint   `json:"status"`
+		UserId       string `json:"userid,omitempty"`
+		Status       uint   `json:"status,omitempty"`
+		DepartmentId uint32 `json:"department_id,omitempty"`
 	} `json:"servicer_list"`
 }
 
