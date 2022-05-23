@@ -137,8 +137,7 @@ func (ww weWork) MessageSend(corpId uint, msg interface{}) (resp MessageSendResp
 	h := H{}
 	buf, _ := json.Marshal(msg)
 	json.Unmarshal(buf, &h)
-	// TODO:
-	//h["agentid"] = ww.appId
+	h["agentid"] = ww.GetAgentId(corpId)
 	switch msg.(type) {
 	case TextMessage:
 		h["msgtype"] = "text"
