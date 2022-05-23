@@ -54,7 +54,7 @@ func Migrate(dsn string) {
 	}
 	engine.AutoMigrate(
 		&models.CorpAccessToken{},
-		&models.CorpPermanentCode{},
+		&models.Agent{},
 		&models.CorpAuthInfo{},
 		&models.CorpAuthUserInfo{})
 }

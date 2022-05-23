@@ -243,11 +243,20 @@ type getCorpTokenResponse struct {
 // 默认从数据库获取应用secret配置信息
 // 同一corpid(企业微信主体ID号)可以配置多个应用
 func (ww weWork) defaultAppSecretFunc(corpId uint) (corpid string, secret string, customizedApp bool) {
-	var authCorp models.CorpPermanentCode
-	ww.engine.Model(models.CorpPermanentCode{}).
-		Where(models.CorpPermanentCode{CorpId: corpId}).
-		First(&authCorp)
-	return authCorp.AuthCorpId, authCorp.PermanentCode, authCorp.IsCustomizedApp
+	var authAgent models.Agent
+	ww.engine.Model(models.Agent{}).
+		Where(models.Agent{CorpId: corpId}).
+		First(&authAgent)
+	return authAgent.AuthCorpId, authAgent.PermanentCode, authAgent.IsCustomizedApp
+}
+
+// 默认从数据库获取应用的agentid
+func (ww weWork) defaultAgentIdFunc(corpId uint) (appId int) {
+	var authAgent models.Agent
+	ww.engine.Model(models.Agent{}).
+		Where(models.Agent{CorpId: corpId}).
+		First(&authAgent)
+	return authAgent.AgentId
 }
 
 // 从数据库查询永久授权码和授权企业的企业微信id，获取对应的access token
@@ -292,6 +301,10 @@ func (ww weWork) requestCorpToken(corpId uint) (resp getCorpTokenResponse) {
 
 func (ww *weWork) SetAppSecretFunc(f func(corpId uint) (corpid string, secret string, customizedApp bool)) {
 	ww.getAppSecretFunc = f
+}
+
+func (ww *weWork) SetAgentIdFunc(f func(corpId uint) (agentId int)) {
+	ww.getAgentIdFunc = f
 }
 
 func (ww weWork) getCorpToken(corpId uint) (token string) {
