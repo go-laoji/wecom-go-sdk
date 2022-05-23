@@ -1,5 +1,11 @@
 # 变更记录
 
+## v1.4.3 2022-05-23
+
+bugfix:
+
+* KfAccountList 接口定义错误,感谢[Drogenwei](https://github.com/Drogenwei)反馈
+
 ## v1.4.2 2022-05-03
 官方2022/04/29更新
 

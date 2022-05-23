@@ -178,7 +178,7 @@ type IWeWork interface {
 	KfAccountAdd(corpId uint, account KfAccount) (resp KfAccountAddResponse)
 	KfAccountDel(corpId uint, kfId string) (resp internal.BizResponse)
 	KfAccountUpdate(corpId uint, account KfAccount) (resp internal.BizResponse)
-	KfAccountList(corpId uint) (resp KfAccountListResponse)
+	KfAccountList(corpId uint, request KfAccountListRequest) (resp KfAccountListResponse)
 	KfAddContactWay(corpId uint, kfId string, scene string) (resp KfAccContactWayResponse)
 	KfServicerAdd(corpId uint, request KfServicerRequest) (resp KfServicerResponse)
 	KfServicerDel(corpId uint, request KfServicerRequest) (resp KfServicerResponse)
