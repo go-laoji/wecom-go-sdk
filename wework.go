@@ -17,6 +17,7 @@ type IWeWork interface {
 	GetSuiteEncodingAesKey() string
 	Logger() *zap.Logger
 	SetAppSecretFunc(f func(corpId uint) (corpid string, secret string, customizedApp bool))
+	SetAgentIdFunc(f func(corpId uint) (agentId int))
 
 	GetLoginInfo(authCode string) (resp GetLoginInfoResponse)
 	GetUserInfo3rd(code string) (resp GetUserInfo3rdResponse)
@@ -217,6 +218,7 @@ type weWork struct {
 	logger              *zap.Logger
 	engine              *gorm.DB
 	getAppSecretFunc    func(corpId uint) (corpid string, secret string, customizedApp bool)
+	getAgentIdFunc      func(corpId uint) (appId int)
 }
 
 type WeWorkConfig struct {
@@ -268,4 +270,14 @@ func (ww weWork) GetSuiteToken() string {
 // GetSuiteEncodingAesKey 返回服务商配置的EncodingAesKey
 func (ww weWork) GetSuiteEncodingAesKey() string {
 	return ww.suiteEncodingAesKey
+}
+
+// GetAgentId 获取应用的AgentId;三方或代开发应用会将信息存入数据库中
+// 如果修改了表结构，需要配合 SetAgentIdFunc 使用
+func (ww weWork) GetAgentId(corpId uint) (appId int) {
+	if ww.getAgentIdFunc != nil {
+		return ww.getAgentIdFunc(corpId)
+	} else {
+		return ww.defaultAgentIdFunc(corpId)
+	}
 }

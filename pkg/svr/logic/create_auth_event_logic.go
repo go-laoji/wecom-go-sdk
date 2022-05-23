@@ -36,12 +36,12 @@ func CreateAuthEventLogic(data []byte, ww wework.IWeWork) {
 	corpAccessToken.AccessToken = resp.AccessToken
 	corpAccessToken.ExpiresIn = resp.ExpiresIn
 	engine.Save(&corpAccessToken)
-	var corpPermanentCode models.CorpPermanentCode // 授权企业永久授权码
-	corpPermanentCode.CorpId = corpInfo.ID
-	corpPermanentCode.AuthCorpId = corpInfo.CorpId
-	corpPermanentCode.PermanentCode = resp.PermanentCode
-	corpPermanentCode.IsCustomizedApp = resp.AuthInfo.Agent[0].IsCustomizedApp
-	engine.Save(&corpPermanentCode)
+	var corpAgent models.Agent
+	copier.Copy(&corpAgent, resp.AuthInfo.Agent[0]) //默认取agent[0]
+	corpAgent.CorpId = corpInfo.ID
+	corpAgent.AuthCorpId = corpInfo.CorpId
+	corpAgent.PermanentCode = resp.PermanentCode
+	engine.Save(&corpAgent)
 	//TODO:将授权企业的首次access token 写入缓存
 	ww.Logger().Sugar().Info(resp)
 }
