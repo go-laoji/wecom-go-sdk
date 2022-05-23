@@ -1,6 +1,11 @@
 # 变更记录
 
+## v1.4.5 2022-05-24
+
+- [x] MessageSend 增加`agentid`参数
+
 ## v1.4.4 2022-05-24
+
 * 增加：SetAgentIdFunc、GetAgentId　定义用于获取应用的agentid
 * 弃用:　CorpPermanentCode表将永久授权码信息合并存入　agent　表
 * defaultAppSecretFunc默认从agent表中读取配置
