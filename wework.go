@@ -203,6 +203,20 @@ type IWeWork interface {
 	// 查询时间区间[start_time, end_time]为闭区间，最大查询跨度为31天，用户最多可获取最近180天内的数据。
 	// 当天的数据需要等到第二天才能获取，建议在第二天早上六点以后再调用此接口获取前一天的数据
 	KfGetServicerStatistic(corpId uint, filter KfGetServicerStatisticFilter) (resp KfGetServicerStatisticResponse)
+
+	CreateNewOrder(request CreateOrderRequest) (resp OrderResponse)
+	CreateReNewOrderJob(request CreateReNewOrderJobRequest) (resp CreateReNewOrderJobResponse)
+	SubmitOrderJob(request SubmitOrderJobRequest) (resp OrderResponse)
+	ListOrder(request ListOrderRequest) (resp ListOrderResponse)
+	GetOrder(request GetOrderRequest) (resp GetOrderResponse)
+	ListOrderAccount(request ListOrderAccountRequest) (resp ListOrderAccountResponse)
+	ActiveAccount(request ActiveAccountRequest) (resp internal.BizResponse)
+	BatchActiveAccount(request BatchActiveAccountRequest) (resp BatchActiveAccountResponse)
+	GetActiveInfoByCode(request GetActiveInfoByCodeRequest) (resp GetActiveInfoByCodeResponse)
+	BatchGetActiveInfoByCode(request BatchGetActiveInfoByCodeRequest) (resp BatchGetActiveInfoByCodeResponse)
+	ListActivedAccount(request ListActivedAccountRequest) (resp ListActivedAccountResponse)
+	GetActiveInfoByUser(request GetActiveInfoByUserRequest) (resp GetActiveInfoByUserResponse)
+	BatchTransferLicense(request BatchTransferLicenseRequest) (resp BatchTransferLicenseResponse)
 }
 
 type weWork struct {
