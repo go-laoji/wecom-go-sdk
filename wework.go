@@ -210,6 +210,13 @@ type IWeWork interface {
 	ListOrder(request ListOrderRequest) (resp ListOrderResponse)
 	GetOrder(request GetOrderRequest) (resp GetOrderResponse)
 	ListOrderAccount(request ListOrderAccountRequest) (resp ListOrderAccountResponse)
+	ActiveAccount(request ActiveAccountRequest) (resp internal.BizResponse)
+	BatchActiveAccount(request BatchActiveAccountRequest) (resp BatchActiveAccountResponse)
+	GetActiveInfoByCode(request GetActiveInfoByCodeRequest) (resp GetActiveInfoByCodeResponse)
+	BatchGetActiveInfoByCode(request BatchGetActiveInfoByCodeRequest) (resp BatchGetActiveInfoByCodeResponse)
+	ListActivedAccount(request ListActivedAccountRequest) (resp ListActivedAccountResponse)
+	GetActiveInfoByUser(request GetActiveInfoByUserRequest) (resp GetActiveInfoByUserResponse)
+	BatchTransferLicense(request BatchTransferLicenseRequest) (resp BatchTransferLicenseResponse)
 }
 
 type weWork struct {
