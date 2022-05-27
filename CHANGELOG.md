@@ -1,5 +1,11 @@
 # 变更记录
 
+## v1.4.7 2022-05-27
+
+fix: GetGroupMsgSendResultResponse中external_userid序列化错误
+
+增加：新增ExecuteCorpApi方法，用来执行未实现的授权企业应用接口，返回值需要自行做序列化处理
+
 ## v1.4.6 2022-05-27
 
 增加服务商接口调用许可相关接口
