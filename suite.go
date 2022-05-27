@@ -462,3 +462,18 @@ func (ww weWork) GetAppQrCode(request GetAppQrCodeRequest) (resp GetAppQrCodeRes
 	}
 	return
 }
+
+// ExecuteCorpApi
+//　apiUrl 需要带有 /cgi-bin
+//　GET请求时data传入nil即可
+func (ww weWork) ExecuteCorpApi(corpId uint, apiUrl string, query url.Values, data H) (body []byte, err error) {
+	query.Add("access_token", ww.getCorpToken(corpId))
+	if os.Getenv("debug") != "" {
+		query.Add("debug", "1")
+	}
+	if len(data) != 0 {
+		return internal.HttpPost(fmt.Sprintf("%s?%s", apiUrl, query.Encode()), data)
+	} else {
+		return internal.HttpGet(fmt.Sprintf("%s?%s", apiUrl, query.Encode()))
+	}
+}

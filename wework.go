@@ -6,6 +6,7 @@ import (
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"net/url"
 )
 
 type IWeWork interface {
@@ -217,6 +218,9 @@ type IWeWork interface {
 	ListActivedAccount(request ListActivedAccountRequest) (resp ListActivedAccountResponse)
 	GetActiveInfoByUser(request GetActiveInfoByUserRequest) (resp GetActiveInfoByUserResponse)
 	BatchTransferLicense(request BatchTransferLicenseRequest) (resp BatchTransferLicenseResponse)
+
+	// ExecuteCorpApi 用于执行未实现的接口，返回 []byte,error
+	ExecuteCorpApi(corpId uint, apiUrl string, query url.Values, data H) (body []byte, err error)
 }
 
 type weWork struct {
