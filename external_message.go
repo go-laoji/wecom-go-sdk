@@ -159,7 +159,7 @@ type GroupMsgSendResultFilter struct {
 type GetGroupMsgSendResultResponse struct {
 	internal.BizResponse
 	SendList []struct {
-		ExternalUserId string `json:"external_user_id"`
+		ExternalUserId string `json:"external_userid"`
 		ChatId         string `json:"chat_id"`
 		UserId         string `json:"userid"`
 		Status         int    `json:"status"`
