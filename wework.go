@@ -54,6 +54,9 @@ type IWeWork interface {
 	CorpTagDelete(corpId uint, tagIds, groupIds []string) (resp internal.BizResponse)
 	MarkTag(corpId uint, userId string, externalUserId string, addTag []int, removeTag []int) (resp internal.BizResponse)
 
+	DepartmentCreate(corpId uint, department Department) (resp DepartmentCreateResponse)
+	DepartmentUpdate(corpId uint, department Department) (resp internal.BizResponse)
+	DepartmentDelete(corpId uint, id int32) (resp internal.BizResponse)
 	DepartmentList(corpId uint, id uint) (resp DepartmentListResponse)
 	DepartmentSimpleList(corpId uint, id int32) (resp DepartmentSimpleListResponse)
 	DepartmentGet(corpId uint, id int32) (resp DepartmentGetResponse)
