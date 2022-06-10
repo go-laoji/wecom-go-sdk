@@ -15,6 +15,61 @@ type Department struct {
 	DepartmentLeader []string `json:"department_leader"`
 }
 
+type DepartmentCreateResponse struct {
+	internal.BizResponse
+	Id int32 `json:"id"`
+}
+
+// DepartmentCreate 创建部门
+func (ww weWork) DepartmentCreate(corpId uint, department Department) (resp DepartmentCreateResponse) {
+	if ok := validate.Struct(department); ok != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = ok.Error()
+		return
+	}
+	queryParams := ww.buildCorpQueryToken(corpId)
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/department/create?%s", queryParams.Encode()), department)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
+
+// DepartmentUpdate 更新部门
+func (ww weWork) DepartmentUpdate(corpId uint, department Department) (resp internal.BizResponse) {
+	if ok := validate.Struct(department); ok != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = ok.Error()
+		return
+	}
+	queryParams := ww.buildCorpQueryToken(corpId)
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/department/update?%s", queryParams.Encode()), department)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
+
+// DepartmentDelete 删除部门
+func (ww weWork) DepartmentDelete(corpId uint, id int32) (resp internal.BizResponse) {
+	queryParams := ww.buildCorpQueryToken(corpId)
+	queryParams.Add("id", fmt.Sprintf("%v", id))
+	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/department/delete?%s", queryParams.Encode()))
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
+
 type DepartmentListResponse struct {
 	internal.BizResponse
 	Department []Department `json:"department"`
