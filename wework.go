@@ -35,6 +35,9 @@ type IWeWork interface {
 	GetAuthInfo(authCorpId, permanentCode string) (resp GetAuthInfoResponse)
 	GetAppQrCode(request GetAppQrCodeRequest) (resp GetAppQrCodeResponse)
 
+	UserCreate(corpId uint, user User) (resp internal.BizResponse)
+	UserUpdate(corpId uint, user User) (resp internal.BizResponse)
+	UserDelete(corpId uint, userId string) (resp internal.BizResponse)
 	UserGet(corpId uint, userId string) (resp UserGetResponse)
 	UserSimpleList(corpId uint, departId int32, fetchChild int) (resp UserSimpleListResponse)
 	UserList(corpId uint, departId int32, fetchChild int) (resp UserListResponse)

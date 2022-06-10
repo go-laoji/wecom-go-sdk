@@ -69,6 +69,24 @@ type ExternalAttr struct {
 	} `json:"miniprogram,omitempty"`
 }
 
+// UserCreate 创建成员
+func (ww weWork) UserCreate(corpId uint, user User) (resp internal.BizResponse) {
+	if ok := validate.Struct(user); ok != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = ok.Error()
+		return
+	}
+	queryParams := ww.buildCorpQueryToken(corpId)
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/user/create?%s", queryParams.Encode()), user)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
+
 type UserGetResponse struct {
 	internal.BizResponse
 	User
@@ -79,6 +97,38 @@ func (ww weWork) UserGet(corpId uint, userId string) (resp UserGetResponse) {
 	queryParams := ww.buildCorpQueryToken(corpId)
 	queryParams.Add("userid", userId)
 	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/user/get?%s", queryParams.Encode()))
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
+
+// UserUpdate 更新成员
+func (ww weWork) UserUpdate(corpId uint, user User) (resp internal.BizResponse) {
+	if ok := validate.Struct(user); ok != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = ok.Error()
+		return
+	}
+	queryParams := ww.buildCorpQueryToken(corpId)
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/user/update?%s", queryParams.Encode()), user)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
+
+// UserDelete 删除成员
+func (ww weWork) UserDelete(corpId uint, userId string) (resp internal.BizResponse) {
+	queryParams := ww.buildCorpQueryToken(corpId)
+	queryParams.Add("userid", userId)
+	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/user/delete?%s", queryParams.Encode()))
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
