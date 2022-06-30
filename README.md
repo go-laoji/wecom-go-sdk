@@ -33,7 +33,7 @@
 
 ## 第三方包
 
-- [github.com/dgraph-io/badger/v2 v2.2007.4](https://github.com/dgraph-io/badger) 一个内存数据库,类redis
+- [github.com/dgraph-io/badger/v3 v3.2103.2](https://github.com/dgraph-io/badger) 一个KeyValue数据库,类redis
 - [github.com/gin-gonic/gin  v1.7.4](https://github.com/gin-gonic/gin) web框架
 - [github.com/go-laoji/wxbizmsgcrypt v1.0.0](https://github.com/go-laoji/wxbizmsgcrypt) 微信数据加解密
 - [github.com/jinzhu/copier v0.3.2](https://github.com/jinzhu/copier) jinzhu大神的数据拷贝库

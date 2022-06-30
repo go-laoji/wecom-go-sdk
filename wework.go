@@ -1,7 +1,7 @@
 package wework
 
 import (
-	badger "github.com/dgraph-io/badger/v2"
+	badger "github.com/dgraph-io/badger/v3"
 	"github.com/go-laoji/wecom-go-sdk/internal"
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
@@ -263,7 +263,7 @@ func NewWeWork(c WeWorkConfig) IWeWork {
 	ww.suiteSecret = c.SuiteSecret
 	ww.suiteToken = c.SuiteToken
 	ww.suiteEncodingAesKey = c.SuiteEncodingAesKey
-	ww.cache, _ = badger.Open(badger.DefaultOptions("").WithInMemory(true))
+	ww.cache, _ = badger.Open(badger.DefaultOptions("./cache.db").WithIndexCacheSize(100 << 20))
 	ww.logger = logger
 	if c.Dsn != "" {
 		ww.engine, _ = gorm.Open(mysql.Open(c.Dsn), &gorm.Config{})
