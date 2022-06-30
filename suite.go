@@ -310,7 +310,6 @@ func (ww *weWork) SetAgentIdFunc(f func(corpId uint) (agentId int)) {
 func (ww weWork) getCorpToken(corpId uint) (token string) {
 	var err error
 	var item *badger.Item
-	logger.Sugar().Info(ww.cache.IsClosed())
 	err = ww.cache.View(func(txn *badger.Txn) error {
 		item, err = txn.Get([]byte(fmt.Sprintf("corpToken-%v", corpId)))
 		if err == badger.ErrKeyNotFound {
