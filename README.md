@@ -33,7 +33,7 @@
 
 ## 第三方包
 
-- [github.com/dgraph-io/badger/v2 v2.2007.4](https://github.com/dgraph-io/badger) 一个内存数据库,类redis
+- [github.com/dgraph-io/badger/v3 v3.2103.2](https://github.com/dgraph-io/badger) 一个KeyValue数据库,类redis
 - [github.com/gin-gonic/gin  v1.7.4](https://github.com/gin-gonic/gin) web框架
 - [github.com/go-laoji/wxbizmsgcrypt v1.0.0](https://github.com/go-laoji/wxbizmsgcrypt) 微信数据加解密
 - [github.com/jinzhu/copier v0.3.2](https://github.com/jinzhu/copier) jinzhu大神的数据拷贝库
@@ -246,6 +246,10 @@
   - [x] 上传图片
   - [ ] 获取临时素材
   - [ ] 获取高清语音素材
+- [x] 会话内容存档
+  - [x] 获取会话内容存档开启成员列表
+  - [x] 获取会话同意情况
+  - [x] 获取会话内容存档内部群信息
 - [x] 电子发票
   - [x] 查询电子发票
   - [x] 更新发票状态

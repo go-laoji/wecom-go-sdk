@@ -3,7 +3,7 @@ package wework
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/dgraph-io/badger/v2"
+	"github.com/dgraph-io/badger/v3"
 	"github.com/go-laoji/wecom-go-sdk/internal"
 	"github.com/go-laoji/wecom-go-sdk/pkg/svr/models"
 	"net/url"
