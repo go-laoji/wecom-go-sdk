@@ -225,6 +225,9 @@ type IWeWork interface {
 	GetActiveInfoByUser(request GetActiveInfoByUserRequest) (resp GetActiveInfoByUserResponse)
 	BatchTransferLicense(request BatchTransferLicenseRequest) (resp BatchTransferLicenseResponse)
 
+	GetPermitUserList(corpId uint, T int) (resp GetPermitUserListResponse, err error)
+	CheckSingleAgree(corpId uint, request CheckSingleAgreeRequest) (resp CheckSingleAgreeResponse, err error)
+	GetAuditGroupChat(corpId uint, roomId string) (resp GetAuditGroupChatResponse, err error)
 	// ExecuteCorpApi 用于执行未实现的接口，返回 []byte,error
 	ExecuteCorpApi(corpId uint, apiUrl string, query url.Values, data H) (body []byte, err error)
 }
