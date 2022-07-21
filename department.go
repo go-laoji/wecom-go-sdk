@@ -97,7 +97,7 @@ type DepartmentSimpleListResponse struct {
 		Id       int32 `json:"id"`
 		ParentId int32 `json:"parentid"`
 		Order    int32 `json:"order"`
-	}
+	} `json:"department_id"`
 }
 
 // DepartmentSimpleList 获取子部门ID列表
