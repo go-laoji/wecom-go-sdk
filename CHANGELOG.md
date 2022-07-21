@@ -1,5 +1,9 @@
 # 变更记录
 
+## v1.4.11 2022-07-21
+
+bug fix: DepartmentSimpleListResponse 序列化错误
+
 ## v1.4.10 2022-07-05
 
 增加：(仅会话存档应用的secret获取的accesstoken可调用)
