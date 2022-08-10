@@ -330,3 +330,27 @@ func (ww weWork) ListSelectedTicketUser(corpId uint, ticket string) (resp ListSe
 	}
 	return
 }
+
+type UserListIdResponse struct {
+	internal.BizResponse
+	NextCursor string `json:"next_cursor"`
+	DeptUser   []struct {
+		UserId     string `json:"userid"`
+		Department int    `json:"department"`
+	} `json:"dept_user"`
+}
+
+// UserListId 获取成员ID列表 仅支持通过“通讯录同步secret”调用。
+// https://developer.work.weixin.qq.com/document/40856
+func (ww weWork) UserListId(corpId uint, cursor string, limit int) (resp UserListIdResponse) {
+	p := H{"cursor": cursor, "limit": limit}
+	queryParams := ww.buildCorpQueryToken(corpId)
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/user/list_id?%s", queryParams.Encode()), p)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
