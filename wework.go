@@ -48,6 +48,7 @@ type IWeWork interface {
 	CheckMemberAuth(corpId uint, openUserId string) (resp CheckMemberAuthResponse)
 	GetUserId(corpId uint, mobile string) (resp GetUserIdResponse)
 	ListSelectedTicketUser(corpId uint, ticket string) (resp ListSelectedTicketUserResponse)
+	UserListId(corpId uint, cursor string, limit int) (resp UserListIdResponse)
 
 	CorpTagList(corpId uint, tagIds, groupIds []string) (resp CorpTagListResponse)
 	CorpTagAdd(corpId uint, tagGroup CorpTagGroup) (resp CorpTagAddResponse)
