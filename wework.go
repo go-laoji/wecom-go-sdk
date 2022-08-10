@@ -24,6 +24,7 @@ type IWeWork interface {
 	GetUserInfo3rd(code string) (resp GetUserInfo3rdResponse)
 	GetUserInfoDetail3rd(userTicket string) (resp GetUserInfoDetail3rdResponse)
 	GetUserInfo(corpId uint, code string) (resp GetUserInfoResponse)
+	GetUserDetail(corpId uint, userTicket string) (resp GetUserDetailResponse)
 
 	AgentGet(corpId uint, agentId int) (resp AgentGetResponse)
 	AgentList(corpId uint) (resp AgentListResponse)

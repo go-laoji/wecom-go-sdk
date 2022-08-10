@@ -413,14 +413,44 @@ func (ww weWork) GetUserInfoDetail3rd(userTicket string) (resp GetUserInfoDetail
 
 type GetUserInfoResponse struct {
 	internal.BizResponse
-	UserId string `json:"UserId"`
-	OpenId string `json:"OpenId"`
+	UserId         string `json:"UserId,omitempty"`
+	DeviceId       string `json:"DeviceId,omitempty"`
+	UserTicket     string `json:"user_ticket,omitempty"`
+	OpenId         string `json:"OpenId,omitempty"`
+	ExternalUserId string `json:"external_userid,omitempty"`
 }
 
+// GetUserInfo
+// https://developer.work.weixin.qq.com/document/path/91023
 func (ww weWork) GetUserInfo(corpId uint, code string) (resp GetUserInfoResponse) {
 	queryParams := ww.buildCorpQueryToken(corpId)
 	queryParams.Add("code", code)
 	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/user/getuserinfo?%s", queryParams.Encode()))
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
+
+type GetUserDetailResponse struct {
+	internal.BizResponse
+	Userid  string `json:"userid"`
+	Gender  string `json:"gender"`
+	Avatar  string `json:"avatar"`
+	QrCode  string `json:"qr_code"`
+	Mobile  string `json:"mobile"`
+	Email   string `json:"email"`
+	BizMail string `json:"biz_mail"`
+	Address string `json:"address"`
+}
+
+func (ww weWork) GetUserDetail(corpId uint, userTicket string) (resp GetUserDetailResponse) {
+	p := H{"user_ticket": userTicket}
+	queryParams := ww.buildCorpQueryToken(corpId)
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/user/getuserdetail?%s", queryParams.Encode()), p)
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
@@ -464,8 +494,8 @@ func (ww weWork) GetAppQrCode(request GetAppQrCodeRequest) (resp GetAppQrCodeRes
 }
 
 // ExecuteCorpApi
-//　apiUrl 需要带有 /cgi-bin
-//　GET请求时data传入nil即可
+// 　apiUrl 需要带有 /cgi-bin
+// 　GET请求时data传入nil即可
 func (ww weWork) ExecuteCorpApi(corpId uint, apiUrl string, query url.Values, data H) (body []byte, err error) {
 	query.Add("access_token", ww.getCorpToken(corpId))
 	if os.Getenv("debug") != "" {
