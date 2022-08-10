@@ -187,8 +187,7 @@ func (ww weWork) MessageUpdateTemplateCard(corpId uint, msg TemplateCardUpdateMe
 	h := H{}
 	buf, _ := json.Marshal(msg)
 	json.Unmarshal(buf, &h)
-	// TODO:
-	//h["agentid"] = ww.appId
+	h["agentid"] = ww.GetAgentId(corpId)
 
 	queryParams := ww.buildCorpQueryToken(corpId)
 	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/message/update_template_card?%s", queryParams.Encode()), h)
