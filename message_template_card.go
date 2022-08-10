@@ -187,6 +187,8 @@ func (ww weWork) MessageUpdateTemplateCard(corpId uint, msg TemplateCardUpdateMe
 	h := H{}
 	buf, _ := json.Marshal(msg)
 	json.Unmarshal(buf, &h)
+	h["agentid"] = ww.GetAgentId(corpId)
+
 	// TODO:
 	//h["agentid"] = ww.appId
 
