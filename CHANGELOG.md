@@ -1,6 +1,19 @@
 # 变更记录
 
 ## v1.4.12 2022-08-11
+bug fix:
+ * 成员id列表序列化
+ * 应用授权逻辑优化
+
+增加:
+- [x] 机器人管理
+  - [x] 知识库分组管理
+    - [x] 添加分组
+    - [x] 删除分组
+    - [x] 修改分组
+    - [x] 获取分组列表
+
+## v1.4.12 2022-08-11
 
 bug fix: MessageUpdateTemplateCard 添加 agentid [cwww3](https://github.com/cwww3)提交[PR](https://github.com/go-laoji/wecom-go-sdk/commit/1204aa2e6eddbce876d2249944a287846f3c5dbf)
 
