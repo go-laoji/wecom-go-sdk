@@ -31,17 +31,15 @@ func CreateAuthEventLogic(data []byte, ww wework.IWeWork) {
 	copier.Copy(&corpAuthUser, resp.AuthUserInfo)
 	corpAuthUser.CorpId = corpInfo.ID
 	engine.Save(&corpAuthUser)
-	var corpAccessToken models.CorpAccessToken //　授权企业access token
-	corpAccessToken.CorpId = corpInfo.ID
-	corpAccessToken.AccessToken = resp.AccessToken
-	corpAccessToken.ExpiresIn = resp.ExpiresIn
-	engine.Save(&corpAccessToken)
 	var corpAgent models.Agent
-	copier.Copy(&corpAgent, resp.AuthInfo.Agent[0]) //默认取agent[0]
+	// 通讯录应用授权时没有agent信息
+	//　TODO:重构永久码存储结构
+	if len(resp.AuthInfo.Agent) > 0 {
+		copier.Copy(&corpAgent, resp.AuthInfo.Agent[0]) //默认取agent[0]
+	}
 	corpAgent.CorpId = corpInfo.ID
 	corpAgent.AuthCorpId = corpInfo.CorpId
 	corpAgent.PermanentCode = resp.PermanentCode
 	engine.Save(&corpAgent)
-	//TODO:将授权企业的首次access token 写入缓存
 	ww.Logger().Sugar().Info(resp)
 }

@@ -53,7 +53,6 @@ func Migrate(dsn string) {
 		panic(err)
 	}
 	engine.AutoMigrate(
-		&models.CorpAccessToken{},
 		&models.Agent{},
 		&models.CorpAuthInfo{},
 		&models.CorpAuthUserInfo{})
