@@ -335,7 +335,7 @@ type UserListIdResponse struct {
 	internal.BizResponse
 	NextCursor string `json:"next_cursor"`
 	DeptUser   []struct {
-		UserId     string `json:"userid"`
+		UserId     string `json:"open_userid"`
 		Department int    `json:"department"`
 	} `json:"dept_user"`
 }
