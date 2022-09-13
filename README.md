@@ -7,6 +7,10 @@
 
 ![GoToB](./qrcode.bmp)
 
+# 文档
+
+[使用wecom-go-sdk快速开发企业微信自建应用](https://mp.weixin.qq.com/s?__biz=Mzg5NTcyOTk1OA==&mid=2247483782&idx=1&sn=84345385511ca981c47b55f7ae24b81c)
+
 ## 配置文件格式
 
     CorpId: wwxxx

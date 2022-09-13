@@ -120,7 +120,7 @@ func testAppContactUserDelete(t *testing.T) {
 
 func testAppContactEditUserSimpleList(t *testing.T) {
 	resp := TestWeWork.UserSimpleList(AppContactEdit, 1, 1)
-	if resp.ErrCode != 48009 {
+	if resp.ErrCode != 48008 {
 		t.Error(resp.ErrorMsg)
 	} else {
 		t.Log(resp)
@@ -149,7 +149,7 @@ func testAppContactEditUserListId(t *testing.T) {
 func testAppContactEditUserGet(t *testing.T) {
 	resp := TestWeWork.UserGet(AppContactEdit, "laoji_test")
 	// API接口无权限调用，为保障企业数据安全，不再允许通讯录同步助手从新增IP读取通讯录详情
-	if resp.ErrCode != 48009 {
+	if resp.ErrCode != 48008 {
 		t.Error(resp.ErrorMsg)
 	} else {
 		t.Log(resp.ErrorMsg)
@@ -171,12 +171,21 @@ func testAppContactEditUserDelete(t *testing.T) {
 	}
 }
 
+func testAppContactEditUserList(t *testing.T) {
+	resp := TestWeWork.UserList(AppContactEdit, 1, 1)
+	if resp.ErrCode != 48008 {
+		t.Error(resp.ErrorMsg)
+	} else {
+		t.Log(resp)
+	}
+}
+
 func testAppEhrUserCreate(t *testing.T) {
 	resp := TestWeWork.UserCreate(AppEhr, testUser)
 	if resp.ErrCode != 60011 {
 		t.Error(resp.ErrorMsg)
 	} else {
-		t.Log("success")
+		t.Log(resp)
 	}
 }
 func testAppEhrUserSimpleList(t *testing.T) {
@@ -224,6 +233,8 @@ func testAppEhrUserUpdate(t *testing.T) {
 	resp := TestWeWork.UserUpdate(AppEhr, testUser)
 	if resp.ErrCode != 60011 {
 		t.Error(resp.ErrorMsg)
+	} else {
+		t.Log(resp)
 	}
 }
 
@@ -231,6 +242,8 @@ func testAppEhrUserDelete(t *testing.T) {
 	resp := TestWeWork.UserDelete(AppEhr, testUser.Userid)
 	if resp.ErrCode != 60011 {
 		t.Error(resp.ErrorMsg)
+	} else {
+		t.Log(resp)
 	}
 }
 
@@ -263,6 +276,7 @@ func TestUserAll(t *testing.T) {
 
 	t.Run("AppContactEdit UserCreate", testAppContactEditUserCreate)
 	t.Run("AppContactEdit UserSimpleList", testAppContactEditUserSimpleList)
+	t.Run("AppContactEdit UserList", testAppContactEditUserList)
 	t.Run("AppContactEdit UserListId", testAppContactEditUserListId)
 	t.Run("AppContactEdit UserGet", testAppContactEditUserGet)
 	t.Run("AppContactEdit UserUpdate", testAppContactEditUserUpdate)
