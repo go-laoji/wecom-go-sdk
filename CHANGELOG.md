@@ -1,5 +1,14 @@
 # 变更记录
 
+## v1.5.1 2022-09-13
+bug fix:
+* GetUserInfo3rd(code string) (resp GetUserInfo3rdResponse)
+* GetUserInfoDetail3rd(userTicket string) (resp GetUserInfoDetail3rdResponse)
+* GetUserInfo(corpId uint, code string) (resp GetUserInfoResponse)
+* GetUserDetail(corpId uint, userTicket string) (resp GetUserDetailResponse)
+
+接口URL修改
+
 ## v1.5.0 2022-08-26
 
 * 新增加单元测试代码，文档见test下readme
