@@ -363,7 +363,7 @@ func (ww weWork) GetUserInfo3rd(code string) (resp GetUserInfo3rdResponse) {
 	queryParams := url.Values{}
 	queryParams.Add("suite_access_token", ww.getSuiteAccessToken())
 	queryParams.Add("code", code)
-	apiUrl := fmt.Sprintf("/cgi-bin/service/getuserinfo3rd?%s", queryParams.Encode())
+	apiUrl := fmt.Sprintf("/cgi-bin/service/auth/getuserinfo3rd?%s", queryParams.Encode())
 	body, err := internal.HttpGet(apiUrl)
 	if err != nil {
 		logger.Sugar().Error(err)
@@ -393,7 +393,7 @@ type GetUserInfoDetail3rdResponse struct {
 func (ww weWork) GetUserInfoDetail3rd(userTicket string) (resp GetUserInfoDetail3rdResponse) {
 	queryParams := url.Values{}
 	queryParams.Add("suite_access_token", ww.getSuiteAccessToken())
-	apiUrl := fmt.Sprintf("/cgi-bin/service/getuserdetail3rd?%s", queryParams.Encode())
+	apiUrl := fmt.Sprintf("/cgi-bin/service/auth/getuserdetail3rd?%s", queryParams.Encode())
 	h := H{}
 	h["user_ticket"] = userTicket
 
@@ -425,7 +425,7 @@ type GetUserInfoResponse struct {
 func (ww weWork) GetUserInfo(corpId uint, code string) (resp GetUserInfoResponse) {
 	queryParams := ww.buildCorpQueryToken(corpId)
 	queryParams.Add("code", code)
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/user/getuserinfo?%s", queryParams.Encode()))
+	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/auth/getuserinfo?%s", queryParams.Encode()))
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
@@ -450,7 +450,7 @@ type GetUserDetailResponse struct {
 func (ww weWork) GetUserDetail(corpId uint, userTicket string) (resp GetUserDetailResponse) {
 	p := H{"user_ticket": userTicket}
 	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/user/getuserdetail?%s", queryParams.Encode()), p)
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/auth/getuserdetail?%s", queryParams.Encode()), p)
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
