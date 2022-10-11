@@ -4,17 +4,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-laoji/wecom-go-sdk/internal"
+	"strings"
 )
 
 type Parent struct {
 	ParentUserId    string `json:"parent_userid" validate:"required"`
 	NewParentUserId string `json:"new_parent_userid,omitempty"`
-	Mobile          string `json:"mobile" validate:"required"`
-	ToInvite        bool   `json:"to_invite"`
+	Mobile          string `json:"mobile,omitempty" validate:"required"`
+	ToInvite        bool   `json:"to_invite,omitempty"`
 	Children        []struct {
 		StudentUserId string `json:"student_userid"`
 		Relation      string `json:"relation"`
-	} `json:"children" validate:"required,max=10"`
+	} `json:"children,omitempty" validate:"required,max=10"`
 }
 
 // CreateParent 创建家长
@@ -94,9 +95,9 @@ func (ww weWork) BatchDeleteParent(corpId uint, userIdList []string) (resp Batch
 // UpdateParent 更新家长
 // https://open.work.weixin.qq.com/api/doc/90001/90143/92081
 func (ww weWork) UpdateParent(corpId uint, parent Parent) (resp internal.BizResponse) {
-	if ok := validate.Struct(parent); ok != nil {
+	if strings.TrimSpace(parent.ParentUserId) == "" {
 		resp.ErrCode = 500
-		resp.ErrorMsg = ok.Error()
+		resp.ErrorMsg = "parent userid can not be empty"
 		return
 	}
 	queryParams := ww.buildCorpQueryToken(corpId)
