@@ -7,19 +7,19 @@ import (
 )
 
 type SchoolDepartment struct {
-	Name             string `json:"name"`
-	ParentId         int32  `json:"parentid" validate:"required"`
+	Name             string `json:"name,omitempty"`
+	ParentId         int32  `json:"parentid,omitempty" validate:"required"`
 	Id               int32  `json:"id"`
 	NewId            int32  `json:"new_id,omitempty"`
-	Type             int32  `json:"type" validate:"required,oneof=1 2 3 4"`
-	RegisterYear     int    `json:"register_year" validate:"omitempty,min=1970,max=2100"`
-	StandardGrade    int    `json:"standard_grade"`
-	Order            int    `json:"order"`
+	Type             int32  `json:"type,omitempty" validate:"required,oneof=1 2 3 4"`
+	RegisterYear     int    `json:"register_year,omitempty" validate:"omitempty,min=1970,max=2100"`
+	StandardGrade    int    `json:"standard_grade,omitempty"`
+	Order            int    `json:"order,omitempty"`
 	DepartmentAdmins []struct {
 		Userid  string `json:"userid"`
 		Type    int    `json:"type" validate:"oneof=1 2 3 4 5"`
 		Subject string `json:"subject"`
-	} `json:"department_admins"`
+	} `json:"department_admins,omitempty"`
 }
 
 type SchoolDepartmentCreateResponse struct {
@@ -49,9 +49,9 @@ func (ww weWork) SchoolDepartmentCreate(corpId uint, department SchoolDepartment
 // SchoolDepartmentUpdate 更新部门
 // https://open.work.weixin.qq.com/api/doc/90001/90143/92297
 func (ww weWork) SchoolDepartmentUpdate(corpId uint, department SchoolDepartment) (resp internal.BizResponse) {
-	if ok := validate.Struct(department); ok != nil {
+	if department.Id < 0 {
 		resp.ErrCode = 500
-		resp.ErrorMsg = ok.Error()
+		resp.ErrorMsg = "department id must be uint32"
 		return
 	}
 	queryParams := ww.buildCorpQueryToken(corpId)

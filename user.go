@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-laoji/wecom-go-sdk/internal"
+	"strings"
 )
 
 type User struct {
@@ -11,23 +12,23 @@ type User struct {
 	Userid         string   `json:"userid" validate:"required"`
 	Name           string   `json:"name" validate:"required"`
 	Alias          string   `json:"alias,omitempty"`
-	Mobile         string   `json:"mobile"  validate:"required_without=Email,omitempty"`
-	Department     []int32  `json:"department" validate:"required,max=100"`
+	Mobile         string   `json:"mobile,omitempty"  validate:"required_without=Email,omitempty"`
+	Department     []int32  `json:"department,omitempty" validate:"required,max=100"`
 	Order          []int32  `json:"order,omitempty"`
 	Position       string   `json:"position,omitempty"`
 	Gender         string   `json:"gender,omitempty" validate:"omitempty,oneof=1 2"`
-	Email          string   `json:"email"  validate:"required_without=Mobile,omitempty,email"`
-	BizEmail       string   `json:"biz_email"`
+	Email          string   `json:"email,omitempty"  validate:"required_without=Mobile,omitempty,email"`
+	BizEmail       string   `json:"biz_email,omitempty"`
 	IsLeaderInDept []int    `json:"is_leader_in_dept,omitempty"`
-	DirectLeader   []string `json:"direct_leader"`
-	Enable         int      `json:"enable"`
+	DirectLeader   []string `json:"direct_leader,omitempty"`
+	Enable         int      `json:"enable,omitempty"`
 	Avatar         string   `json:"avatar,omitempty"`
 	ThumbAvatar    string   `json:"thumb_avatar,omitempty"`
 	Telephone      string   `json:"telephone,omitempty"`
 	Address        string   `json:"address,omitempty"`
 	MainDepartment int32    `json:"main_department,omitempty"`
-	Status         int      `json:"status"`
-	QrCode         string   `json:"qr_code"`
+	Status         int      `json:"status,omitempty"`
+	QrCode         string   `json:"qr_code,omitempty"`
 	Extattr        struct {
 		Attrs []Attrs `json:"attrs,omitempty"`
 	} `json:"extattr,omitempty"`
@@ -108,9 +109,9 @@ func (ww weWork) UserGet(corpId uint, userId string) (resp UserGetResponse) {
 
 // UserUpdate 更新成员
 func (ww weWork) UserUpdate(corpId uint, user User) (resp internal.BizResponse) {
-	if ok := validate.Struct(user); ok != nil {
+	if strings.TrimSpace(user.Userid) == "" {
 		resp.ErrCode = 500
-		resp.ErrorMsg = ok.Error()
+		resp.ErrorMsg = "userid can not empty"
 		return
 	}
 	queryParams := ww.buildCorpQueryToken(corpId)
