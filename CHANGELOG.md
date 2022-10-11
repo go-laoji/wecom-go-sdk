@@ -1,5 +1,9 @@
 # 变更记录
 
+## v1.5.2 2022-10-11
+
+* 移除成员、部门、学生、家长、家校部门修改时非必填项的验证
+
 ## v1.5.1 2022-09-13
 bug fix:
 * GetUserInfo3rd(code string) (resp GetUserInfo3rdResponse)

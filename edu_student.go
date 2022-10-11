@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-laoji/wecom-go-sdk/internal"
+	"strings"
 )
 
 type Student struct {
 	StudentUserId    string `json:"student_userid" validate:"required"`
-	Name             string `json:"name" validate:"required"`
-	Department       []uint `json:"department" validate:"required,max=20"`
+	Name             string `json:"name,omitempty" validate:"required"`
+	Department       []uint `json:"department,omitempty" validate:"required,max=20"`
 	NewStudentUserId string `json:"new_student_userid,omitempty"`
 }
 
@@ -90,9 +91,9 @@ func (ww weWork) BatchDeleteStudent(corpId uint, userIdList []string) (resp Batc
 // UpdateStudent 更新学生
 // https://open.work.weixin.qq.com/api/doc/90001/90143/92041
 func (ww weWork) UpdateStudent(corpId uint, student Student) (resp internal.BizResponse) {
-	if ok := validate.Struct(student); ok != nil {
+	if strings.TrimSpace(student.StudentUserId) == "" {
 		resp.ErrCode = 500
-		resp.ErrorMsg = ok.Error()
+		resp.ErrorMsg = "student id can not be empty"
 		return
 	}
 	queryParams := ww.buildCorpQueryToken(corpId)

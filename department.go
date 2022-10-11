@@ -9,10 +9,10 @@ import (
 type Department struct {
 	Id               int32    `json:"id"`
 	Order            int32    `json:"order,omitempty"`
-	ParentId         int32    `json:"parentid" validate:"required"`
-	Name             string   `json:"name" validate:"required,min=1,max=32"`
+	ParentId         int32    `json:"parentid,omitempty" validate:"required"`
+	Name             string   `json:"name,omitempty" validate:"required,min=1,max=32"`
 	NameEn           string   `json:"name_en,omitempty" validate:"omitempty,min=1,max=32"`
-	DepartmentLeader []string `json:"department_leader"`
+	DepartmentLeader []string `json:"department_leader,omitempty"`
 }
 
 type DepartmentCreateResponse struct {
@@ -40,9 +40,9 @@ func (ww weWork) DepartmentCreate(corpId uint, department Department) (resp Depa
 
 // DepartmentUpdate 更新部门
 func (ww weWork) DepartmentUpdate(corpId uint, department Department) (resp internal.BizResponse) {
-	if ok := validate.Struct(department); ok != nil {
+	if department.Id < 1 {
 		resp.ErrCode = 500
-		resp.ErrorMsg = ok.Error()
+		resp.ErrorMsg = "department id must be uint"
 		return
 	}
 	queryParams := ww.buildCorpQueryToken(corpId)
