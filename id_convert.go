@@ -127,3 +127,30 @@ func (ww weWork) GroupChatGetNewExternalUserId(corpId uint, request GroupChatGet
 	}
 	return
 }
+
+type IdConvertOpenKfIdResponse struct {
+	internal.BizResponse
+	Items []struct {
+		OpenKfId    string `json:"open_kfid"`
+		NewOpenKfId string `json:"new_open_kfid"`
+	} `json:"items"`
+	InvalidOpenKfIdList []string `json:"invalid_open_kfid_list"`
+}
+
+func (ww weWork) IdConvertOpenKfId(corpId uint, kfList []string) (resp IdConvertOpenKfIdResponse) {
+	if len(kfList) > 1000 {
+		resp.ErrCode = 500
+		resp.ErrorMsg = "参数列表不能超过1000个"
+		return
+	}
+	p := H{"open_kfid_list": kfList}
+	queryParams := ww.buildCorpQueryToken(corpId)
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/idconvert/open_kfid?%s", queryParams.Encode()), p)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
