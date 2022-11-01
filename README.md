@@ -49,6 +49,12 @@
 
 ## API列表
 
+- ID转换接口
+  - [x] corpid的转换
+  - [x] userid的转换
+  - [x] external_userid的转换
+  - [x] 客户标签ID的转换
+  - [x] 微信客服ID的转换
 - 身份验证
   - 网页授权登录
     - [x] 获取访问用户身份
