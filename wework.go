@@ -236,6 +236,12 @@ type IWeWork interface {
 	GetAuditGroupChat(corpId uint, roomId string) (resp GetAuditGroupChatResponse, err error)
 	// ExecuteCorpApi 用于执行未实现的接口，返回 []byte,error
 	ExecuteCorpApi(corpId uint, apiUrl string, query url.Values, data H) (body []byte, err error)
+
+	IdConvertExternalTagId(corpId uint, tagIdList []string) (resp IdConvertExternalTagIdResponse)
+	CorpIdToOpenCorpId(corpId string) (resp CorpIdToOpenCorpIdResponse)
+	UserIdToOpenUserId(corpId uint, userIdList []string) (resp UserIdToOpenUserIdResponse)
+	GetNewExternalUserId(corpId uint, userIdList []string) (resp GetNewExternalUserIdResponse)
+	GroupChatGetNewExternalUserId(corpId uint, request GroupChatGetNewExternalUserIdRequest) (resp GetNewExternalUserIdResponse)
 }
 
 type weWork struct {
