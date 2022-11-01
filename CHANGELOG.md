@@ -1,4 +1,14 @@
 # 变更记录
+## v1.5.3 2022-11-02
+
+* 客户标签ID的转换接口
+* ID转换接口
+  * corpid的转换
+  * userid的转换
+  * 转换客户external_userid
+  * 转换客户群成员external_userid
+  * 微信客服ID的转换
+
 
 ## v1.5.2 2022-10-11
 
