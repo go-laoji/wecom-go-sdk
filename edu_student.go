@@ -11,6 +11,8 @@ type Student struct {
 	StudentUserId    string `json:"student_userid" validate:"required"`
 	Name             string `json:"name,omitempty" validate:"required"`
 	Department       []uint `json:"department,omitempty" validate:"required,max=20"`
+	ToInvite         bool   `json:"to_invite,omitempty"`
+	Mobile           string `json:"mobile,omitempty"`
 	NewStudentUserId string `json:"new_student_userid,omitempty"`
 }
 
