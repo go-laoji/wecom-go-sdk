@@ -493,6 +493,38 @@ func (ww weWork) GetAppQrCode(request GetAppQrCodeRequest) (resp GetAppQrCodeRes
 	return
 }
 
+type GetAdminListRequest struct {
+	AuthCorpId string `json:"auth_corpid" validate:"required"`
+	AgentId    uint   `json:"agentid" validate:"required"`
+}
+
+type GetAdminListResponse struct {
+	internal.BizResponse
+	Admin []struct {
+		Userid     string `json:"userid"`
+		OpenUserid string `json:"open_userid"`
+		AuthType   int    `json:"auth_type"`
+	} `json:"admin"`
+}
+
+func (ww weWork) GetAdminList(request GetAdminListRequest) (resp GetAdminListResponse) {
+	if ok := validate.Struct(request); ok != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = ok.Error()
+		return
+	}
+	queryParams := url.Values{}
+	queryParams.Add("suite_access_token", ww.GetSuiteToken())
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/service/get_admin_list?%s", queryParams.Encode()), request)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
+
 // ExecuteCorpApi
 // 　apiUrl 需要带有 /cgi-bin
 // 　GET请求时data传入nil即可
