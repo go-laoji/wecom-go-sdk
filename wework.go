@@ -230,6 +230,9 @@ type IWeWork interface {
 	ListActivedAccount(request ListActivedAccountRequest) (resp ListActivedAccountResponse)
 	GetActiveInfoByUser(request GetActiveInfoByUserRequest) (resp GetActiveInfoByUserResponse)
 	BatchTransferLicense(request BatchTransferLicenseRequest) (resp BatchTransferLicenseResponse)
+	GetAdminList(request GetAdminListRequest) (resp GetAdminListResponse)
+	SetAutoActiveStatus(request SetAutoActiveStatusRequest) (resp internal.BizResponse)
+	GetAutoActiveStatus(corpid string) (resp GetAutoActiveStatusResponse)
 
 	GetPermitUserList(corpId uint, T int) (resp GetPermitUserListResponse, err error)
 	CheckSingleAgree(corpId uint, request CheckSingleAgreeRequest) (resp CheckSingleAgreeResponse, err error)
