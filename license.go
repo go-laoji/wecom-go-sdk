@@ -463,3 +463,50 @@ func (ww weWork) BatchTransferLicense(request BatchTransferLicenseRequest) (resp
 	}
 	return
 }
+
+type SetAutoActiveStatusRequest struct {
+	CorpId           string `json:"corpid" validate:"required"`
+	AutoActiveStatus uint   `json:"auto_active_status" validate:"required,oneof=0 1"`
+}
+
+func (ww weWork) SetAutoActiveStatus(request SetAutoActiveStatusRequest) (resp internal.BizResponse) {
+	if ok := validate.Struct(request); ok != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = ok.Error()
+		return
+	}
+	queryParams := url.Values{}
+	queryParams.Add("provider_access_token", ww.getProviderToken())
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/license/set_auto_active_status?%s", queryParams.Encode()), request)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
+
+type GetAutoActiveStatusResponse struct {
+	internal.BizResponse
+	AutoActiveStatus uint `json:"auto_active_status"`
+}
+
+func (ww weWork) GetAutoActiveStatus(corpid string) (resp GetAutoActiveStatusResponse) {
+	if len(corpid) == 0 {
+		resp.ErrCode = 500
+		resp.ErrorMsg = "corpid 参数不能为空"
+		return
+	}
+	request := H{"corpid": corpid}
+	queryParams := url.Values{}
+	queryParams.Add("provider_access_token", ww.getProviderToken())
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/license/get_auto_active_status?%s", queryParams.Encode()), request)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
