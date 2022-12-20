@@ -245,6 +245,9 @@ type IWeWork interface {
 	UserIdToOpenUserId(corpId uint, userIdList []string) (resp UserIdToOpenUserIdResponse)
 	GetNewExternalUserId(corpId uint, userIdList []string) (resp GetNewExternalUserIdResponse)
 	GroupChatGetNewExternalUserId(corpId uint, request GroupChatGetNewExternalUserIdRequest) (resp GetNewExternalUserIdResponse)
+
+	RemindGroupMsgSend(corpId uint, msgid string) (resp internal.BizResponse)
+	CancelMomentTask(corpId uint, momentId string) (resp internal.BizResponse)
 }
 
 type weWork struct {
