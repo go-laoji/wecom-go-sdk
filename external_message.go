@@ -10,6 +10,7 @@ type ExternalMsg struct {
 	ChatType       string                `json:"chat_type,omitempty" validate:"omitempty,oneof=single group"`
 	ExternalUserid []string              `json:"external_userid,omitempty" validate:"required_without=Sender"`
 	Sender         string                `json:"sender,omitempty" validate:"required_without=ExternalUserid"`
+	AllowSelect    bool                  `json:"allow_select,omitempty"`
 	Text           ExternalText          `json:"text,omitempty" validate:"required_without=Attachments"`
 	Attachments    []ExternalAttachments `json:"attachments,omitempty" validate:"required_without=Text"`
 }
@@ -177,6 +178,38 @@ func (ww weWork) GetGroupMsgSendResult(corpId uint, filter GroupMsgSendResultFil
 	}
 	queryParams := ww.buildCorpQueryToken(corpId)
 	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/get_groupmsg_send_result?%s", queryParams.Encode()), filter)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
+
+// RemindGroupMsgSend 提醒成员群发
+// https://developer.work.weixin.qq.com/document/path/97610
+func (ww weWork) RemindGroupMsgSend(corpId uint, msgid string) (resp internal.BizResponse) {
+	queryParams := ww.buildCorpQueryToken(corpId)
+	h := H{}
+	h["msgid"] = msgid
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/remind_groupmsg_send?%s", queryParams.Encode()), h)
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}
+
+// CancelGroupMsgSend 停止企业群发
+// https://developer.work.weixin.qq.com/document/path/97611
+func (ww weWork) CancelGroupMsgSend(corpId uint, msgId string) (resp internal.BizResponse) {
+	queryParams := ww.buildCorpQueryToken(corpId)
+	h := H{}
+	h["msgid"] = msgId
+	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/cancel_groupmsg_send?%s", queryParams.Encode()), h)
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()

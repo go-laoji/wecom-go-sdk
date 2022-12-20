@@ -275,3 +275,18 @@ func (ww weWork) GetMomentComments(corpId uint, momentId string, userId string) 
 	}
 	return
 }
+
+// CancelMomentTask 停止发表企业朋友圈
+// https://developer.work.weixin.qq.com/document/path/97612
+func (ww weWork) CancelMomentTask(corpId uint, momentId string) (resp internal.BizResponse) {
+	queryParams := ww.buildCorpQueryToken(corpId)
+	queryParams.Add("moment_id", momentId)
+	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/externalcontact/cancel_moment_task?%s", queryParams.Encode()))
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		json.Unmarshal(body, &resp)
+	}
+	return
+}

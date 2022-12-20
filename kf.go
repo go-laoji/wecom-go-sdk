@@ -76,9 +76,10 @@ type KfAccountListRequest struct {
 type KfAccountListResponse struct {
 	internal.BizResponse
 	AccountList []struct {
-		OpenKfId string `json:"open_kfid"`
-		Name     string `json:"name"`
-		Avatar   string `json:"avatar"`
+		OpenKfId        string `json:"open_kfid"`
+		Name            string `json:"name"`
+		Avatar          string `json:"avatar"`
+		ManagePrivilege bool   `json:"manage_privilege"`
 	} `json:"account_list"`
 }
 
@@ -257,6 +258,7 @@ type KfSyncMsgRequest struct {
 	Token       string `json:"token"`
 	Limit       int    `json:"limit"`
 	VoiceFormat int    `json:"voice_format"`
+	OpenKfId    string `json:"open_kfid"`
 }
 
 type KfSyncMsgResponse struct {
@@ -264,24 +266,26 @@ type KfSyncMsgResponse struct {
 	NextCursor string `json:"next_cursor"`
 	HasMore    bool   `json:"has_more"`
 	MsgList    []struct {
-		MsgId          string          `json:"msgid"`
-		OpenKfId       string          `json:"open_kfid"`
-		ExternalUserId string          `json:"external_userid"`
-		SendTime       int             `json:"send_time"`
-		Origin         int             `json:"origin"`
-		ServicerUserId string          `json:"servicer_userid"`
-		MsgType        string          `json:"msgtype"`
-		Text           MsgText         `json:"text,omitempty"`
-		Image          MsgImage        `json:"image,omitempty"`
-		Voice          MsgVoice        `json:"voice,omitempty"`
-		Video          MsgVideo        `json:"video,omitempty"`
-		File           MsgFile         `json:"file,omitempty"`
-		Location       MsgLocation     `json:"location,omitempty"`
-		Link           MsgLink         `json:"link,omitempty"`
-		BusinessCard   MsgBusinessCard `json:"business_card,omitempty"`
-		MiniProgram    MsgMiniProgram  `json:"miniprogram,omitempty"`
-		MsgMenu        MsgMenu         `json:"msgmenu,omitempty"`
-		Event          MsgEvent        `json:"event,omitempty"`
+		MsgId               string                 `json:"msgid"`
+		OpenKfId            string                 `json:"open_kfid"`
+		ExternalUserId      string                 `json:"external_userid"`
+		SendTime            int                    `json:"send_time"`
+		Origin              int                    `json:"origin"`
+		ServicerUserId      string                 `json:"servicer_userid"`
+		MsgType             string                 `json:"msgtype"`
+		Text                MsgText                `json:"text,omitempty"`
+		Image               MsgImage               `json:"image,omitempty"`
+		Voice               MsgVoice               `json:"voice,omitempty"`
+		Video               MsgVideo               `json:"video,omitempty"`
+		File                MsgFile                `json:"file,omitempty"`
+		Location            MsgLocation            `json:"location,omitempty"`
+		Link                MsgLink                `json:"link,omitempty"`
+		BusinessCard        MsgBusinessCard        `json:"business_card,omitempty"`
+		MiniProgram         MsgMiniProgram         `json:"miniprogram,omitempty"`
+		MsgMenu             MsgMenu                `json:"msgmenu,omitempty"`
+		ChannelsShopProduct MsgChannelsShopProduct `json:"channels_shop_product,omitempty"`
+		ChannelsShopOrder   MsgChannelsShopOrder   `json:"channels_shop_order,omitempty"`
+		Event               MsgEvent               `json:"event,omitempty"`
 	} `json:"msg_list"`
 }
 
@@ -342,6 +346,22 @@ type MsgMenu struct {
 	} `json:"list"`
 	TailContent string `json:"tail_content"`
 }
+type MsgChannelsShopProduct struct {
+	ProductID    string `json:"product_id"`
+	HeadImg      string `json:"head_img"`
+	Title        string `json:"title"`
+	SalesPrice   string `json:"sales_price"`
+	ShopNickname string `json:"shop_nickname"`
+	ShopHeadImg  string `json:"shop_head_img"`
+}
+type MsgChannelsShopOrder struct {
+	OrderID       string `json:"order_id"`
+	ProductTitles string `json:"product_titles"`
+	PriceWording  string `json:"price_wording"`
+	State         string `json:"state"`
+	ImageURL      string `json:"image_url"`
+	ShopNickname  string `json:"shop_nickname"`
+}
 type MsgEvent struct {
 	EventType      string `json:"event_type"`
 	OpenKfid       string `json:"open_kfid"`
@@ -350,7 +370,9 @@ type MsgEvent struct {
 	SceneParam     string `json:"scene_param"`
 	WelcomeCode    string `json:"welcome_code"`
 	WechatChannels struct {
-		Nickname string `json:"nickname"`
+		Nickname     string `json:"nickname"`
+		ShopNickName string `json:"shop_nickname"`
+		Scene        uint32 `json:"scene"`
 	} `json:"wechat_channels"`
 }
 
@@ -446,7 +468,9 @@ type KfCustomerBatchGetResponse struct {
 			Scene          string `json:"scene"`
 			SceneParam     string `json:"scene_param"`
 			WechatChannels struct {
-				Nickname string `json:"nickname"`
+				Nickname     string `json:"nickname"`
+				ShopNickName string `json:"shop_nickname"`
+				Scene        uint32 `json:"scene"`
 			} `json:"wechat_channels"`
 		} `json:"enter_session_context"`
 	} `json:"customer_list"`
