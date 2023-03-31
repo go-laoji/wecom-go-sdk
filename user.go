@@ -8,33 +8,33 @@ import (
 )
 
 type User struct {
-	OpenUserId     string   `json:"open_userid,omitempty"` // 仅在查询时返回
-	Userid         string   `json:"userid" validate:"required"`
-	Name           string   `json:"name" validate:"required"`
-	Alias          string   `json:"alias,omitempty"`
-	Mobile         string   `json:"mobile,omitempty"  validate:"required_without=Email,omitempty"`
-	Department     []int32  `json:"department,omitempty" validate:"required,max=100"`
-	Order          []int32  `json:"order,omitempty"`
-	Position       string   `json:"position,omitempty"`
-	Gender         string   `json:"gender,omitempty" validate:"omitempty,oneof=1 2"`
-	Email          string   `json:"email,omitempty"  validate:"required_without=Mobile,omitempty,email"`
-	BizEmail       string   `json:"biz_email,omitempty"`
-	IsLeaderInDept []int    `json:"is_leader_in_dept,omitempty"`
-	DirectLeader   []string `json:"direct_leader,omitempty"`
-	Enable         int      `json:"enable,omitempty"`
-	Avatar         string   `json:"avatar,omitempty"`
-	ThumbAvatar    string   `json:"thumb_avatar,omitempty"`
-	Telephone      string   `json:"telephone,omitempty"`
-	Address        string   `json:"address,omitempty"`
-	MainDepartment int32    `json:"main_department,omitempty"`
-	Status         int      `json:"status,omitempty"`
-	QrCode         string   `json:"qr_code,omitempty"`
-	Extattr        struct {
+	OpenUserId     string      `json:"open_userid,omitempty"` // 仅在查询时返回
+	Userid         string      `json:"userid" validate:"required"`
+	Name           string      `json:"name,omitempty" validate:"required"`
+	Alias          string      `json:"alias,omitempty"`
+	Mobile         string      `json:"mobile,omitempty"  validate:"required_without=Email,omitempty"`
+	Department     []int32     `json:"department,omitempty" validate:"required,max=100"`
+	Order          []int32     `json:"order,omitempty"`
+	Position       string      `json:"position,omitempty"`
+	Gender         string      `json:"gender,omitempty" validate:"omitempty,oneof=1 2"`
+	Email          string      `json:"email,omitempty"  validate:"required_without=Mobile,omitempty,email"`
+	BizEmail       string      `json:"biz_email,omitempty"`
+	IsLeaderInDept []int       `json:"is_leader_in_dept,omitempty"`
+	DirectLeader   []string    `json:"direct_leader,omitempty"`
+	Enable         json.Number `json:"enable,omitempty"`
+	Avatar         string      `json:"avatar,omitempty"`
+	ThumbAvatar    string      `json:"thumb_avatar,omitempty"`
+	Telephone      string      `json:"telephone,omitempty"`
+	Address        string      `json:"address,omitempty"`
+	MainDepartment int32       `json:"main_department,omitempty"`
+	Status         int         `json:"status,omitempty"`
+	QrCode         string      `json:"qr_code,omitempty"`
+	Extattr        *struct {
 		Attrs []Attrs `json:"attrs,omitempty"`
 	} `json:"extattr,omitempty"`
 	ToInvite         bool   `json:"to_invite,omitempty"`
 	ExternalPosition string `json:"external_position,omitempty"`
-	ExternalProfile  struct {
+	ExternalProfile  *struct {
 		ExternalCorpName string `json:"external_corp_name,omitempty"`
 		WechatChannels   struct {
 			Nickname string `json:"nickname,omitempty"`
