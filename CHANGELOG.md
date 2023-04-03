@@ -1,5 +1,10 @@
 # 变更记录
 
+## v1.5.7 2023-04-03
+增加jssdk调用时的config签名函数
+* GetConfigSignature
+* GetAgentConfigSignature
+
 ## v1.5.6 2023-03-31
 bug fix: User 序列化时某个字段空值的bug
 
