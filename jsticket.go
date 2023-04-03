@@ -1,10 +1,15 @@
 package wework
 
 import (
+	"crypto/sha1"
 	"encoding/json"
 	"fmt"
 	"github.com/dgraph-io/badger/v3"
 	"github.com/go-laoji/wecom-go-sdk/internal"
+	"io"
+	"math/rand"
+	"sort"
+	"strings"
 	"time"
 )
 
@@ -79,4 +84,63 @@ func (ww weWork) GetJsApiAgentTicket(corpId uint, agentId int) (resp TicketRespo
 		}
 	}
 	return
+}
+
+type JsTicketSignatureResponse struct {
+	NonceStr string `json:"noncestr"`
+	//JsapiTicket string `json:"jsapi_ticket,omitempty"`
+	Timestamp int64  `json:"timestamp"`
+	Signature string `json:"signature"`
+}
+
+const (
+	letterBytes = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+)
+
+func randString(n int) string {
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letterBytes[rand.Int63()%int64(len(letterBytes))]
+	}
+	return string(b)
+}
+
+func (ww weWork) GetConfigSignature(corpId uint, referer string) (resp JsTicketSignatureResponse) {
+	noncestr := randString(16)
+	timestamp := time.Now().Unix()
+	sl := []string{fmt.Sprintf("noncestr=%s", noncestr),
+		fmt.Sprintf("jsapi_ticket=%s", ww.GetJsApiTicket(corpId).Ticket),
+		fmt.Sprintf("timestamp=%v", timestamp),
+		fmt.Sprintf("url=%s", referer),
+	}
+	sort.Strings(sl)
+	s := sha1.New()
+	io.WriteString(s, strings.Join(sl, "&"))
+	signature := fmt.Sprintf("%x", s.Sum(nil))
+	//resp.JsapiTicket = mp.getJsTicket() 前端调用config时不需要此参数为安全考虑不输出到前端
+	resp.NonceStr = noncestr
+	resp.Timestamp = timestamp
+	resp.Signature = signature
+	return
+
+}
+
+func (ww weWork) GetAgentConfigSignature(corpId uint, agentId int, referer string) (resp JsTicketSignatureResponse) {
+	noncestr := randString(16)
+	timestamp := time.Now().Unix()
+	sl := []string{fmt.Sprintf("noncestr=%s", noncestr),
+		fmt.Sprintf("jsapi_ticket=%s", ww.GetJsApiAgentTicket(corpId, agentId).Ticket),
+		fmt.Sprintf("timestamp=%v", timestamp),
+		fmt.Sprintf("url=%s", referer),
+	}
+	sort.Strings(sl)
+	s := sha1.New()
+	io.WriteString(s, strings.Join(sl, "&"))
+	signature := fmt.Sprintf("%x", s.Sum(nil))
+	//resp.JsapiTicket = mp.getJsTicket() 前端调用config时不需要此参数为安全考虑不输出到前端
+	resp.NonceStr = noncestr
+	resp.Timestamp = timestamp
+	resp.Signature = signature
+	return
+
 }

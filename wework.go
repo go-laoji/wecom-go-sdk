@@ -183,7 +183,9 @@ type IWeWork interface {
 	GetTrade(corpId uint, request GetTradeRequest) (resp GetTradeResponse)
 
 	GetJsApiTicket(corpId uint) (resp TicketResponse)
+	GetConfigSignature(corpId uint, referer string) (resp JsTicketSignatureResponse)
 	GetJsApiAgentTicket(corpId uint, agentId int) (resp TicketResponse)
+	GetAgentConfigSignature(corpId uint, agentId int, referer string) (resp JsTicketSignatureResponse)
 
 	KfAccountAdd(corpId uint, account KfAccount) (resp KfAccountAddResponse)
 	KfAccountDel(corpId uint, kfId string) (resp internal.BizResponse)
