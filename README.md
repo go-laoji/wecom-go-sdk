@@ -5,7 +5,7 @@
 
 `更多相关文章将会在公众号分享，欢迎关注！`
 
-![GoToB](./qrcode.bmp)
+![Geek进阶](./qrcode.png)
 
 # 文档
 
