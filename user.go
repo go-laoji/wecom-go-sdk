@@ -71,7 +71,7 @@ type ExternalAttr struct {
 }
 
 // UserCreate 创建成员
-func (ww weWork) UserCreate(corpId uint, user User) (resp internal.BizResponse) {
+func (ww *weWork) UserCreate(corpId uint, user User) (resp internal.BizResponse) {
 	if ok := validate.Struct(user); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -92,7 +92,7 @@ type UserGetResponse struct {
 }
 
 // UserGet 读取成员
-func (ww weWork) UserGet(corpId uint, userId string) (resp UserGetResponse) {
+func (ww *weWork) UserGet(corpId uint, userId string) (resp UserGetResponse) {
 	_, err := ww.getRequest(corpId).SetQueryParam("userid", userId).SetResult(&resp).
 		Get("/cgi-bin/user/get")
 	if err != nil {
@@ -103,7 +103,7 @@ func (ww weWork) UserGet(corpId uint, userId string) (resp UserGetResponse) {
 }
 
 // UserUpdate 更新成员
-func (ww weWork) UserUpdate(corpId uint, user User) (resp internal.BizResponse) {
+func (ww *weWork) UserUpdate(corpId uint, user User) (resp internal.BizResponse) {
 	if strings.TrimSpace(user.Userid) == "" {
 		resp.ErrCode = 500
 		resp.ErrorMsg = "userid can not empty"
@@ -119,7 +119,7 @@ func (ww weWork) UserUpdate(corpId uint, user User) (resp internal.BizResponse) 
 }
 
 // UserDelete 删除成员
-func (ww weWork) UserDelete(corpId uint, userId string) (resp internal.BizResponse) {
+func (ww *weWork) UserDelete(corpId uint, userId string) (resp internal.BizResponse) {
 	_, err := ww.getRequest(corpId).SetQueryParam("userid", userId).SetResult(&resp).
 		Get("/cgi-bin/user/delete")
 	if err != nil {
@@ -141,7 +141,7 @@ type UserSimpleListResponse struct {
 
 // UserSimpleList 获取部门成员
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90332
-func (ww weWork) UserSimpleList(corpId uint, departId int32, fetchChild int) (resp UserSimpleListResponse) {
+func (ww *weWork) UserSimpleList(corpId uint, departId int32, fetchChild int) (resp UserSimpleListResponse) {
 	if departId <= 0 {
 		return UserSimpleListResponse{internal.Error{ErrorMsg: "部门ID必需大于0", ErrCode: 403}, nil}
 	}
@@ -164,7 +164,7 @@ type UserListResponse struct {
 
 // UserList 获取部门成员详情
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90337
-func (ww weWork) UserList(corpId uint, departId int32, fetchChild int) (resp UserListResponse) {
+func (ww *weWork) UserList(corpId uint, departId int32, fetchChild int) (resp UserListResponse) {
 	if departId <= 0 {
 		resp.ErrCode = 403
 		resp.ErrorMsg = "部门ID必需大于0"
@@ -189,7 +189,7 @@ type UserId2OpenIdResponse struct {
 
 // UserId2OpenId userid与openid互换
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90338
-func (ww weWork) UserId2OpenId(corpId uint, userId string) (resp UserId2OpenIdResponse) {
+func (ww *weWork) UserId2OpenId(corpId uint, userId string) (resp UserId2OpenIdResponse) {
 	p := H{"userid": userId}
 	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
 		Post("/cgi-bin/user/convert_to_openid")
@@ -207,7 +207,7 @@ type OpenId2UserIdResponse struct {
 
 // OpenId2UserId openid转userid
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90338
-func (ww weWork) OpenId2UserId(corpId uint, openId string) (resp OpenId2UserIdResponse) {
+func (ww *weWork) OpenId2UserId(corpId uint, openId string) (resp OpenId2UserIdResponse) {
 	p := H{"openid": openId}
 	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
 		Post("/cgi-bin/user/convert_to_userid")
@@ -228,7 +228,7 @@ type ListMemberAuthResponse struct {
 
 // ListMemberAuth 获取成员授权列表
 // https://open.work.weixin.qq.com/api/doc/90001/90143/94513
-func (ww weWork) ListMemberAuth(corpId uint, cursor string, limit int) (resp ListMemberAuthResponse) {
+func (ww *weWork) ListMemberAuth(corpId uint, cursor string, limit int) (resp ListMemberAuthResponse) {
 	p := H{"cursor": cursor, "limit": limit}
 	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
 		Post("/cgi-bin/user/list_member_auth")
@@ -246,7 +246,7 @@ type CheckMemberAuthResponse struct {
 
 // CheckMemberAuth 查询成员用户是否已授权
 // https://open.work.weixin.qq.com/api/doc/90001/90143/94514
-func (ww weWork) CheckMemberAuth(corpId uint, openUserId string) (resp CheckMemberAuthResponse) {
+func (ww *weWork) CheckMemberAuth(corpId uint, openUserId string) (resp CheckMemberAuthResponse) {
 	p := H{"open_userid": openUserId}
 	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
 		Post("/cgi-bin/user/check_member_auth")
@@ -264,7 +264,7 @@ type GetUserIdResponse struct {
 
 // GetUserId 手机号获取userid
 // https://open.work.weixin.qq.com/api/doc/90001/90143/91693
-func (ww weWork) GetUserId(corpId uint, mobile string) (resp GetUserIdResponse) {
+func (ww *weWork) GetUserId(corpId uint, mobile string) (resp GetUserIdResponse) {
 	p := H{"mobile": mobile}
 	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
 		Post("/cgi-bin/user/getuserid")
@@ -285,7 +285,7 @@ type ListSelectedTicketUserResponse struct {
 
 // ListSelectedTicketUser 获取选人ticket对应的用户
 // https://open.work.weixin.qq.com/api/doc/90001/90143/94894
-func (ww weWork) ListSelectedTicketUser(corpId uint, ticket string) (resp ListSelectedTicketUserResponse) {
+func (ww *weWork) ListSelectedTicketUser(corpId uint, ticket string) (resp ListSelectedTicketUserResponse) {
 	p := H{"selected_ticket": ticket}
 	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
 		Post("/cgi-bin/user/list_selected_ticket_user")
@@ -308,7 +308,7 @@ type UserListIdResponse struct {
 
 // UserListId 获取成员ID列表 仅支持通过“通讯录同步secret”调用。
 // https://developer.work.weixin.qq.com/document/40856
-func (ww weWork) UserListId(corpId uint, cursor string, limit int) (resp UserListIdResponse) {
+func (ww *weWork) UserListId(corpId uint, cursor string, limit int) (resp UserListIdResponse) {
 	p := H{"cursor": cursor, "limit": limit}
 	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
 		Post("/cgi-bin/user/list_id")

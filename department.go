@@ -20,7 +20,7 @@ type DepartmentCreateResponse struct {
 }
 
 // DepartmentCreate 创建部门
-func (ww weWork) DepartmentCreate(corpId uint, department Department) (resp DepartmentCreateResponse) {
+func (ww *weWork) DepartmentCreate(corpId uint, department Department) (resp DepartmentCreateResponse) {
 	if ok := validate.Struct(department); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -36,7 +36,7 @@ func (ww weWork) DepartmentCreate(corpId uint, department Department) (resp Depa
 }
 
 // DepartmentUpdate 更新部门
-func (ww weWork) DepartmentUpdate(corpId uint, department Department) (resp internal.BizResponse) {
+func (ww *weWork) DepartmentUpdate(corpId uint, department Department) (resp internal.BizResponse) {
 	if department.Id < 1 {
 		resp.ErrCode = 500
 		resp.ErrorMsg = "department id must be uint"
@@ -51,7 +51,7 @@ func (ww weWork) DepartmentUpdate(corpId uint, department Department) (resp inte
 }
 
 // DepartmentDelete 删除部门
-func (ww weWork) DepartmentDelete(corpId uint, id int32) (resp internal.BizResponse) {
+func (ww *weWork) DepartmentDelete(corpId uint, id int32) (resp internal.BizResponse) {
 	_, err := ww.getRequest(corpId).SetResult(&resp).
 		SetQueryParam("id", fmt.Sprintf("%v", id)).
 		Get("/cgi-bin/department/delete")
@@ -69,7 +69,7 @@ type DepartmentListResponse struct {
 
 // DepartmentList 获取部门列表
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90344
-func (ww weWork) DepartmentList(corpId uint, id uint) (resp DepartmentListResponse) {
+func (ww *weWork) DepartmentList(corpId uint, id uint) (resp DepartmentListResponse) {
 	_, err := ww.getRequest(corpId).SetResult(&resp).
 		SetQueryParam("id", fmt.Sprintf("%v", id)).
 		Get("/cgi-bin/department/list")
@@ -91,7 +91,7 @@ type DepartmentSimpleListResponse struct {
 
 // DepartmentSimpleList 获取子部门ID列表
 // https://developer.work.weixin.qq.com/document/path/95406
-func (ww weWork) DepartmentSimpleList(corpId uint, id int32) (resp DepartmentSimpleListResponse) {
+func (ww *weWork) DepartmentSimpleList(corpId uint, id int32) (resp DepartmentSimpleListResponse) {
 	_, err := ww.getRequest(corpId).SetResult(&resp).
 		SetQueryParam("id", fmt.Sprintf("%v", id)).
 		Get("/cgi-bin/department/simplelist")
@@ -109,7 +109,7 @@ type DepartmentGetResponse struct {
 
 // DepartmentGet 获取单个部门详情
 // https://developer.work.weixin.qq.com/document/path/95407
-func (ww weWork) DepartmentGet(corpId uint, id int32) (resp DepartmentGetResponse) {
+func (ww *weWork) DepartmentGet(corpId uint, id int32) (resp DepartmentGetResponse) {
 	_, err := ww.getRequest(corpId).SetResult(&resp).
 		SetQueryParam("id", fmt.Sprintf("%v", id)).
 		Get("/cgi-bin/department/get")

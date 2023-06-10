@@ -22,7 +22,7 @@ type AddProductAlbumResponse struct {
 
 // AddProductAlbum 创建商品图册
 // https://open.work.weixin.qq.com/api/doc/90001/90143/95131#%E5%88%9B%E5%BB%BA%E5%95%86%E5%93%81%E5%9B%BE%E5%86%8C
-func (ww weWork) AddProductAlbum(corpId uint, product Product) (resp AddProductAlbumResponse) {
+func (ww *weWork) AddProductAlbum(corpId uint, product Product) (resp AddProductAlbumResponse) {
 	if ok := validate.Struct(product); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -47,7 +47,7 @@ type GetProductAlbumResponse struct {
 
 // GetProductAlbum 获取商品图册
 // https://open.work.weixin.qq.com/api/doc/90001/90143/95131#%E8%8E%B7%E5%8F%96%E5%95%86%E5%93%81%E5%9B%BE%E5%86%8C
-func (ww weWork) GetProductAlbum(corpId uint, productId string) (resp GetProductAlbumResponse) {
+func (ww *weWork) GetProductAlbum(corpId uint, productId string) (resp GetProductAlbumResponse) {
 	h := H{}
 	h["product_id"] = productId
 	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).
@@ -70,7 +70,7 @@ type GetProductAlbumListResponse struct {
 
 // GetProductAlbumList 获取商品图册列表
 // https://open.work.weixin.qq.com/api/doc/90001/90143/95131#%E8%8E%B7%E5%8F%96%E5%95%86%E5%93%81%E5%9B%BE%E5%86%8C%E5%88%97%E8%A1%A8
-func (ww weWork) GetProductAlbumList(corpId uint, limit int, cursor string) (resp GetProductAlbumListResponse) {
+func (ww *weWork) GetProductAlbumList(corpId uint, limit int, cursor string) (resp GetProductAlbumListResponse) {
 	h := H{}
 	h["limit"] = limit
 	h["cursor"] = cursor
@@ -98,7 +98,7 @@ type ProductUpdateRequest struct {
 
 // UpdateProductAlbum 编辑商品图册
 // https://open.work.weixin.qq.com/api/doc/90001/90143/95131#%E7%BC%96%E8%BE%91%E5%95%86%E5%93%81%E5%9B%BE%E5%86%8C
-func (ww weWork) UpdateProductAlbum(corpId uint, request ProductUpdateRequest) (resp internal.BizResponse) {
+func (ww *weWork) UpdateProductAlbum(corpId uint, request ProductUpdateRequest) (resp internal.BizResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -114,7 +114,7 @@ func (ww weWork) UpdateProductAlbum(corpId uint, request ProductUpdateRequest) (
 
 // DeleteProductAlbum 删除商品图册
 // https://open.work.weixin.qq.com/api/doc/90001/90143/95131#%E5%88%A0%E9%99%A4%E5%95%86%E5%93%81%E5%9B%BE%E5%86%8C
-func (ww weWork) DeleteProductAlbum(corpId uint, productId string) (resp internal.BizResponse) {
+func (ww *weWork) DeleteProductAlbum(corpId uint, productId string) (resp internal.BizResponse) {
 	h := H{}
 	h["product_id"] = productId
 	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).

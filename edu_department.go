@@ -28,7 +28,7 @@ type SchoolDepartmentCreateResponse struct {
 
 // SchoolDepartmentCreate 创建部门
 // https://open.work.weixin.qq.com/api/doc/90001/90143/92296
-func (ww weWork) SchoolDepartmentCreate(corpId uint, department SchoolDepartment) (resp SchoolDepartmentCreateResponse) {
+func (ww *weWork) SchoolDepartmentCreate(corpId uint, department SchoolDepartment) (resp SchoolDepartmentCreateResponse) {
 	if ok := validate.Struct(department); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -45,7 +45,7 @@ func (ww weWork) SchoolDepartmentCreate(corpId uint, department SchoolDepartment
 
 // SchoolDepartmentUpdate 更新部门
 // https://open.work.weixin.qq.com/api/doc/90001/90143/92297
-func (ww weWork) SchoolDepartmentUpdate(corpId uint, department SchoolDepartment) (resp internal.BizResponse) {
+func (ww *weWork) SchoolDepartmentUpdate(corpId uint, department SchoolDepartment) (resp internal.BizResponse) {
 	if department.Id < 0 {
 		resp.ErrCode = 500
 		resp.ErrorMsg = "department id must be uint32"
@@ -62,7 +62,7 @@ func (ww weWork) SchoolDepartmentUpdate(corpId uint, department SchoolDepartment
 
 // SchoolDepartmentDelete 删除部门
 // https://open.work.weixin.qq.com/api/doc/90001/90143/92298
-func (ww weWork) SchoolDepartmentDelete(corpId uint, departmentId int32) (resp internal.BizResponse) {
+func (ww *weWork) SchoolDepartmentDelete(corpId uint, departmentId int32) (resp internal.BizResponse) {
 	_, err := ww.getRequest(corpId).
 		SetQueryParam("id", fmt.Sprintf("%v", departmentId)).
 		SetResult(&resp).Get("/cgi-bin/school/department/delete")
@@ -95,7 +95,7 @@ type SchoolDepartmentListResponse struct {
 
 // SchoolDepartmentList 获取部门列表
 // https://open.work.weixin.qq.com/api/doc/90001/90143/92299
-func (ww weWork) SchoolDepartmentList(corpId uint, departmentId int32) (resp SchoolDepartmentListResponse) {
+func (ww *weWork) SchoolDepartmentList(corpId uint, departmentId int32) (resp SchoolDepartmentListResponse) {
 	_, err := ww.getRequest(corpId).
 		SetQueryParam("id", fmt.Sprintf("%v", departmentId)).
 		SetResult(&resp).Get("/cgi-bin/school/department/list")

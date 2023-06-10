@@ -9,7 +9,7 @@ type KfKnowLedgeAddGroupResponse struct {
 	GroupId string `json:"group_id"`
 }
 
-func (ww weWork) KfKnowLedgeAddGroup(corpId uint, name string) (resp KfKnowLedgeAddGroupResponse) {
+func (ww *weWork) KfKnowLedgeAddGroup(corpId uint, name string) (resp KfKnowLedgeAddGroupResponse) {
 	p := H{"name": name}
 	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
 		Post("/cgi-bin/kf/knowledge/add_group")
@@ -20,7 +20,7 @@ func (ww weWork) KfKnowLedgeAddGroup(corpId uint, name string) (resp KfKnowLedge
 	return
 }
 
-func (ww weWork) KfKnowLedgeDelGroup(corpId uint, groupId string) (resp internal.BizResponse) {
+func (ww *weWork) KfKnowLedgeDelGroup(corpId uint, groupId string) (resp internal.BizResponse) {
 	p := H{"group_id": groupId}
 	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
 		Post("/cgi-bin/kf/knowledge/del_group")
@@ -31,7 +31,7 @@ func (ww weWork) KfKnowLedgeDelGroup(corpId uint, groupId string) (resp internal
 	return
 }
 
-func (ww weWork) KfKnowLedgeModGroup(corpId uint, name string, groupId string) (resp internal.BizResponse) {
+func (ww *weWork) KfKnowLedgeModGroup(corpId uint, name string, groupId string) (resp internal.BizResponse) {
 	p := H{"name": name, "group_id": groupId}
 	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
 		Post("/cgi-bin/kf/knowledge/mod_group")
@@ -58,7 +58,7 @@ type KfKnowLedgeListGroupResponse struct {
 	} `json:"group_list"`
 }
 
-func (ww weWork) KfKnowLedgeListGroup(corpId uint, filter KfKnowLedgeListGroupFilter) (resp KfKnowLedgeListGroupResponse) {
+func (ww *weWork) KfKnowLedgeListGroup(corpId uint, filter KfKnowLedgeListGroupFilter) (resp KfKnowLedgeListGroupResponse) {
 	if ok := validate.Struct(filter); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()

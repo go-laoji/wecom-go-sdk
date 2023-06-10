@@ -18,7 +18,7 @@ type GetPaymentResultResponse struct {
 
 // GetPaymentResult 获取学生付款结果
 // https://open.work.weixin.qq.com/api/doc/90001/90143/94553
-func (ww weWork) GetPaymentResult(corpId uint, paymentId string) (resp GetPaymentResultResponse) {
+func (ww *weWork) GetPaymentResult(corpId uint, paymentId string) (resp GetPaymentResultResponse) {
 	h := H{}
 	h["payment_id"] = paymentId
 	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).
@@ -42,7 +42,7 @@ type GetTradeResponse struct {
 
 // GetTrade 获取订单详情
 // https://open.work.weixin.qq.com/api/doc/90001/90143/94554
-func (ww weWork) GetTrade(corpId uint, request GetTradeRequest) (resp GetTradeResponse) {
+func (ww *weWork) GetTrade(corpId uint, request GetTradeRequest) (resp GetTradeResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()

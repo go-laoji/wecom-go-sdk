@@ -10,7 +10,7 @@ type GetPermitUserListResponse struct {
 	Ids []string `json:"ids"`
 }
 
-func (ww weWork) GetPermitUserList(corpId uint, T int) (resp GetPermitUserListResponse, err error) {
+func (ww *weWork) GetPermitUserList(corpId uint, T int) (resp GetPermitUserListResponse, err error) {
 	if T > 3 || T < 0 {
 		resp.ErrCode = 500
 		resp.ErrorMsg = "type 取值范围出错,只能是1、2、3"
@@ -47,7 +47,7 @@ type CheckSingleAgreeResponse struct {
 	} `json:"agreeinfo"`
 }
 
-func (ww weWork) CheckSingleAgree(corpId uint, request CheckSingleAgreeRequest) (resp CheckSingleAgreeResponse, err error) {
+func (ww *weWork) CheckSingleAgree(corpId uint, request CheckSingleAgreeRequest) (resp CheckSingleAgreeResponse, err error) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -74,7 +74,7 @@ type GetAuditGroupChatResponse struct {
 	} `json:"members"`
 }
 
-func (ww weWork) GetAuditGroupChat(corpId uint, roomId string) (resp GetAuditGroupChatResponse, err error) {
+func (ww *weWork) GetAuditGroupChat(corpId uint, roomId string) (resp GetAuditGroupChatResponse, err error) {
 	if roomId == "" {
 		resp.ErrCode = 500
 		resp.ErrorMsg = "roomId 必填,且只能为内部群ID"

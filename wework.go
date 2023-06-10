@@ -310,7 +310,7 @@ func NewWeWork(c WeWorkConfig) IWeWork {
 	return ww
 }
 
-func (ww weWork) Logger() *zap.Logger {
+func (ww *weWork) Logger() *zap.Logger {
 	return ww.logger
 }
 func (ww *weWork) SetProxy(proxyUrl string) {
@@ -339,28 +339,28 @@ func (ww *weWork) getProviderRequest() *resty.Request {
 }
 
 // GetCorpId 返回服务商corpId
-func (ww weWork) GetCorpId() string {
+func (ww *weWork) GetCorpId() string {
 	return ww.corpId
 }
 
 // GetSuiteId 返回服务商SuiteId
-func (ww weWork) GetSuiteId() string {
+func (ww *weWork) GetSuiteId() string {
 	return ww.suiteId
 }
 
 // GetSuiteToken 返回服务商配置的SuiteToken
-func (ww weWork) GetSuiteToken() string {
+func (ww *weWork) GetSuiteToken() string {
 	return ww.suiteToken
 }
 
 // GetSuiteEncodingAesKey 返回服务商配置的EncodingAesKey
-func (ww weWork) GetSuiteEncodingAesKey() string {
+func (ww *weWork) GetSuiteEncodingAesKey() string {
 	return ww.suiteEncodingAesKey
 }
 
 // GetAgentId 获取应用的AgentId;三方或代开发应用会将信息存入数据库中
 // 如果修改了表结构，需要配合 SetAgentIdFunc 使用
-func (ww weWork) GetAgentId(corpId uint) (appId int) {
+func (ww *weWork) GetAgentId(corpId uint) (appId int) {
 	if ww.getAgentIdFunc != nil {
 		return ww.getAgentIdFunc(corpId)
 	} else {

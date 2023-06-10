@@ -11,7 +11,7 @@ type ExternalContactGetFollowUserListResponse struct {
 
 // ExternalContactGetFollowUserList 获取配置了客户联系功能的成员列表
 // 参考连接　https://open.work.weixin.qq.com/api/doc/90001/90143/92576
-func (ww weWork) ExternalContactGetFollowUserList(corpId uint) (resp ExternalContactGetFollowUserListResponse) {
+func (ww *weWork) ExternalContactGetFollowUserList(corpId uint) (resp ExternalContactGetFollowUserListResponse) {
 	_, err := ww.getRequest(corpId).SetResult(&resp).
 		Get("/cgi-bin/externalcontact/get_follow_user_list")
 	if err != nil {
@@ -28,7 +28,7 @@ type ExternalContactListResponse struct {
 
 // ExternalContactList 获取客户列表
 // 参考连接　https://open.work.weixin.qq.com/api/doc/90001/90143/92264
-func (ww weWork) ExternalContactList(corpId uint, userId string) (resp ExternalContactListResponse) {
+func (ww *weWork) ExternalContactList(corpId uint, userId string) (resp ExternalContactListResponse) {
 	_, err := ww.getRequest(corpId).SetResult(&resp).SetQueryParam("userid", userId).
 		Get("/cgi-bin/externalcontact/list")
 	if err != nil {
@@ -100,7 +100,7 @@ type ExternalContactGetResponse struct {
 // ExternalContactGet 获取客户详情
 // 参考连接　https://open.work.weixin.qq.com/api/doc/90001/90143/92265
 // 当客户在企业内的跟进人超过500人时需要使用cursor参数进行分页获取
-func (ww weWork) ExternalContactGet(corpId uint, externalUserId, cursor string) (resp ExternalContactGetResponse) {
+func (ww *weWork) ExternalContactGet(corpId uint, externalUserId, cursor string) (resp ExternalContactGetResponse) {
 	_, err := ww.getRequest(corpId).SetResult(&resp).
 		SetQueryParam("external_userid", externalUserId).
 		SetQueryParam("cursor", cursor).
@@ -124,7 +124,7 @@ type ExternalContactBatchGetByUserResponse struct {
 // ExternalContactBatchGetByUser 批量获取客户详情
 // 企业可通过此接口获取指定成员添加的客户信息列表。
 // 参考连接 https://open.work.weixin.qq.com/api/doc/90001/90143/93010
-func (ww weWork) ExternalContactBatchGetByUser(corpId uint, userIds []string, cursor string, limit int) (resp ExternalContactBatchGetByUserResponse) {
+func (ww *weWork) ExternalContactBatchGetByUser(corpId uint, userIds []string, cursor string, limit int) (resp ExternalContactBatchGetByUserResponse) {
 	p := H{"userid_list": userIds, "cursor": cursor, "limit": limit}
 	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
 		Post("/cgi-bin/externalcontact/batch/get_by_user")
@@ -147,7 +147,7 @@ type ExternalContactRemarkRequest struct {
 
 // ExternalContactRemark 修改客户备注信息
 // 参考连接 https://open.work.weixin.qq.com/api/doc/90001/90143/92694
-func (ww weWork) ExternalContactRemark(corpId uint, remark ExternalContactRemarkRequest) (resp internal.BizResponse) {
+func (ww *weWork) ExternalContactRemark(corpId uint, remark ExternalContactRemarkRequest) (resp internal.BizResponse) {
 	if ok := validate.Struct(remark); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -169,7 +169,7 @@ type UnionId2ExternalUserIdResponse struct {
 
 // UnionId2ExternalUserId 外部联系人unionid转换
 // https://open.work.weixin.qq.com/api/doc/90001/90143/93274
-func (ww weWork) UnionId2ExternalUserId(corpId uint, unionid, openid string) (resp UnionId2ExternalUserIdResponse) {
+func (ww *weWork) UnionId2ExternalUserId(corpId uint, unionid, openid string) (resp UnionId2ExternalUserIdResponse) {
 	p := H{"unionid": unionid, "openid": openid}
 	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
 		Post("/cgi-bin/externalcontact/unionid_to_external_userid")
@@ -186,7 +186,7 @@ type ToServiceExternalUseridResponse struct {
 
 // ToServiceExternalUserid 代开发应用external_userid转换
 // https://open.work.weixin.qq.com/api/doc/90001/90143/95195
-func (ww weWork) ToServiceExternalUserid(corpId uint, externalUserId string) (resp ToServiceExternalUseridResponse) {
+func (ww *weWork) ToServiceExternalUserid(corpId uint, externalUserId string) (resp ToServiceExternalUseridResponse) {
 	p := H{"external_userid": externalUserId}
 	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
 		Post("/cgi-bin/externalcontact/to_service_external_userid")

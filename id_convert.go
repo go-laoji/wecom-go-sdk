@@ -13,7 +13,7 @@ type IdConvertExternalTagIdResponse struct {
 	InvalidExternalTagidList []string `json:"invalid_external_tagid_list"`
 }
 
-func (ww weWork) IdConvertExternalTagId(corpId uint, tagIdList []string) (resp IdConvertExternalTagIdResponse) {
+func (ww *weWork) IdConvertExternalTagId(corpId uint, tagIdList []string) (resp IdConvertExternalTagIdResponse) {
 	if len(tagIdList) > 1000 {
 		resp.ErrCode = 500
 		resp.ErrorMsg = "参数列表不能超过1000个"
@@ -34,7 +34,7 @@ type CorpIdToOpenCorpIdResponse struct {
 	OpenCorpid string `json:"open_corpid"`
 }
 
-func (ww weWork) CorpIdToOpenCorpId(corpId string) (resp CorpIdToOpenCorpIdResponse) {
+func (ww *weWork) CorpIdToOpenCorpId(corpId string) (resp CorpIdToOpenCorpIdResponse) {
 	p := H{"corpid": corpId}
 	_, err := ww.getProviderRequest().SetBody(p).SetResult(&resp).
 		Post("/cgi-bin/service/corpid_to_opencorpid")
@@ -54,7 +54,7 @@ type UserIdToOpenUserIdResponse struct {
 	InvalidUserIdList []string `json:"invalid_userid_list"`
 }
 
-func (ww weWork) UserIdToOpenUserId(corpId uint, userIdList []string) (resp UserIdToOpenUserIdResponse) {
+func (ww *weWork) UserIdToOpenUserId(corpId uint, userIdList []string) (resp UserIdToOpenUserIdResponse) {
 	if len(userIdList) > 1000 {
 		resp.ErrCode = 500
 		resp.ErrorMsg = "参数列表不能超过1000个"
@@ -78,7 +78,7 @@ type GetNewExternalUserIdResponse struct {
 	} `json:"items"`
 }
 
-func (ww weWork) GetNewExternalUserId(corpId uint, userIdList []string) (resp GetNewExternalUserIdResponse) {
+func (ww *weWork) GetNewExternalUserId(corpId uint, userIdList []string) (resp GetNewExternalUserIdResponse) {
 	if len(userIdList) > 1000 {
 		resp.ErrCode = 500
 		resp.ErrorMsg = "参数列表不能超过1000个"
@@ -99,7 +99,7 @@ type GroupChatGetNewExternalUserIdRequest struct {
 	ExternalUseridList []string `json:"external_userid_list" validate:"required,max=1000"`
 }
 
-func (ww weWork) GroupChatGetNewExternalUserId(corpId uint, request GroupChatGetNewExternalUserIdRequest) (resp GetNewExternalUserIdResponse) {
+func (ww *weWork) GroupChatGetNewExternalUserId(corpId uint, request GroupChatGetNewExternalUserIdRequest) (resp GetNewExternalUserIdResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -123,7 +123,7 @@ type IdConvertOpenKfIdResponse struct {
 	InvalidOpenKfIdList []string `json:"invalid_open_kfid_list"`
 }
 
-func (ww weWork) IdConvertOpenKfId(corpId uint, kfList []string) (resp IdConvertOpenKfIdResponse) {
+func (ww *weWork) IdConvertOpenKfId(corpId uint, kfList []string) (resp IdConvertOpenKfIdResponse) {
 	if len(kfList) > 1000 {
 		resp.ErrCode = 500
 		resp.ErrorMsg = "参数列表不能超过1000个"

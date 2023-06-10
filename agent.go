@@ -31,7 +31,7 @@ type AgentGetResponse struct {
 
 // AgentGet 获取指定的应用详情
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90363#%E8%8E%B7%E5%8F%96access_token%E5%AF%B9%E5%BA%94%E7%9A%84%E5%BA%94%E7%94%A8%E5%88%97%E8%A1%A8
-func (ww weWork) AgentGet(corpId uint, agentId int) (resp AgentGetResponse) {
+func (ww *weWork) AgentGet(corpId uint, agentId int) (resp AgentGetResponse) {
 	_, err := ww.getRequest(corpId).
 		SetQueryParam("agentid", fmt.Sprintf("%v", agentId)).
 		SetResult(&resp).
@@ -54,7 +54,7 @@ type AgentListResponse struct {
 
 // AgentList 获取access_token对应的应用列表
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90363#%E8%8E%B7%E5%8F%96access_token%E5%AF%B9%E5%BA%94%E7%9A%84%E5%BA%94%E7%94%A8%E5%88%97%E8%A1%A8
-func (ww weWork) AgentList(corpId uint) (resp AgentListResponse) {
+func (ww *weWork) AgentList(corpId uint) (resp AgentListResponse) {
 	_, err := ww.getRequest(corpId).
 		SetResult(&resp).
 		Get("/cgi-bin/agent/list")

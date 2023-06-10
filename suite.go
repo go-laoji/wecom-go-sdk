@@ -27,7 +27,7 @@ type suiteTokenResponse struct {
 	ExpiresIn        int    `json:"expires_in"`
 }
 
-func (ww weWork) requestSuiteToken() (resp suiteTokenResponse) {
+func (ww *weWork) requestSuiteToken() (resp suiteTokenResponse) {
 	if ww.suiteTicket == "" {
 		resp.ErrCode = 400
 		resp.ErrorMsg = "suite ticket 未推送"
@@ -49,7 +49,7 @@ func (ww weWork) requestSuiteToken() (resp suiteTokenResponse) {
 	return
 }
 
-func (ww weWork) getSuiteAccessToken() (token string) {
+func (ww *weWork) getSuiteAccessToken() (token string) {
 	var err error
 	var item *badger.Item
 	err = ww.cache.View(func(txn *badger.Txn) error {
@@ -88,7 +88,7 @@ type GetPreAuthCodeResponse struct {
 
 // GetPreAuthCode 获取预授权码
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90601
-func (ww weWork) GetPreAuthCode() (resp GetPreAuthCodeResponse) {
+func (ww *weWork) GetPreAuthCode() (resp GetPreAuthCodeResponse) {
 	_, err := ww.httpClient.R().SetQueryParam("suite_access_token", ww.getSuiteAccessToken()).
 		SetResult(&resp).Get("/cgi-bin/service/get_pre_auth_code")
 	if err != nil {
@@ -168,7 +168,7 @@ type GetPermanentCodeResponse struct {
 
 // GetPermanentCode 获取企业永久授权码
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90603
-func (ww weWork) GetPermanentCode(authCode string) (resp GetPermanentCodeResponse) {
+func (ww *weWork) GetPermanentCode(authCode string) (resp GetPermanentCodeResponse) {
 	h := H{}
 	h["auth_code"] = authCode
 	_, err := ww.httpClient.R().SetQueryParam("suite_access_token", ww.getSuiteAccessToken()).
@@ -192,7 +192,7 @@ type GetAuthInfoResponse struct {
 
 // GetAuthInfo 获取企业授权信息
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90604
-func (ww weWork) GetAuthInfo(authCorpId, permanentCode string) (resp GetAuthInfoResponse) {
+func (ww *weWork) GetAuthInfo(authCorpId, permanentCode string) (resp GetAuthInfoResponse) {
 	h := H{}
 	h["auth_corpid"] = authCorpId
 	h["permanent_code"] = permanentCode
@@ -214,7 +214,7 @@ type getCorpTokenResponse struct {
 
 // 默认从数据库获取应用secret配置信息
 // 同一corpid(企业微信主体ID号)可以配置多个应用
-func (ww weWork) defaultAppSecretFunc(corpId uint) (corpid string, secret string, customizedApp bool) {
+func (ww *weWork) defaultAppSecretFunc(corpId uint) (corpid string, secret string, customizedApp bool) {
 	var authAgent models.Agent
 	ww.engine.Model(models.Agent{}).
 		Where(models.Agent{CorpId: corpId}).
@@ -223,7 +223,7 @@ func (ww weWork) defaultAppSecretFunc(corpId uint) (corpid string, secret string
 }
 
 // 默认从数据库获取应用的agentid
-func (ww weWork) defaultAgentIdFunc(corpId uint) (appId int) {
+func (ww *weWork) defaultAgentIdFunc(corpId uint) (appId int) {
 	var authAgent models.Agent
 	ww.engine.Model(models.Agent{}).
 		Where(models.Agent{CorpId: corpId}).
@@ -232,7 +232,7 @@ func (ww weWork) defaultAgentIdFunc(corpId uint) (appId int) {
 }
 
 // 从数据库查询永久授权码和授权企业的企业微信id，获取对应的access token
-func (ww weWork) requestCorpToken(corpId uint) (resp getCorpTokenResponse) {
+func (ww *weWork) requestCorpToken(corpId uint) (resp getCorpTokenResponse) {
 	var err error
 	var corpid, secret string
 	var customizedApp bool
@@ -269,7 +269,7 @@ func (ww *weWork) SetAgentIdFunc(f func(corpId uint) (agentId int)) {
 	ww.getAgentIdFunc = f
 }
 
-func (ww weWork) getCorpToken(corpId uint) (token string) {
+func (ww *weWork) getCorpToken(corpId uint) (token string) {
 	var err error
 	var item *badger.Item
 	err = ww.cache.View(func(txn *badger.Txn) error {
@@ -312,7 +312,7 @@ type GetUserInfo3rdResponse struct {
 
 // GetUserInfo3rd 获取访问用户身份
 // https://open.work.weixin.qq.com/api/doc/90001/90143/91121
-func (ww weWork) GetUserInfo3rd(code string) (resp GetUserInfo3rdResponse) {
+func (ww *weWork) GetUserInfo3rd(code string) (resp GetUserInfo3rdResponse) {
 	_, err := ww.httpClient.R().
 		SetQueryParam("suite_access_token", ww.getSuiteAccessToken()).
 		SetQueryParam("code", code).
@@ -337,7 +337,7 @@ type GetUserInfoDetail3rdResponse struct {
 
 // GetUserInfoDetail3rd 获取访问用户敏感信息
 // https://open.work.weixin.qq.com/api/doc/90001/90143/91122
-func (ww weWork) GetUserInfoDetail3rd(userTicket string) (resp GetUserInfoDetail3rdResponse) {
+func (ww *weWork) GetUserInfoDetail3rd(userTicket string) (resp GetUserInfoDetail3rdResponse) {
 	h := H{}
 	h["user_ticket"] = userTicket
 	_, err := ww.httpClient.R().
@@ -363,7 +363,7 @@ type GetUserInfoResponse struct {
 
 // GetUserInfo
 // https://developer.work.weixin.qq.com/document/path/91023
-func (ww weWork) GetUserInfo(corpId uint, code string) (resp GetUserInfoResponse) {
+func (ww *weWork) GetUserInfo(corpId uint, code string) (resp GetUserInfoResponse) {
 	_, err := ww.getRequest(corpId).SetQueryParam("code", code).
 		SetResult(&resp).Get("/cgi-bin/auth/getuserinfo")
 	if err != nil {
@@ -385,7 +385,7 @@ type GetUserDetailResponse struct {
 	Address string `json:"address"`
 }
 
-func (ww weWork) GetUserDetail(corpId uint, userTicket string) (resp GetUserDetailResponse) {
+func (ww *weWork) GetUserDetail(corpId uint, userTicket string) (resp GetUserDetailResponse) {
 	p := H{"user_ticket": userTicket}
 	_, err := ww.getRequest(corpId).SetBody(p).
 		SetResult(&resp).Post("/cgi-bin/auth/getuserdetail")
@@ -411,7 +411,7 @@ type GetAppQrCodeResponse struct {
 
 // GetAppQrCode 获取应用二维码 仅支持二维码地址返回
 // https://developer.work.weixin.qq.com/document/path/95430#36592
-func (ww weWork) GetAppQrCode(request GetAppQrCodeRequest) (resp GetAppQrCodeResponse) {
+func (ww *weWork) GetAppQrCode(request GetAppQrCodeRequest) (resp GetAppQrCodeResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -441,7 +441,7 @@ type GetAdminListResponse struct {
 	} `json:"admin"`
 }
 
-func (ww weWork) GetAdminList(request GetAdminListRequest) (resp GetAdminListResponse) {
+func (ww *weWork) GetAdminList(request GetAdminListRequest) (resp GetAdminListResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -461,7 +461,7 @@ func (ww weWork) GetAdminList(request GetAdminListRequest) (resp GetAdminListRes
 // 　apiUrl 需要带有 /cgi-bin
 // 　GET请求时data传入nil即可
 // Deprecated:
-func (ww weWork) ExecuteCorpApi(corpId uint, apiUrl string, query url.Values, data H) (body []byte, err error) {
+func (ww *weWork) ExecuteCorpApi(corpId uint, apiUrl string, query url.Values, data H) (body []byte, err error) {
 	query.Add("access_token", ww.getCorpToken(corpId))
 	if os.Getenv("debug") != "" {
 		query.Add("debug", "1")

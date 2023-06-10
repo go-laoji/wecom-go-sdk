@@ -177,7 +177,7 @@ type MessageUpdateTemplateCardResponse struct {
 
 // MessageUpdateTemplateCard 更新模板卡片消息
 // https://open.work.weixin.qq.com/api/doc/90001/90143/94945
-func (ww weWork) MessageUpdateTemplateCard(corpId uint, msg TemplateCardUpdateMessage) (resp MessageUpdateTemplateCardResponse) {
+func (ww *weWork) MessageUpdateTemplateCard(corpId uint, msg TemplateCardUpdateMessage) (resp MessageUpdateTemplateCardResponse) {
 	if ok := validate.Struct(msg); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()

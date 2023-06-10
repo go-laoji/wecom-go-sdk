@@ -17,7 +17,7 @@ type TagCreateResponse struct {
 
 // TagCreate 创建标签
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90346
-func (ww weWork) TagCreate(corpId uint, tag Tag) (resp TagCreateResponse) {
+func (ww *weWork) TagCreate(corpId uint, tag Tag) (resp TagCreateResponse) {
 	if ok := validate.Struct(tag); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -34,7 +34,7 @@ func (ww weWork) TagCreate(corpId uint, tag Tag) (resp TagCreateResponse) {
 
 // TagUpdate 更新标签名字
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90347
-func (ww weWork) TagUpdate(corpId uint, tag Tag) (resp internal.BizResponse) {
+func (ww *weWork) TagUpdate(corpId uint, tag Tag) (resp internal.BizResponse) {
 	if ok := validate.Struct(tag); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -51,7 +51,7 @@ func (ww weWork) TagUpdate(corpId uint, tag Tag) (resp internal.BizResponse) {
 
 // TagDelete 删除标签
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90348
-func (ww weWork) TagDelete(corpId uint, id int) (resp internal.BizResponse) {
+func (ww *weWork) TagDelete(corpId uint, id int) (resp internal.BizResponse) {
 	_, err := ww.getRequest(corpId).SetQueryParam("tagid", fmt.Sprintf("%v", id)).SetResult(&resp).
 		Get("/cgi-bin/tag/delete")
 	if err != nil {
@@ -68,7 +68,7 @@ type TagListResponse struct {
 
 // TagList 获取标签列表
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90352
-func (ww weWork) TagList(corpId uint) (resp TagListResponse) {
+func (ww *weWork) TagList(corpId uint) (resp TagListResponse) {
 	_, err := ww.getRequest(corpId).SetResult(&resp).
 		Get("/cgi-bin/tag/list")
 	if err != nil {
@@ -90,7 +90,7 @@ type TagUserListResponse struct {
 
 // TagUserList 获取标签成员
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90349
-func (ww weWork) TagUserList(corpId uint, id int) (resp TagUserListResponse) {
+func (ww *weWork) TagUserList(corpId uint, id int) (resp TagUserListResponse) {
 	_, err := ww.getRequest(corpId).SetQueryParam("tagid", fmt.Sprintf("%v", id)).SetResult(&resp).
 		Get("/cgi-bin/tag/get")
 	if err != nil {
@@ -108,7 +108,7 @@ type TagAddOrDelUsersResponse struct {
 
 // TagAddUsers 增加标签成员
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90350
-func (ww weWork) TagAddUsers(corpId uint, tagId int, userIds []string, partyIds []int32) (resp TagAddOrDelUsersResponse) {
+func (ww *weWork) TagAddUsers(corpId uint, tagId int, userIds []string, partyIds []int32) (resp TagAddOrDelUsersResponse) {
 	p := H{"tagid": tagId, "userlist": userIds, "partylist": partyIds}
 	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
 		Post("/cgi-bin/tag/addtagusers")
@@ -121,7 +121,7 @@ func (ww weWork) TagAddUsers(corpId uint, tagId int, userIds []string, partyIds 
 
 // TagDelUsers 删除标签成员
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90351
-func (ww weWork) TagDelUsers(corpId uint, tagId int, userIds []string, partyIds []int32) (resp TagAddOrDelUsersResponse) {
+func (ww *weWork) TagDelUsers(corpId uint, tagId int, userIds []string, partyIds []int32) (resp TagAddOrDelUsersResponse) {
 	p := H{"tagid": tagId, "userlist": userIds, "partylist": partyIds}
 	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
 		Post("/cgi-bin/tag/deltagusers")

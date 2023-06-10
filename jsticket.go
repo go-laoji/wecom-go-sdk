@@ -18,7 +18,7 @@ type TicketResponse struct {
 	ExpiresIn int    `json:"expires_in"`
 }
 
-func (ww weWork) GetJsApiTicket(corpId uint) (resp TicketResponse) {
+func (ww *weWork) GetJsApiTicket(corpId uint) (resp TicketResponse) {
 	var item *badger.Item
 	var err error
 	err = ww.cache.View(func(txn *badger.Txn) error {
@@ -49,7 +49,7 @@ func (ww weWork) GetJsApiTicket(corpId uint) (resp TicketResponse) {
 	return
 }
 
-func (ww weWork) GetJsApiAgentTicket(corpId uint, agentId int) (resp TicketResponse) {
+func (ww *weWork) GetJsApiAgentTicket(corpId uint, agentId int) (resp TicketResponse) {
 	var item *badger.Item
 	var err error
 	err = ww.cache.View(func(txn *badger.Txn) error {
@@ -100,7 +100,7 @@ func randString(n int) string {
 	return string(b)
 }
 
-func (ww weWork) GetConfigSignature(corpId uint, referer string) (resp JsTicketSignatureResponse) {
+func (ww *weWork) GetConfigSignature(corpId uint, referer string) (resp JsTicketSignatureResponse) {
 	noncestr := randString(16)
 	timestamp := time.Now().Unix()
 	sl := []string{fmt.Sprintf("noncestr=%s", noncestr),
@@ -120,7 +120,7 @@ func (ww weWork) GetConfigSignature(corpId uint, referer string) (resp JsTicketS
 
 }
 
-func (ww weWork) GetAgentConfigSignature(corpId uint, agentId int, referer string) (resp JsTicketSignatureResponse) {
+func (ww *weWork) GetAgentConfigSignature(corpId uint, agentId int, referer string) (resp JsTicketSignatureResponse) {
 	noncestr := randString(16)
 	timestamp := time.Now().Unix()
 	sl := []string{fmt.Sprintf("noncestr=%s", noncestr),

@@ -32,7 +32,7 @@ type MediaUploadResponse struct {
 // MediaUploadAttachment 上传附件资源
 // 不同的附件类型用于不同的场景。1：朋友圈；2:商品图册
 // https://open.work.weixin.qq.com/api/doc/90001/90143/95178
-func (ww weWork) MediaUploadAttachment(corpId uint, attrs Media) (resp MediaUploadResponse) {
+func (ww *weWork) MediaUploadAttachment(corpId uint, attrs Media) (resp MediaUploadResponse) {
 	if ok := validate.Struct(attrs); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -67,7 +67,7 @@ func isExists(path string) bool {
 
 // MediaUpload 上传临时素材
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90389
-func (ww weWork) MediaUpload(corpId uint, fileType MediaType, filePath string) (resp MediaUploadResponse) {
+func (ww *weWork) MediaUpload(corpId uint, fileType MediaType, filePath string) (resp MediaUploadResponse) {
 	if !isExists(filePath) {
 		resp.ErrCode = 500
 		resp.ErrorMsg = "文件路径不存在"
@@ -94,7 +94,7 @@ type MediaUploadImgResponse struct {
 
 // MediaUploadImg 上传图片
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90392
-func (ww weWork) MediaUploadImg(corpId uint, filePath string) (resp MediaUploadImgResponse) {
+func (ww *weWork) MediaUploadImg(corpId uint, filePath string) (resp MediaUploadImgResponse) {
 	if !isExists(filePath) {
 		resp.ErrCode = 500
 		resp.ErrorMsg = "文件路径不存在"

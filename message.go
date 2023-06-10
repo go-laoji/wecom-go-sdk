@@ -127,7 +127,7 @@ type MessageSendResponse struct {
 
 // MessageSend 发送应用消息
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90372
-func (ww weWork) MessageSend(corpId uint, msg interface{}) (resp MessageSendResponse) {
+func (ww *weWork) MessageSend(corpId uint, msg interface{}) (resp MessageSendResponse) {
 	if ok := validate.Struct(msg); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -173,7 +173,7 @@ func (ww weWork) MessageSend(corpId uint, msg interface{}) (resp MessageSendResp
 
 // MessageReCall 撤回应用消息
 // https://open.work.weixin.qq.com/api/doc/90000/90135/94867
-func (ww weWork) MessageReCall(corpId uint, msgId string) (resp internal.BizResponse) {
+func (ww *weWork) MessageReCall(corpId uint, msgId string) (resp internal.BizResponse) {
 	h := H{"msgid": msgId}
 	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).
 		Post("/cgi-bin/message/recall")

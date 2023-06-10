@@ -14,7 +14,7 @@ type KfAccountAddResponse struct {
 	OpenKfId string `json:"open_kfid"`
 }
 
-func (ww weWork) KfAccountAdd(corpId uint, account KfAccount) (resp KfAccountAddResponse) {
+func (ww *weWork) KfAccountAdd(corpId uint, account KfAccount) (resp KfAccountAddResponse) {
 	if ok := validate.Struct(account); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -29,7 +29,7 @@ func (ww weWork) KfAccountAdd(corpId uint, account KfAccount) (resp KfAccountAdd
 	return
 }
 
-func (ww weWork) KfAccountDel(corpId uint, kfId string) (resp internal.BizResponse) {
+func (ww *weWork) KfAccountDel(corpId uint, kfId string) (resp internal.BizResponse) {
 	if kfId == "" {
 		resp.ErrCode = 500
 		resp.ErrorMsg = "客服ID必填"
@@ -46,7 +46,7 @@ func (ww weWork) KfAccountDel(corpId uint, kfId string) (resp internal.BizRespon
 	return
 }
 
-func (ww weWork) KfAccountUpdate(corpId uint, account KfAccount) (resp internal.BizResponse) {
+func (ww *weWork) KfAccountUpdate(corpId uint, account KfAccount) (resp internal.BizResponse) {
 	if ok := validate.Struct(account); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -75,7 +75,7 @@ type KfAccountListResponse struct {
 	} `json:"account_list"`
 }
 
-func (ww weWork) KfAccountList(corpId uint, request KfAccountListRequest) (resp KfAccountListResponse) {
+func (ww *weWork) KfAccountList(corpId uint, request KfAccountListRequest) (resp KfAccountListResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -95,7 +95,7 @@ type KfAccContactWayResponse struct {
 	Url string `json:"url"`
 }
 
-func (ww weWork) KfAddContactWay(corpId uint, kfId string, scene string) (resp KfAccContactWayResponse) {
+func (ww *weWork) KfAddContactWay(corpId uint, kfId string, scene string) (resp KfAccContactWayResponse) {
 	if kfId == "" {
 		resp.ErrCode = 500
 		resp.ErrorMsg = "客服ID必填"
@@ -128,7 +128,7 @@ type KfServicerResponse struct {
 	} `json:"result_list"`
 }
 
-func (ww weWork) KfServicerAdd(corpId uint, request KfServicerRequest) (resp KfServicerResponse) {
+func (ww *weWork) KfServicerAdd(corpId uint, request KfServicerRequest) (resp KfServicerResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -143,7 +143,7 @@ func (ww weWork) KfServicerAdd(corpId uint, request KfServicerRequest) (resp KfS
 	return
 }
 
-func (ww weWork) KfServicerDel(corpId uint, request KfServicerRequest) (resp KfServicerResponse) {
+func (ww *weWork) KfServicerDel(corpId uint, request KfServicerRequest) (resp KfServicerResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -167,7 +167,7 @@ type KfServicerListResponse struct {
 	} `json:"servicer_list"`
 }
 
-func (ww weWork) KfServicerList(corpId uint, kfId string) (resp KfServicerListResponse) {
+func (ww *weWork) KfServicerList(corpId uint, kfId string) (resp KfServicerListResponse) {
 	_, err := ww.getRequest(corpId).SetQueryParam("open_kf_id", kfId).SetResult(&resp).
 		Get("/cgi-bin/kf/servicer/list")
 	if err != nil {
@@ -188,7 +188,7 @@ type KfServiceStateGetResponse struct {
 	ServicerUserId string `json:"servicer_userid"`
 }
 
-func (ww weWork) KfServiceStateGet(corpId uint, request KfServiceStateGetRequest) (resp KfServiceStateGetResponse) {
+func (ww *weWork) KfServiceStateGet(corpId uint, request KfServiceStateGetRequest) (resp KfServiceStateGetResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -215,7 +215,7 @@ type KfServiceStateTransResponse struct {
 	MsgCode string `json:"msg_code"`
 }
 
-func (ww weWork) KfServiceStateTrans(corpId uint, request KfServiceStateTransRequest) (resp KfServiceStateTransResponse) {
+func (ww *weWork) KfServiceStateTrans(corpId uint, request KfServiceStateTransRequest) (resp KfServiceStateTransResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -353,7 +353,7 @@ type MsgEvent struct {
 	} `json:"wechat_channels"`
 }
 
-func (ww weWork) KfSyncMsg(corpId uint, request KfSyncMsgRequest) (resp KfSyncMsgResponse) {
+func (ww *weWork) KfSyncMsg(corpId uint, request KfSyncMsgRequest) (resp KfSyncMsgResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -389,7 +389,7 @@ type SendMsgResponse struct {
 	MsgId string `json:"msgid"`
 }
 
-func (ww weWork) KfSendMsg(corpId uint, request SendMsgRequest) (resp SendMsgResponse) {
+func (ww *weWork) KfSendMsg(corpId uint, request SendMsgRequest) (resp SendMsgResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -412,7 +412,7 @@ type SendMsgOnEventRequest struct {
 	MsgMenu *MsgMenu `json:"msgmenu,omitempty"`
 }
 
-func (ww weWork) KfSendMsgOnEvent(corpId uint, request SendMsgOnEventRequest) (resp SendMsgResponse) {
+func (ww *weWork) KfSendMsgOnEvent(corpId uint, request SendMsgOnEventRequest) (resp SendMsgResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -448,7 +448,7 @@ type KfCustomerBatchGetResponse struct {
 	InvalidExternalUserid []string `json:"invalid_external_userid"`
 }
 
-func (ww weWork) KfCustomerBatchGet(corpId uint, userList []string, needEnterSessionContext int) (resp KfCustomerBatchGetResponse) {
+func (ww *weWork) KfCustomerBatchGet(corpId uint, userList []string, needEnterSessionContext int) (resp KfCustomerBatchGetResponse) {
 	params := H{}
 	if needEnterSessionContext == 1 {
 		params["need_enter_session_context"] = 1
@@ -469,7 +469,7 @@ type KfGetCorpQualificationResponse struct {
 }
 
 // KfGetCorpQualification 仅支持第三方应用，且需具有“微信客服->获取基础信息”权限
-func (ww weWork) KfGetCorpQualification(corpId uint) (resp KfGetCorpQualificationResponse) {
+func (ww *weWork) KfGetCorpQualification(corpId uint) (resp KfGetCorpQualificationResponse) {
 	_, err := ww.getRequest(corpId).SetResult(&resp).
 		Get("/cgi-bin/kf/get_corp_qualification")
 	if err != nil {
@@ -490,7 +490,7 @@ type KfGetUpgradeServiceConfigResponse struct {
 	} `json:"groupchat_range"`
 }
 
-func (ww weWork) KfGetUpgradeServiceConfig(corpId uint) (resp KfGetUpgradeServiceConfigResponse) {
+func (ww *weWork) KfGetUpgradeServiceConfig(corpId uint) (resp KfGetUpgradeServiceConfigResponse) {
 	_, err := ww.getRequest(corpId).SetResult(&resp).
 		Get("/cgi-bin/kf/customer/get_upgrade_service_config")
 	if err != nil {
@@ -518,7 +518,7 @@ type UpgradeServiceGroupChat struct {
 	Wording string `json:"wording"`
 }
 
-func (ww weWork) KfUpgradeService(corpId uint, request UpgradeServiceRequest) (resp internal.BizResponse) {
+func (ww *weWork) KfUpgradeService(corpId uint, request UpgradeServiceRequest) (resp internal.BizResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -538,7 +538,7 @@ type CancelUpgradeServiceRequest struct {
 	ExternalUserId string `json:"external_userid" validate::"required"`
 }
 
-func (ww weWork) KfCancelUpgradeService(corpId uint, request CancelUpgradeServiceRequest) (resp internal.BizResponse) {
+func (ww *weWork) KfCancelUpgradeService(corpId uint, request CancelUpgradeServiceRequest) (resp internal.BizResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -574,7 +574,7 @@ type KfGetCorpStatisticResponse struct {
 	} `json:"statistic_list"`
 }
 
-func (ww weWork) KfGetCorpStatistic(corpId uint, filter KfGetCorpStatisticFilter) (resp KfGetCorpStatisticResponse) {
+func (ww *weWork) KfGetCorpStatistic(corpId uint, filter KfGetCorpStatisticFilter) (resp KfGetCorpStatisticResponse) {
 	if ok := validate.Struct(filter); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -620,7 +620,7 @@ type KfGetServicerStatisticResponse struct {
 	} `json:"statistic_list"`
 }
 
-func (ww weWork) KfGetServicerStatistic(corpId uint, filter KfGetServicerStatisticFilter) (resp KfGetServicerStatisticResponse) {
+func (ww *weWork) KfGetServicerStatistic(corpId uint, filter KfGetServicerStatisticFilter) (resp KfGetServicerStatisticResponse) {
 	if ok := validate.Struct(filter); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()

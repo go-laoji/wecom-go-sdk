@@ -6,7 +6,7 @@ import (
 
 // SendWelcomeMsg 发送新客户欢迎语
 // https://open.work.weixin.qq.com/api/doc/90001/90143/92599
-func (ww weWork) SendWelcomeMsg(corpId uint, msg ExternalMsg) (resp internal.BizResponse) {
+func (ww *weWork) SendWelcomeMsg(corpId uint, msg ExternalMsg) (resp internal.BizResponse) {
 	if ok := validate.Struct(msg); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()

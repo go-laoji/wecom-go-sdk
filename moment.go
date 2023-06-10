@@ -54,7 +54,7 @@ type AddMomentTaskResponse struct {
 
 // AddMomentTask 创建发表任务
 // 参考连接　https://open.work.weixin.qq.com/api/doc/90001/90143/95095#%E5%88%9B%E5%BB%BA%E5%8F%91%E8%A1%A8%E4%BB%BB%E5%8A%A1
-func (ww weWork) AddMomentTask(corpId uint, task MomentTask) (resp AddMomentTaskResponse) {
+func (ww *weWork) AddMomentTask(corpId uint, task MomentTask) (resp AddMomentTaskResponse) {
 	if ok := validate.Struct(task); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -88,7 +88,7 @@ type GetMomentTaskResultResponse struct {
 
 // GetMomentTaskResult 获取任务创建结果
 // https://open.work.weixin.qq.com/api/doc/90001/90143/95095#%E8%8E%B7%E5%8F%96%E4%BB%BB%E5%8A%A1%E5%88%9B%E5%BB%BA%E7%BB%93%E6%9E%9C
-func (ww weWork) GetMomentTaskResult(corpId uint, jobId string) (resp GetMomentTaskResultResponse) {
+func (ww *weWork) GetMomentTaskResult(corpId uint, jobId string) (resp GetMomentTaskResultResponse) {
 	_, err := ww.getRequest(corpId).SetQueryParam("jobid", jobId).SetResult(&resp).
 		Get("/cgi-bin/externalcontact/get_moment_task_result")
 	if err != nil {
@@ -133,7 +133,7 @@ type MomentList struct {
 
 // GetMomentList 获取企业全部的发表列表
 // https://open.work.weixin.qq.com/api/doc/90001/90143/93443#%E8%8E%B7%E5%8F%96%E4%BC%81%E4%B8%9A%E5%85%A8%E9%83%A8%E7%9A%84%E5%8F%91%E8%A1%A8%E5%88%97%E8%A1%A8
-func (ww weWork) GetMomentList(corpId uint, filter MomentListFilter) (resp GetMomentListResponse) {
+func (ww *weWork) GetMomentList(corpId uint, filter MomentListFilter) (resp GetMomentListResponse) {
 	if ok := validate.Struct(filter); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -165,7 +165,7 @@ type GetMomentTaskResponse struct {
 
 // GetMomentTask 获取客户朋友圈企业发表的列表
 // https://open.work.weixin.qq.com/api/doc/90001/90143/93443#%E8%8E%B7%E5%8F%96%E5%AE%A2%E6%88%B7%E6%9C%8B%E5%8F%8B%E5%9C%88%E4%BC%81%E4%B8%9A%E5%8F%91%E8%A1%A8%E7%9A%84%E5%88%97%E8%A1%A8
-func (ww weWork) GetMomentTask(corpId uint, filter MomentTaskFilter) (resp GetMomentTaskResponse) {
+func (ww *weWork) GetMomentTask(corpId uint, filter MomentTaskFilter) (resp GetMomentTaskResponse) {
 	if ok := validate.Struct(filter); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -196,7 +196,7 @@ type GetMomentCustomerListResponse struct {
 
 // GetMomentCustomerList 获取客户朋友圈发表时选择的可见范围
 // https://open.work.weixin.qq.com/api/doc/90001/90143/93443#%E8%8E%B7%E5%8F%96%E5%AE%A2%E6%88%B7%E6%9C%8B%E5%8F%8B%E5%9C%88%E5%8F%91%E8%A1%A8%E6%97%B6%E9%80%89%E6%8B%A9%E7%9A%84%E5%8F%AF%E8%A7%81%E8%8C%83%E5%9B%B4
-func (ww weWork) GetMomentCustomerList(corpId uint, filter MomentCustomerFilter) (resp GetMomentCustomerListResponse) {
+func (ww *weWork) GetMomentCustomerList(corpId uint, filter MomentCustomerFilter) (resp GetMomentCustomerListResponse) {
 	if ok := validate.Struct(filter); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -220,7 +220,7 @@ type GetMomentSendResultResponse struct {
 
 // GetMomentSendResult 获取客户朋友圈发表后的可见客户列表
 // https://open.work.weixin.qq.com/api/doc/90001/90143/93443#%E8%8E%B7%E5%8F%96%E5%AE%A2%E6%88%B7%E6%9C%8B%E5%8F%8B%E5%9C%88%E5%8F%91%E8%A1%A8%E5%90%8E%E7%9A%84%E5%8F%AF%E8%A7%81%E5%AE%A2%E6%88%B7%E5%88%97%E8%A1%A8
-func (ww weWork) GetMomentSendResult(corpId uint, filter MomentCustomerFilter) (resp GetMomentSendResultResponse) {
+func (ww *weWork) GetMomentSendResult(corpId uint, filter MomentCustomerFilter) (resp GetMomentSendResultResponse) {
 	if ok := validate.Struct(filter); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -248,7 +248,7 @@ type GetMomentCommentsResponse struct {
 
 // GetMomentComments 获取客户朋友圈的互动数据
 // https://open.work.weixin.qq.com/api/doc/90001/90143/93443#%E8%8E%B7%E5%8F%96%E5%AE%A2%E6%88%B7%E6%9C%8B%E5%8F%8B%E5%9C%88%E7%9A%84%E4%BA%92%E5%8A%A8%E6%95%B0%E6%8D%AE
-func (ww weWork) GetMomentComments(corpId uint, momentId string, userId string) (resp GetMomentCommentsResponse) {
+func (ww *weWork) GetMomentComments(corpId uint, momentId string, userId string) (resp GetMomentCommentsResponse) {
 	p := H{"userid": userId, "moment_id": momentId}
 	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
 		Post("/cgi-bin/externalcontact/get_moment_comments")
@@ -261,7 +261,7 @@ func (ww weWork) GetMomentComments(corpId uint, momentId string, userId string) 
 
 // CancelMomentTask 停止发表企业朋友圈
 // https://developer.work.weixin.qq.com/document/path/97612
-func (ww weWork) CancelMomentTask(corpId uint, momentId string) (resp internal.BizResponse) {
+func (ww *weWork) CancelMomentTask(corpId uint, momentId string) (resp internal.BizResponse) {
 	_, err := ww.getRequest(corpId).SetQueryParam("moment_id", momentId).SetResult(&resp).
 		Get("/cgi-bin/externalcontact/cancel_moment_task")
 	if err != nil {

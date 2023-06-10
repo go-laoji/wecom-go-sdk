@@ -12,7 +12,7 @@ type providerAccessTokenResponse struct {
 	ExpiresIn           int    `json:"expires_in"`
 }
 
-func (ww weWork) requestProviderToken() (resp providerAccessTokenResponse) {
+func (ww *weWork) requestProviderToken() (resp providerAccessTokenResponse) {
 	apiUrl := "/cgi-bin/service/get_provider_token"
 	params := H{}
 	params["corpid"] = ww.corpId
@@ -27,7 +27,7 @@ func (ww weWork) requestProviderToken() (resp providerAccessTokenResponse) {
 	return resp
 }
 
-func (ww weWork) getProviderToken() (token string) {
+func (ww *weWork) getProviderToken() (token string) {
 	var err error
 	var item *badger.Item
 	err = ww.cache.View(func(txn *badger.Txn) error {
@@ -81,7 +81,7 @@ type GetLoginInfoResponse struct {
 // GetLoginInfo 获取登录用户信息
 // https://open.work.weixin.qq.com/api/doc/90001/90143/91125
 // Deprecated: 2023-06-10重构时发现找不到该接口了
-func (ww weWork) GetLoginInfo(authCode string) (resp GetLoginInfoResponse) {
+func (ww *weWork) GetLoginInfo(authCode string) (resp GetLoginInfoResponse) {
 	h := H{}
 	h["auth_code"] = authCode
 	_, err := ww.httpClient.R().SetQueryParam("access_token", ww.getProviderToken()).

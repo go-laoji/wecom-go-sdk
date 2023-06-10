@@ -54,7 +54,7 @@ type AddMsgTemplateResponse struct {
 
 // AddMsgTemplate 创建企业群发
 // 参考连接　https://open.work.weixin.qq.com/api/doc/90001/90143/92698
-func (ww weWork) AddMsgTemplate(corpId uint, msg ExternalMsg) (resp AddMsgTemplateResponse) {
+func (ww *weWork) AddMsgTemplate(corpId uint, msg ExternalMsg) (resp AddMsgTemplateResponse) {
 	if ok := validate.Struct(msg); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -94,7 +94,7 @@ type GroupMsgList struct {
 
 // GetGroupMsgListV2 获取群发记录列表
 // 　参考连接　https://open.work.weixin.qq.com/api/doc/90001/90143/93439#%E8%8E%B7%E5%8F%96%E7%BE%A4%E5%8F%91%E8%AE%B0%E5%BD%95%E5%88%97%E8%A1%A8
-func (ww weWork) GetGroupMsgListV2(corpId uint, filter GroupMsgListFilter) (resp GetGroupMsgListV2Response) {
+func (ww *weWork) GetGroupMsgListV2(corpId uint, filter GroupMsgListFilter) (resp GetGroupMsgListV2Response) {
 	if ok := validate.Struct(filter); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -127,7 +127,7 @@ type GetGroupMsgTaskResponse struct {
 
 // GetGroupMsgTask 获取群发成员发送任务列表
 // 参考连接　https://open.work.weixin.qq.com/api/doc/90001/90143/93439#%E8%8E%B7%E5%8F%96%E7%BE%A4%E5%8F%91%E6%88%90%E5%91%98%E5%8F%91%E9%80%81%E4%BB%BB%E5%8A%A1%E5%88%97%E8%A1%A8
-func (ww weWork) GetGroupMsgTask(corpId uint, filter GroupMsgTaskFilter) (resp GetGroupMsgTaskResponse) {
+func (ww *weWork) GetGroupMsgTask(corpId uint, filter GroupMsgTaskFilter) (resp GetGroupMsgTaskResponse) {
 	if ok := validate.Struct(filter); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -162,7 +162,7 @@ type GetGroupMsgSendResultResponse struct {
 
 // GetGroupMsgSendResult 获取企业群发成员执行结果
 // 参考连接　https://open.work.weixin.qq.com/api/doc/90001/90143/93439#%E8%8E%B7%E5%8F%96%E4%BC%81%E4%B8%9A%E7%BE%A4%E5%8F%91%E6%88%90%E5%91%98%E6%89%A7%E8%A1%8C%E7%BB%93%E6%9E%9C
-func (ww weWork) GetGroupMsgSendResult(corpId uint, filter GroupMsgSendResultFilter) (resp GetGroupMsgSendResultResponse) {
+func (ww *weWork) GetGroupMsgSendResult(corpId uint, filter GroupMsgSendResultFilter) (resp GetGroupMsgSendResultResponse) {
 	if ok := validate.Struct(filter); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -179,7 +179,7 @@ func (ww weWork) GetGroupMsgSendResult(corpId uint, filter GroupMsgSendResultFil
 
 // RemindGroupMsgSend 提醒成员群发
 // https://developer.work.weixin.qq.com/document/path/97610
-func (ww weWork) RemindGroupMsgSend(corpId uint, msgid string) (resp internal.BizResponse) {
+func (ww *weWork) RemindGroupMsgSend(corpId uint, msgid string) (resp internal.BizResponse) {
 	h := H{}
 	h["msgid"] = msgid
 	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).
@@ -193,7 +193,7 @@ func (ww weWork) RemindGroupMsgSend(corpId uint, msgid string) (resp internal.Bi
 
 // CancelGroupMsgSend 停止企业群发
 // https://developer.work.weixin.qq.com/document/path/97611
-func (ww weWork) CancelGroupMsgSend(corpId uint, msgId string) (resp internal.BizResponse) {
+func (ww *weWork) CancelGroupMsgSend(corpId uint, msgId string) (resp internal.BizResponse) {
 	h := H{}
 	h["msgid"] = msgId
 	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).

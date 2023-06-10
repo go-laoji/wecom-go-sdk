@@ -16,7 +16,7 @@ type GetUserBehaviorFilter struct {
 
 // GetUserBehaviorData 获取「联系客户统计」数据
 // https://open.work.weixin.qq.com/api/doc/90001/90143/92275
-func (ww weWork) GetUserBehaviorData(corpId uint, filter GetUserBehaviorFilter) (resp GetUserBehaviorDataResponse) {
+func (ww *weWork) GetUserBehaviorData(corpId uint, filter GetUserBehaviorFilter) (resp GetUserBehaviorDataResponse) {
 	if ok := validate.Struct(filter); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -62,7 +62,7 @@ type GroupChatStatisticFilter struct {
 
 // GroupChatStatistic 按群主聚合的方式
 // https://open.work.weixin.qq.com/api/doc/90001/90143/93476#%E6%8C%89%E7%BE%A4%E4%B8%BB%E8%81%9A%E5%90%88%E7%9A%84%E6%96%B9%E5%BC%8F
-func (ww weWork) GroupChatStatistic(corpId uint, filter GroupChatStatisticFilter) (resp GroupChatStatisticResponse) {
+func (ww *weWork) GroupChatStatistic(corpId uint, filter GroupChatStatisticFilter) (resp GroupChatStatisticResponse) {
 	if ok := validate.Struct(filter); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -86,7 +86,7 @@ type GroupChatStatisticGroupByDayFilter struct {
 
 // GroupChatStatisticGroupByDay 按自然日聚合的方式
 // https://open.work.weixin.qq.com/api/doc/90001/90143/93476#%E6%8C%89%E8%87%AA%E7%84%B6%E6%97%A5%E8%81%9A%E5%90%88%E7%9A%84%E6%96%B9%E5%BC%8F
-func (ww weWork) GroupChatStatisticGroupByDay(corpId uint, filter GroupChatStatisticGroupByDayFilter) (resp GroupChatStatisticResponse) {
+func (ww *weWork) GroupChatStatisticGroupByDay(corpId uint, filter GroupChatStatisticGroupByDayFilter) (resp GroupChatStatisticResponse) {
 	if ok := validate.Struct(filter); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()

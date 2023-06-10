@@ -22,7 +22,7 @@ type OrderResponse struct {
 
 // CreateNewOrder 下单购买帐号
 // https://developer.work.weixin.qq.com/document/path/95644
-func (ww weWork) CreateNewOrder(request CreateOrderRequest) (resp OrderResponse) {
+func (ww *weWork) CreateNewOrder(request CreateOrderRequest) (resp OrderResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -58,7 +58,7 @@ type CreateReNewOrderJobResponse struct {
 
 // CreateReNewOrderJob 下单续期帐号/创建续期任务
 // https://developer.work.weixin.qq.com/document/path/95646
-func (ww weWork) CreateReNewOrderJob(request CreateReNewOrderJobRequest) (resp CreateReNewOrderJobResponse) {
+func (ww *weWork) CreateReNewOrderJob(request CreateReNewOrderJobRequest) (resp CreateReNewOrderJobResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -82,7 +82,7 @@ type SubmitOrderJobRequest struct {
 }
 
 // SubmitOrderJob 下单续期帐号/提交续期订单
-func (ww weWork) SubmitOrderJob(request SubmitOrderJobRequest) (resp OrderResponse) {
+func (ww *weWork) SubmitOrderJob(request SubmitOrderJobRequest) (resp OrderResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -116,7 +116,7 @@ type ListOrderResponse struct {
 
 // ListOrder 获取订单列表
 // https://developer.work.weixin.qq.com/document/path/95647
-func (ww weWork) ListOrder(request ListOrderRequest) (resp ListOrderResponse) {
+func (ww *weWork) ListOrder(request ListOrderRequest) (resp ListOrderResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -157,7 +157,7 @@ type GetOrderResponse struct {
 
 // GetOrder 获取订单详情
 // https://developer.work.weixin.qq.com/document/path/95648
-func (ww weWork) GetOrder(request GetOrderRequest) (resp GetOrderResponse) {
+func (ww *weWork) GetOrder(request GetOrderRequest) (resp GetOrderResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -191,7 +191,7 @@ type ListOrderAccountResponse struct {
 
 // ListOrderAccount 获取订单中的帐号列表
 // https://developer.work.weixin.qq.com/document/path/95649
-func (ww weWork) ListOrderAccount(request ListOrderAccountRequest) (resp ListOrderAccountResponse) {
+func (ww *weWork) ListOrderAccount(request ListOrderAccountRequest) (resp ListOrderAccountResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -214,7 +214,7 @@ type ActiveAccountRequest struct {
 
 // ActiveAccount 激活帐号
 // https://developer.work.weixin.qq.com/document/path/95553#%E6%BF%80%E6%B4%BB%E5%B8%90%E5%8F%B7
-func (ww weWork) ActiveAccount(request ActiveAccountRequest) (resp internal.BizResponse) {
+func (ww *weWork) ActiveAccount(request ActiveAccountRequest) (resp internal.BizResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -248,7 +248,7 @@ type BatchActiveAccountResponse struct {
 
 // BatchActiveAccount 批量激活帐号
 // https://developer.work.weixin.qq.com/document/path/95553#%E6%89%B9%E9%87%8F%E6%BF%80%E6%B4%BB%E5%B8%90%E5%8F%B7
-func (ww weWork) BatchActiveAccount(request BatchActiveAccountRequest) (resp BatchActiveAccountResponse) {
+func (ww *weWork) BatchActiveAccount(request BatchActiveAccountRequest) (resp BatchActiveAccountResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -284,7 +284,7 @@ type GetActiveInfoByCodeResponse struct {
 
 // GetActiveInfoByCode 获取激活码详情
 // https://developer.work.weixin.qq.com/document/path/95552#%E8%8E%B7%E5%8F%96%E6%BF%80%E6%B4%BB%E7%A0%81%E8%AF%A6%E6%83%85
-func (ww weWork) GetActiveInfoByCode(request GetActiveInfoByCodeRequest) (resp GetActiveInfoByCodeResponse) {
+func (ww *weWork) GetActiveInfoByCode(request GetActiveInfoByCodeRequest) (resp GetActiveInfoByCodeResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -310,7 +310,7 @@ type BatchGetActiveInfoByCodeResponse struct {
 }
 
 // BatchGetActiveInfoByCode 批量获取激活码详情
-func (ww weWork) BatchGetActiveInfoByCode(request BatchGetActiveInfoByCodeRequest) (resp BatchGetActiveInfoByCodeResponse) {
+func (ww *weWork) BatchGetActiveInfoByCode(request BatchGetActiveInfoByCodeRequest) (resp BatchGetActiveInfoByCodeResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -340,7 +340,7 @@ type ListActivedAccountResponse struct {
 
 // ListActivedAccount 获取企业的帐号列表
 // https://developer.work.weixin.qq.com/document/path/95544
-func (ww weWork) ListActivedAccount(request ListActivedAccountRequest) (resp ListActivedAccountResponse) {
+func (ww *weWork) ListActivedAccount(request ListActivedAccountRequest) (resp ListActivedAccountResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -373,7 +373,7 @@ type GetActiveInfoByUserResponse struct {
 
 // GetActiveInfoByUser 获取成员的激活详情
 // https://developer.work.weixin.qq.com/document/path/95555
-func (ww weWork) GetActiveInfoByUser(request GetActiveInfoByUserRequest) (resp GetActiveInfoByUserResponse) {
+func (ww *weWork) GetActiveInfoByUser(request GetActiveInfoByUserRequest) (resp GetActiveInfoByUserResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -407,7 +407,7 @@ type BatchTransferLicenseResponse struct {
 
 // BatchTransferLicense 帐号继承
 // https://developer.work.weixin.qq.com/document/path/95673
-func (ww weWork) BatchTransferLicense(request BatchTransferLicenseRequest) (resp BatchTransferLicenseResponse) {
+func (ww *weWork) BatchTransferLicense(request BatchTransferLicenseRequest) (resp BatchTransferLicenseResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -427,7 +427,7 @@ type SetAutoActiveStatusRequest struct {
 	AutoActiveStatus uint   `json:"auto_active_status" validate:"required,oneof=0 1"`
 }
 
-func (ww weWork) SetAutoActiveStatus(request SetAutoActiveStatusRequest) (resp internal.BizResponse) {
+func (ww *weWork) SetAutoActiveStatus(request SetAutoActiveStatusRequest) (resp internal.BizResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -447,7 +447,7 @@ type GetAutoActiveStatusResponse struct {
 	AutoActiveStatus uint `json:"auto_active_status"`
 }
 
-func (ww weWork) GetAutoActiveStatus(corpid string) (resp GetAutoActiveStatusResponse) {
+func (ww *weWork) GetAutoActiveStatus(corpid string) (resp GetAutoActiveStatusResponse) {
 	if len(corpid) == 0 {
 		resp.ErrCode = 500
 		resp.ErrorMsg = "corpid 参数不能为空"

@@ -16,7 +16,7 @@ type Student struct {
 
 // CreateStudent 创建学生
 // https://open.work.weixin.qq.com/api/doc/90001/90143/92035
-func (ww weWork) CreateStudent(corpId uint, student Student) (resp internal.BizResponse) {
+func (ww *weWork) CreateStudent(corpId uint, student Student) (resp internal.BizResponse) {
 	if ok := validate.Struct(student); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -41,7 +41,7 @@ type BatchStudentResponse struct {
 
 // BatchCreateStudent 批量创建学生
 // https://open.work.weixin.qq.com/api/doc/90001/90143/92037
-func (ww weWork) BatchCreateStudent(corpId uint, students []Student) (resp BatchStudentResponse) {
+func (ww *weWork) BatchCreateStudent(corpId uint, students []Student) (resp BatchStudentResponse) {
 	h := H{}
 	h["students"] = students
 	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).
@@ -55,7 +55,7 @@ func (ww weWork) BatchCreateStudent(corpId uint, students []Student) (resp Batch
 
 // DeleteStudent 删除学生
 // https://open.work.weixin.qq.com/api/doc/90001/90143/92039
-func (ww weWork) DeleteStudent(corpId uint, userId string) (resp internal.BizResponse) {
+func (ww *weWork) DeleteStudent(corpId uint, userId string) (resp internal.BizResponse) {
 	_, err := ww.getRequest(corpId).SetQueryParam("userid", userId).SetResult(&resp).
 		Get("/cgi-bin/school/user/delete_student")
 	if err != nil {
@@ -67,7 +67,7 @@ func (ww weWork) DeleteStudent(corpId uint, userId string) (resp internal.BizRes
 
 // BatchDeleteStudent 批量删除学生
 // https://open.work.weixin.qq.com/api/doc/90001/90143/92040
-func (ww weWork) BatchDeleteStudent(corpId uint, userIdList []string) (resp BatchStudentResponse) {
+func (ww *weWork) BatchDeleteStudent(corpId uint, userIdList []string) (resp BatchStudentResponse) {
 	h := H{}
 	h["useridlist"] = userIdList
 	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).
@@ -81,7 +81,7 @@ func (ww weWork) BatchDeleteStudent(corpId uint, userIdList []string) (resp Batc
 
 // UpdateStudent 更新学生
 // https://open.work.weixin.qq.com/api/doc/90001/90143/92041
-func (ww weWork) UpdateStudent(corpId uint, student Student) (resp internal.BizResponse) {
+func (ww *weWork) UpdateStudent(corpId uint, student Student) (resp internal.BizResponse) {
 	if strings.TrimSpace(student.StudentUserId) == "" {
 		resp.ErrCode = 500
 		resp.ErrorMsg = "student id can not be empty"
@@ -98,7 +98,7 @@ func (ww weWork) UpdateStudent(corpId uint, student Student) (resp internal.BizR
 
 // BatchUpdateStudent 批量更新学生
 // https://open.work.weixin.qq.com/api/doc/90001/90143/92042
-func (ww weWork) BatchUpdateStudent(corpId uint, students []Student) (resp BatchStudentResponse) {
+func (ww *weWork) BatchUpdateStudent(corpId uint, students []Student) (resp BatchStudentResponse) {
 	h := H{}
 	h["students"] = students
 	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).
