@@ -1,11 +1,8 @@
 package wework
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/dgraph-io/badger/v3"
-	"github.com/go-laoji/wecom-go-sdk/internal"
-	"net/url"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 	"time"
 )
 
@@ -15,19 +12,14 @@ type providerAccessTokenResponse struct {
 	ExpiresIn           int    `json:"expires_in"`
 }
 
-func (ww weWork) requestProviderToken() (resp providerAccessTokenResponse) {
+func (ww *weWork) requestProviderToken() (resp providerAccessTokenResponse) {
 	apiUrl := "/cgi-bin/service/get_provider_token"
 	params := H{}
 	params["corpid"] = ww.corpId
 	params["provider_secret"] = ww.providerSecret
-	var data []byte
 	var err error
-	if data, err = internal.HttpPost(apiUrl, params); err != nil {
-		resp.ErrCode = 400
-		resp.ErrorMsg = err.Error()
-		return
-	}
-	if err = json.Unmarshal(data, &resp); err != nil {
+	_, err = ww.httpClient.R().SetBody(params).SetResult(&resp).Post(apiUrl)
+	if err != nil {
 		resp.ErrCode = 400
 		resp.ErrorMsg = err.Error()
 		return
@@ -35,7 +27,7 @@ func (ww weWork) requestProviderToken() (resp providerAccessTokenResponse) {
 	return resp
 }
 
-func (ww weWork) getProviderToken() (token string) {
+func (ww *weWork) getProviderToken() (token string) {
 	var err error
 	var item *badger.Item
 	err = ww.cache.View(func(txn *badger.Txn) error {
@@ -88,23 +80,17 @@ type GetLoginInfoResponse struct {
 
 // GetLoginInfo 获取登录用户信息
 // https://open.work.weixin.qq.com/api/doc/90001/90143/91125
-func (ww weWork) GetLoginInfo(authCode string) (resp GetLoginInfoResponse) {
-	queryParams := url.Values{}
-	queryParams.Add("access_token", ww.getProviderToken())
-	apiUrl := fmt.Sprintf("/cgi-bin/service/get_login_info?%s", queryParams.Encode())
+// Deprecated: 2023-06-10重构时发现找不到该接口了
+func (ww *weWork) GetLoginInfo(authCode string) (resp GetLoginInfoResponse) {
 	h := H{}
 	h["auth_code"] = authCode
-
-	body, err := internal.HttpPost(apiUrl, h)
+	_, err := ww.httpClient.R().SetQueryParam("access_token", ww.getProviderToken()).
+		SetBody(h).SetResult(&resp).Post("/cgi-bin/service/get_login_info")
 	if err != nil {
 		logger.Sugar().Error(err)
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
 		return
-	}
-	if err = json.Unmarshal(body, &resp); err != nil {
-		resp.ErrCode = 500
-		resp.ErrorMsg = err.Error()
 	}
 	return
 }

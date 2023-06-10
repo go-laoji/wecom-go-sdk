@@ -3,7 +3,7 @@ package install
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/go-laoji/wecom-go-sdk"
+	"github.com/go-laoji/wecom-go-sdk/v2"
 	"log"
 	"net/http"
 	"net/url"

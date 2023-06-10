@@ -1,9 +1,7 @@
 package wework
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type GetUserAllLivingIdRequest struct {
@@ -20,19 +18,17 @@ type GetUserAllLivingIdResponse struct {
 
 // GetUserAllLivingId 获取老师直播ID列表
 // https://open.work.weixin.qq.com/api/doc/90001/90143/93856
-func (ww weWork) GetUserAllLivingId(corpId uint, request GetUserAllLivingIdRequest) (resp GetUserAllLivingIdResponse) {
+func (ww *weWork) GetUserAllLivingId(corpId uint, request GetUserAllLivingIdRequest) (resp GetUserAllLivingIdResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/living/get_user_all_livingid?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/living/get_user_all_livingid")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -57,15 +53,12 @@ type GetLivingInfoResponse struct {
 
 // GetLivingInfo 获取直播详情
 // https://open.work.weixin.qq.com/api/doc/90001/90143/93857
-func (ww weWork) GetLivingInfo(corpId uint, liveId string) (resp GetLivingInfoResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
-	queryParams.Add("livingid", liveId)
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/school/living/get_living_info?%s", queryParams.Encode()))
+func (ww *weWork) GetLivingInfo(corpId uint, liveId string) (resp GetLivingInfoResponse) {
+	_, err := ww.getRequest(corpId).SetResult(&resp).
+		SetQueryParam("livingid", liveId).Get("/cgi-bin/school/living/get_living_info")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -101,19 +94,17 @@ type GetWatchStatResponse struct {
 
 // GetWatchStat 获取观看直播统计
 // https://open.work.weixin.qq.com/api/doc/90001/90143/93858
-func (ww weWork) GetWatchStat(corpId uint, request GetWatchStatRequest) (resp GetWatchStatResponse) {
+func (ww *weWork) GetWatchStat(corpId uint, request GetWatchStatRequest) (resp GetWatchStatResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/school/living/get_watch_stat?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/school/living/get_watch_stat")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -133,35 +124,31 @@ type GetUnWatchStatResponse struct {
 
 // GetUnWatchStat 获取未观看直播统计
 // https://open.work.weixin.qq.com/api/doc/90001/90143/93859
-func (ww weWork) GetUnWatchStat(corpId uint, request GetWatchStatRequest) (resp GetUnWatchStatResponse) {
+func (ww *weWork) GetUnWatchStat(corpId uint, request GetWatchStatRequest) (resp GetUnWatchStatResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/school/living/get_unwatch_stat?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/school/living/get_unwatch_stat")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
 
 // DeleteReplayData 删除直播回放
 // https://open.work.weixin.qq.com/api/doc/90001/90143/93860
-func (ww weWork) DeleteReplayData(corpId uint, livingId string) (resp internal.BizResponse) {
+func (ww *weWork) DeleteReplayData(corpId uint, livingId string) (resp internal.BizResponse) {
 	h := H{}
 	h["livingid"] = livingId
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/living/delete_replay_data?%s", queryParams.Encode()), h)
+	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).
+		Post("/cgi-bin/living/delete_replay_data")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

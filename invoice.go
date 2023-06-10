@@ -1,9 +1,7 @@
 package wework
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type InvoiceInfoQuery struct {
@@ -44,19 +42,17 @@ type GetInvoiceInfoResponse struct {
 
 // GetInvoiceInfo 查询电子发票
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90420
-func (ww weWork) GetInvoiceInfo(corpId uint, query InvoiceInfoQuery) (resp GetInvoiceInfoResponse) {
+func (ww *weWork) GetInvoiceInfo(corpId uint, query InvoiceInfoQuery) (resp GetInvoiceInfoResponse) {
 	if ok := validate.Struct(query); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/card/invoice/reimburse/getinvoiceinfo?%s", queryParams.Encode()), query)
+	_, err := ww.getRequest(corpId).SetBody(query).SetResult(&resp).
+		Post("/cgi-bin/card/invoice/reimburse/getinvoiceinfo")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -75,19 +71,17 @@ type UpdateInvoiceStatusRequest struct {
 
 // UpdateInvoiceStatus 更新发票状态
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90421
-func (ww weWork) UpdateInvoiceStatus(corpId uint, request UpdateInvoiceStatusRequest) (resp internal.BizResponse) {
+func (ww *weWork) UpdateInvoiceStatus(corpId uint, request UpdateInvoiceStatusRequest) (resp internal.BizResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/card/invoice/reimburse/updateinvoicestatus?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/card/invoice/reimburse/updateinvoicestatus")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -100,19 +94,17 @@ type UpdateInvoiceStatusBatchRequest struct {
 
 // UpdateInvoiceStatusBatch 批量更新发票状态
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90422
-func (ww weWork) UpdateInvoiceStatusBatch(corpId uint, request UpdateInvoiceStatusBatchRequest) (resp internal.BizResponse) {
+func (ww *weWork) UpdateInvoiceStatusBatch(corpId uint, request UpdateInvoiceStatusBatchRequest) (resp internal.BizResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/card/invoice/reimburse/updatestatusbatch?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/card/invoice/reimburse/updatestatusbatch")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -128,19 +120,17 @@ type GetInvoiceInfoBatchResponse struct {
 
 // GetInvoiceInfoBatch 批量查询电子发票
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90423
-func (ww weWork) GetInvoiceInfoBatch(corpId uint, query InvoiceInfoQueryBatch) (resp GetInvoiceInfoBatchResponse) {
+func (ww *weWork) GetInvoiceInfoBatch(corpId uint, query InvoiceInfoQueryBatch) (resp GetInvoiceInfoBatchResponse) {
 	if ok := validate.Struct(query); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/card/invoice/reimburse/getinvoiceinfobatch?%s", queryParams.Encode()), query)
+	_, err := ww.getRequest(corpId).SetBody(query).SetResult(&resp).
+		Post("/cgi-bin/card/invoice/reimburse/getinvoiceinfobatch")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

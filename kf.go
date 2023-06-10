@@ -1,9 +1,7 @@
 package wework
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type KfAccount struct {
@@ -16,55 +14,49 @@ type KfAccountAddResponse struct {
 	OpenKfId string `json:"open_kfid"`
 }
 
-func (ww weWork) KfAccountAdd(corpId uint, account KfAccount) (resp KfAccountAddResponse) {
+func (ww *weWork) KfAccountAdd(corpId uint, account KfAccount) (resp KfAccountAddResponse) {
 	if ok := validate.Struct(account); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/account/add?%s", queryParams.Encode()), account)
+	_, err := ww.getRequest(corpId).SetBody(account).SetResult(&resp).
+		Post("/cgi-bin/kf/account/add")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
 
-func (ww weWork) KfAccountDel(corpId uint, kfId string) (resp internal.BizResponse) {
+func (ww *weWork) KfAccountDel(corpId uint, kfId string) (resp internal.BizResponse) {
 	if kfId == "" {
 		resp.ErrCode = 500
 		resp.ErrorMsg = "客服ID必填"
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
 	params := H{}
 	params["open_kfid"] = kfId
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/account/del?%s", queryParams.Encode()), params)
+	_, err := ww.getRequest(corpId).SetBody(params).SetResult(&resp).
+		Post("/cgi-bin/kf/account/del")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
 
-func (ww weWork) KfAccountUpdate(corpId uint, account KfAccount) (resp internal.BizResponse) {
+func (ww *weWork) KfAccountUpdate(corpId uint, account KfAccount) (resp internal.BizResponse) {
 	if ok := validate.Struct(account); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/account/update?%s", queryParams.Encode()), account)
+	_, err := ww.getRequest(corpId).SetBody(account).SetResult(&resp).
+		Post("/cgi-bin/kf/account/update")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -83,19 +75,17 @@ type KfAccountListResponse struct {
 	} `json:"account_list"`
 }
 
-func (ww weWork) KfAccountList(corpId uint, request KfAccountListRequest) (resp KfAccountListResponse) {
+func (ww *weWork) KfAccountList(corpId uint, request KfAccountListRequest) (resp KfAccountListResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/account/list?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/kf/account/list")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -105,22 +95,20 @@ type KfAccContactWayResponse struct {
 	Url string `json:"url"`
 }
 
-func (ww weWork) KfAddContactWay(corpId uint, kfId string, scene string) (resp KfAccContactWayResponse) {
+func (ww *weWork) KfAddContactWay(corpId uint, kfId string, scene string) (resp KfAccContactWayResponse) {
 	if kfId == "" {
 		resp.ErrCode = 500
 		resp.ErrorMsg = "客服ID必填"
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
 	params := H{}
 	params["open_kfid"] = kfId
 	params["scene"] = scene
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/add_contact_way?%s", queryParams.Encode()), params)
+	_, err := ww.getRequest(corpId).SetBody(params).SetResult(&resp).
+		Post("/cgi-bin/kf/add_contact_way")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -140,36 +128,32 @@ type KfServicerResponse struct {
 	} `json:"result_list"`
 }
 
-func (ww weWork) KfServicerAdd(corpId uint, request KfServicerRequest) (resp KfServicerResponse) {
+func (ww *weWork) KfServicerAdd(corpId uint, request KfServicerRequest) (resp KfServicerResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/servicer/add?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/kf/servicer/add")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
 
-func (ww weWork) KfServicerDel(corpId uint, request KfServicerRequest) (resp KfServicerResponse) {
+func (ww *weWork) KfServicerDel(corpId uint, request KfServicerRequest) (resp KfServicerResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/servicer/del?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/kf/servicer/del")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -183,15 +167,12 @@ type KfServicerListResponse struct {
 	} `json:"servicer_list"`
 }
 
-func (ww weWork) KfServicerList(corpId uint, kfId string) (resp KfServicerListResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
-	queryParams.Add("open_kfid", kfId)
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/kf/servicer/list?%s", queryParams.Encode()))
+func (ww *weWork) KfServicerList(corpId uint, kfId string) (resp KfServicerListResponse) {
+	_, err := ww.getRequest(corpId).SetQueryParam("open_kf_id", kfId).SetResult(&resp).
+		Get("/cgi-bin/kf/servicer/list")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -207,19 +188,17 @@ type KfServiceStateGetResponse struct {
 	ServicerUserId string `json:"servicer_userid"`
 }
 
-func (ww weWork) KfServiceStateGet(corpId uint, request KfServiceStateGetRequest) (resp KfServiceStateGetResponse) {
+func (ww *weWork) KfServiceStateGet(corpId uint, request KfServiceStateGetRequest) (resp KfServiceStateGetResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/service_state/get?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/kf/service_state/get")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -236,19 +215,17 @@ type KfServiceStateTransResponse struct {
 	MsgCode string `json:"msg_code"`
 }
 
-func (ww weWork) KfServiceStateTrans(corpId uint, request KfServiceStateTransRequest) (resp KfServiceStateTransResponse) {
+func (ww *weWork) KfServiceStateTrans(corpId uint, request KfServiceStateTransRequest) (resp KfServiceStateTransResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/service_state/trans?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/kf/service_state/trans")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -376,19 +353,17 @@ type MsgEvent struct {
 	} `json:"wechat_channels"`
 }
 
-func (ww weWork) KfSyncMsg(corpId uint, request KfSyncMsgRequest) (resp KfSyncMsgResponse) {
+func (ww *weWork) KfSyncMsg(corpId uint, request KfSyncMsgRequest) (resp KfSyncMsgResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/sync_msg?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/kf/sync_msg")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -414,19 +389,17 @@ type SendMsgResponse struct {
 	MsgId string `json:"msgid"`
 }
 
-func (ww weWork) KfSendMsg(corpId uint, request SendMsgRequest) (resp SendMsgResponse) {
+func (ww *weWork) KfSendMsg(corpId uint, request SendMsgRequest) (resp SendMsgResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/send_msg?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/kf/send_msg")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -439,19 +412,17 @@ type SendMsgOnEventRequest struct {
 	MsgMenu *MsgMenu `json:"msgmenu,omitempty"`
 }
 
-func (ww weWork) KfSendMsgOnEvent(corpId uint, request SendMsgOnEventRequest) (resp SendMsgResponse) {
+func (ww *weWork) KfSendMsgOnEvent(corpId uint, request SendMsgOnEventRequest) (resp SendMsgResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/send_msg_on_event?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/kf/send_msg_on_event")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -477,19 +448,17 @@ type KfCustomerBatchGetResponse struct {
 	InvalidExternalUserid []string `json:"invalid_external_userid"`
 }
 
-func (ww weWork) KfCustomerBatchGet(corpId uint, userList []string, needEnterSessionContext int) (resp KfCustomerBatchGetResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
+func (ww *weWork) KfCustomerBatchGet(corpId uint, userList []string, needEnterSessionContext int) (resp KfCustomerBatchGetResponse) {
 	params := H{}
 	if needEnterSessionContext == 1 {
 		params["need_enter_session_context"] = 1
 	}
 	params["external_userid_list"] = userList
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/customer/batchget?%s", queryParams.Encode()), params)
+	_, err := ww.getRequest(corpId).SetBody(params).SetResult(&resp).
+		Post("/cgi-bin/kf/customer/batchget")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -500,15 +469,12 @@ type KfGetCorpQualificationResponse struct {
 }
 
 // KfGetCorpQualification 仅支持第三方应用，且需具有“微信客服->获取基础信息”权限
-func (ww weWork) KfGetCorpQualification(corpId uint) (resp KfGetCorpQualificationResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
-
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/kf/get_corp_qualification?%s", queryParams.Encode()))
+func (ww *weWork) KfGetCorpQualification(corpId uint) (resp KfGetCorpQualificationResponse) {
+	_, err := ww.getRequest(corpId).SetResult(&resp).
+		Get("/cgi-bin/kf/get_corp_qualification")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -524,14 +490,12 @@ type KfGetUpgradeServiceConfigResponse struct {
 	} `json:"groupchat_range"`
 }
 
-func (ww weWork) KfGetUpgradeServiceConfig(corpId uint) (resp KfGetUpgradeServiceConfigResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/kf/customer/get_upgrade_service_config?%s", queryParams.Encode()))
+func (ww *weWork) KfGetUpgradeServiceConfig(corpId uint) (resp KfGetUpgradeServiceConfigResponse) {
+	_, err := ww.getRequest(corpId).SetResult(&resp).
+		Get("/cgi-bin/kf/customer/get_upgrade_service_config")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -554,19 +518,17 @@ type UpgradeServiceGroupChat struct {
 	Wording string `json:"wording"`
 }
 
-func (ww weWork) KfUpgradeService(corpId uint, request UpgradeServiceRequest) (resp internal.BizResponse) {
+func (ww *weWork) KfUpgradeService(corpId uint, request UpgradeServiceRequest) (resp internal.BizResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/customer/upgrade_service?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/kf/customer/upgrade_service")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -576,19 +538,17 @@ type CancelUpgradeServiceRequest struct {
 	ExternalUserId string `json:"external_userid" validate::"required"`
 }
 
-func (ww weWork) KfCancelUpgradeService(corpId uint, request CancelUpgradeServiceRequest) (resp internal.BizResponse) {
+func (ww *weWork) KfCancelUpgradeService(corpId uint, request CancelUpgradeServiceRequest) (resp internal.BizResponse) {
 	if ok := validate.Struct(request); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/customer/cancel_upgrade_service?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/kf/customer/cancel_upgrade_service")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -614,19 +574,17 @@ type KfGetCorpStatisticResponse struct {
 	} `json:"statistic_list"`
 }
 
-func (ww weWork) KfGetCorpStatistic(corpId uint, filter KfGetCorpStatisticFilter) (resp KfGetCorpStatisticResponse) {
+func (ww *weWork) KfGetCorpStatistic(corpId uint, filter KfGetCorpStatisticFilter) (resp KfGetCorpStatisticResponse) {
 	if ok := validate.Struct(filter); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/get_corp_statistic?%s", queryParams.Encode()), filter)
+	_, err := ww.getRequest(corpId).SetBody(filter).SetResult(&resp).
+		Post("/cgi-bin/kf/get_corp_statistic")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -662,19 +620,17 @@ type KfGetServicerStatisticResponse struct {
 	} `json:"statistic_list"`
 }
 
-func (ww weWork) KfGetServicerStatistic(corpId uint, filter KfGetServicerStatisticFilter) (resp KfGetServicerStatisticResponse) {
+func (ww *weWork) KfGetServicerStatistic(corpId uint, filter KfGetServicerStatisticFilter) (resp KfGetServicerStatisticResponse) {
 	if ok := validate.Struct(filter); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/kf/get_servicer_statistic?%s", queryParams.Encode()), filter)
+	_, err := ww.getRequest(corpId).SetBody(filter).SetResult(&resp).
+		Post("/cgi-bin/kf/get_servicer_statistic")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

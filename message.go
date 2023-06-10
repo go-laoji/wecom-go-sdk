@@ -2,8 +2,7 @@ package wework
 
 import (
 	"encoding/json"
-	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type Message struct {
@@ -128,7 +127,7 @@ type MessageSendResponse struct {
 
 // MessageSend 发送应用消息
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90372
-func (ww weWork) MessageSend(corpId uint, msg interface{}) (resp MessageSendResponse) {
+func (ww *weWork) MessageSend(corpId uint, msg interface{}) (resp MessageSendResponse) {
 	if ok := validate.Struct(msg); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -163,28 +162,24 @@ func (ww weWork) MessageSend(corpId uint, msg interface{}) (resp MessageSendResp
 		h["msgtype"] = "template_card"
 	}
 
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/message/send?%s", queryParams.Encode()), h)
+	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).
+		Post("/cgi-bin/message/send")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
 
 // MessageReCall 撤回应用消息
 // https://open.work.weixin.qq.com/api/doc/90000/90135/94867
-func (ww weWork) MessageReCall(corpId uint, msgId string) (resp internal.BizResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
+func (ww *weWork) MessageReCall(corpId uint, msgId string) (resp internal.BizResponse) {
 	h := H{"msgid": msgId}
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/message/recall?%s", queryParams.Encode()), h)
+	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).
+		Post("/cgi-bin/message/recall")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
