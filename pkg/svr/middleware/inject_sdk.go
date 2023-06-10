@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/go-laoji/wecom-go-sdk"
+	"github.com/go-laoji/wecom-go-sdk/v2"
 )
 
 func InjectSdk(ww wework.IWeWork) gin.HandlerFunc {

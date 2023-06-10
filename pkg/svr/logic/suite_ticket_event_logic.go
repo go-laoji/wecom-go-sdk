@@ -2,7 +2,7 @@ package logic
 
 import (
 	"encoding/xml"
-	"github.com/go-laoji/wecom-go-sdk"
+	"github.com/go-laoji/wecom-go-sdk/v2"
 )
 
 type SuiteTicketEvent struct {

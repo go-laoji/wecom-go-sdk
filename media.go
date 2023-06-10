@@ -1,9 +1,8 @@
 package wework
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 	"os"
 )
 
@@ -33,7 +32,7 @@ type MediaUploadResponse struct {
 // MediaUploadAttachment 上传附件资源
 // 不同的附件类型用于不同的场景。1：朋友圈；2:商品图册
 // https://open.work.weixin.qq.com/api/doc/90001/90143/95178
-func (ww weWork) MediaUploadAttachment(corpId uint, attrs Media) (resp MediaUploadResponse) {
+func (ww *weWork) MediaUploadAttachment(corpId uint, attrs Media) (resp MediaUploadResponse) {
 	if ok := validate.Struct(attrs); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
@@ -44,17 +43,13 @@ func (ww weWork) MediaUploadAttachment(corpId uint, attrs Media) (resp MediaUplo
 		resp.ErrorMsg = fmt.Sprintf("%s 文件不存在！", attrs.FilePath)
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	queryParams.Add("media_type", string(attrs.Type))
-	queryParams.Add("attachment_type", fmt.Sprintf("%v", attrs.AttachmentType))
-	body, err := internal.HttpUploadMedia(
-		fmt.Sprintf("/cgi-bin/media/upload_attachment?%s",
-			queryParams.Encode()), attrs.FilePath, "")
+	_, err := ww.getRequest(corpId).SetQueryParam("media_type", string(attrs.Type)).
+		SetQueryParam("attachment_type", fmt.Sprintf("%v", attrs.AttachmentType)).
+		SetFile("media", attrs.FilePath).SetResult(&resp).
+		Post("/cgi-bin/media/upload_attachment")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -72,23 +67,22 @@ func isExists(path string) bool {
 
 // MediaUpload 上传临时素材
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90389
-func (ww weWork) MediaUpload(corpId uint, fileType MediaType, filePath string, fileName string) (resp MediaUploadResponse) {
+func (ww *weWork) MediaUpload(corpId uint, fileType MediaType, filePath string) (resp MediaUploadResponse) {
 	if !isExists(filePath) {
 		resp.ErrCode = 500
 		resp.ErrorMsg = "文件路径不存在"
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	queryParams.Add("type", string(fileType))
-
-	body, err := internal.HttpUploadMedia(
-		fmt.Sprintf("/cgi-bin/media/upload?%s",
-			queryParams.Encode()), filePath, fileName)
+	_, err := ww.getRequest(corpId).SetQueryParam("type", string(fileType)).
+		SetFile("media", filePath).SetResult(&resp).
+		Post("/cgi-bin/media/upload")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
+	}
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
 	}
 	return
 }
@@ -100,21 +94,18 @@ type MediaUploadImgResponse struct {
 
 // MediaUploadImg 上传图片
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90392
-func (ww weWork) MediaUploadImg(corpId uint, filePath string, fileName string) (resp MediaUploadImgResponse) {
+func (ww *weWork) MediaUploadImg(corpId uint, filePath string) (resp MediaUploadImgResponse) {
 	if !isExists(filePath) {
 		resp.ErrCode = 500
 		resp.ErrorMsg = "文件路径不存在"
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpUploadMedia(
-		fmt.Sprintf("/cgi-bin/media/uploadimg?%s",
-			queryParams.Encode()), filePath, fileName)
+	_, err := ww.getRequest(corpId).
+		SetFile("media", filePath).SetResult(&resp).
+		Post("/cgi-bin/media/uploadimg")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

@@ -2,10 +2,9 @@ package wework
 
 import (
 	"crypto/sha1"
-	"encoding/json"
 	"fmt"
 	"github.com/dgraph-io/badger/v3"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 	"io"
 	"math/rand"
 	"sort"
@@ -19,7 +18,7 @@ type TicketResponse struct {
 	ExpiresIn int    `json:"expires_in"`
 }
 
-func (ww weWork) GetJsApiTicket(corpId uint) (resp TicketResponse) {
+func (ww *weWork) GetJsApiTicket(corpId uint) (resp TicketResponse) {
 	var item *badger.Item
 	var err error
 	err = ww.cache.View(func(txn *badger.Txn) error {
@@ -34,13 +33,11 @@ func (ww weWork) GetJsApiTicket(corpId uint) (resp TicketResponse) {
 		return err
 	})
 	if err == badger.ErrKeyNotFound {
-		queryParams := ww.buildCorpQueryToken(corpId)
-		body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/get_jsapi_ticket?%s", queryParams.Encode()))
+		_, err := ww.getRequest(corpId).SetResult(&resp).Get("/cgi-bin/get_jsapi_ticket")
 		if err != nil {
 			resp.ErrCode = 500
 			resp.ErrorMsg = err.Error()
 		} else {
-			json.Unmarshal(body, &resp)
 			ww.cache.Update(func(txn *badger.Txn) error {
 				entry := badger.NewEntry([]byte(fmt.Sprintf("ticket-%v", corpId)), []byte(resp.Ticket)).
 					WithTTL(time.Second * time.Duration(resp.ExpiresIn))
@@ -52,7 +49,7 @@ func (ww weWork) GetJsApiTicket(corpId uint) (resp TicketResponse) {
 	return
 }
 
-func (ww weWork) GetJsApiAgentTicket(corpId uint, agentId int) (resp TicketResponse) {
+func (ww *weWork) GetJsApiAgentTicket(corpId uint, agentId int) (resp TicketResponse) {
 	var item *badger.Item
 	var err error
 	err = ww.cache.View(func(txn *badger.Txn) error {
@@ -67,14 +64,12 @@ func (ww weWork) GetJsApiAgentTicket(corpId uint, agentId int) (resp TicketRespo
 		return err
 	})
 	if err == badger.ErrKeyNotFound {
-		queryParams := ww.buildCorpQueryToken(corpId)
-		queryParams.Add("type", "agent_config")
-		body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/ticket/get?%s", queryParams.Encode()))
+		_, err := ww.getRequest(corpId).SetResult(&resp).
+			SetQueryParam("type", "agent_config").Get("/cgi-bin/ticket/get")
 		if err != nil {
 			resp.ErrCode = 500
 			resp.ErrorMsg = err.Error()
 		} else {
-			json.Unmarshal(body, &resp)
 			ww.cache.Update(func(txn *badger.Txn) error {
 				entry := badger.NewEntry([]byte(fmt.Sprintf("ticket-%v-%v", corpId, agentId)), []byte(resp.Ticket)).
 					WithTTL(time.Second * time.Duration(resp.ExpiresIn))
@@ -105,7 +100,7 @@ func randString(n int) string {
 	return string(b)
 }
 
-func (ww weWork) GetConfigSignature(corpId uint, referer string) (resp JsTicketSignatureResponse) {
+func (ww *weWork) GetConfigSignature(corpId uint, referer string) (resp JsTicketSignatureResponse) {
 	noncestr := randString(16)
 	timestamp := time.Now().Unix()
 	sl := []string{fmt.Sprintf("noncestr=%s", noncestr),
@@ -125,7 +120,7 @@ func (ww weWork) GetConfigSignature(corpId uint, referer string) (resp JsTicketS
 
 }
 
-func (ww weWork) GetAgentConfigSignature(corpId uint, agentId int, referer string) (resp JsTicketSignatureResponse) {
+func (ww *weWork) GetAgentConfigSignature(corpId uint, agentId int, referer string) (resp JsTicketSignatureResponse) {
 	noncestr := randString(16)
 	timestamp := time.Now().Unix()
 	sl := []string{fmt.Sprintf("noncestr=%s", noncestr),

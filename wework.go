@@ -2,11 +2,13 @@ package wework
 
 import (
 	badger "github.com/dgraph-io/badger/v3"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
+	"github.com/go-resty/resty/v2"
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"net/url"
+	"os"
 )
 
 type IWeWork interface {
@@ -105,8 +107,8 @@ type IWeWork interface {
 	GroupOpengId2ChatId(corpId uint, opengid string) (resp GroupOpengId2ChatIdResponse)
 
 	MediaUploadAttachment(corpId uint, attrs Media) (resp MediaUploadResponse)
-	MediaUpload(corpId uint, fileType MediaType, filePath string, fileName string) (resp MediaUploadResponse)
-	MediaUploadImg(corpId uint, filePath string, fileName string) (resp MediaUploadImgResponse)
+	MediaUpload(corpId uint, fileType MediaType, filePath string) (resp MediaUploadResponse)
+	MediaUploadImg(corpId uint, filePath string) (resp MediaUploadImgResponse)
 
 	MessageSend(corpId uint, msg interface{}) (resp MessageSendResponse)
 	MessageReCall(corpId uint, msgId string) (resp internal.BizResponse)
@@ -250,10 +252,12 @@ type IWeWork interface {
 
 	RemindGroupMsgSend(corpId uint, msgid string) (resp internal.BizResponse)
 	CancelMomentTask(corpId uint, momentId string) (resp internal.BizResponse)
+
+	SetProxy(proxyUrl string)
+	SetDebug(debug bool)
 }
 
 type weWork struct {
-	IWeWork
 	corpId              string
 	providerSecret      string
 	suiteId             string
@@ -266,6 +270,7 @@ type weWork struct {
 	engine              *gorm.DB
 	getAppSecretFunc    func(corpId uint) (corpid string, secret string, customizedApp bool)
 	getAgentIdFunc      func(corpId uint) (appId int)
+	httpClient          *resty.Client
 }
 
 type WeWorkConfig struct {
@@ -278,6 +283,12 @@ type WeWorkConfig struct {
 	Dsn                 string
 }
 
+const (
+	UserAgent   = "wecom-go-sdk-v2"
+	ContentType = "application/json;charset=UTF-8"
+	qyApiHost   = "https://qyapi.weixin.qq.com"
+)
+
 func NewWeWork(c WeWorkConfig) IWeWork {
 	var ww = new(weWork)
 	ww.corpId = c.CorpId
@@ -286,8 +297,12 @@ func NewWeWork(c WeWorkConfig) IWeWork {
 	ww.suiteSecret = c.SuiteSecret
 	ww.suiteToken = c.SuiteToken
 	ww.suiteEncodingAesKey = c.SuiteEncodingAesKey
-	ww.cache, _ = badger.Open(badger.DefaultOptions("./cache.db").WithIndexCacheSize(100 << 20))
+	ww.cache, _ = badger.Open(badger.DefaultOptions("./cache.db").WithIndexCacheSize(10 << 20))
 	ww.logger = logger
+	ww.httpClient = resty.New().
+		SetHeader("User-Agent", UserAgent).
+		SetHeader("Content-Type", ContentType).
+		SetBaseURL(qyApiHost)
 	if c.Dsn != "" {
 		ww.engine, _ = gorm.Open(mysql.Open(c.Dsn), &gorm.Config{})
 	}
@@ -295,33 +310,57 @@ func NewWeWork(c WeWorkConfig) IWeWork {
 	return ww
 }
 
-func (ww weWork) Logger() *zap.Logger {
+func (ww *weWork) Logger() *zap.Logger {
 	return ww.logger
+}
+func (ww *weWork) SetProxy(proxyUrl string) {
+	if _, ok := url.Parse(proxyUrl); ok == nil {
+		ww.httpClient.SetProxy(proxyUrl)
+	}
+}
+func (ww *weWork) SetDebug(debug bool) {
+	ww.httpClient.SetDebug(debug)
+}
+
+func (ww *weWork) getRequest(corpid uint) *resty.Request {
+	R := ww.httpClient.R().SetQueryParam("access_token", ww.getCorpToken(corpid))
+	if os.Getenv("debug") != "" {
+		R.SetQueryParam("debug", "1")
+	}
+	return R
+}
+
+func (ww *weWork) getProviderRequest() *resty.Request {
+	R := ww.httpClient.R().SetQueryParam("provider_access_token", ww.getProviderToken())
+	if os.Getenv("debug") != "" {
+		R.SetQueryParam("debug", "1")
+	}
+	return R
 }
 
 // GetCorpId 返回服务商corpId
-func (ww weWork) GetCorpId() string {
+func (ww *weWork) GetCorpId() string {
 	return ww.corpId
 }
 
 // GetSuiteId 返回服务商SuiteId
-func (ww weWork) GetSuiteId() string {
+func (ww *weWork) GetSuiteId() string {
 	return ww.suiteId
 }
 
 // GetSuiteToken 返回服务商配置的SuiteToken
-func (ww weWork) GetSuiteToken() string {
+func (ww *weWork) GetSuiteToken() string {
 	return ww.suiteToken
 }
 
 // GetSuiteEncodingAesKey 返回服务商配置的EncodingAesKey
-func (ww weWork) GetSuiteEncodingAesKey() string {
+func (ww *weWork) GetSuiteEncodingAesKey() string {
 	return ww.suiteEncodingAesKey
 }
 
 // GetAgentId 获取应用的AgentId;三方或代开发应用会将信息存入数据库中
 // 如果修改了表结构，需要配合 SetAgentIdFunc 使用
-func (ww weWork) GetAgentId(corpId uint) (appId int) {
+func (ww *weWork) GetAgentId(corpId uint) (appId int) {
 	if ww.getAgentIdFunc != nil {
 		return ww.getAgentIdFunc(corpId)
 	} else {

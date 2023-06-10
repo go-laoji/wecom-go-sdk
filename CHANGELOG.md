@@ -1,5 +1,14 @@
 # 变更记录
 
+## v2.0.0 2023-06-10
+使用go-resty代替原生http.Client
+* 增加SetProxy(proxyUrl string) 对绕过IP限制有用
+* 增加SetDebug(debug bool) 可以监控http请求
+* 升级了些基础库版本
+* TODO:
+  * 低版本测试,开发环境为 go 1.20
+  * 单测补充
+
 ## v1.5.7 2023-04-03
 增加jssdk调用时的config签名函数
 * GetConfigSignature
