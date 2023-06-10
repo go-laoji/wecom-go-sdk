@@ -11,6 +11,48 @@
 
 [使用wecom-go-sdk快速开发企业微信自建应用](https://mp.weixin.qq.com/s?__biz=Mzg5NTcyOTk1OA==&mid=2247483782&idx=1&sn=84345385511ca981c47b55f7ae24b81c)
 
+# V2版本升级
+
+http请求改用`go-resty`可方便指定重试、错误处理hooks(当前未处理)
+
+## 使用
+
+    go get github.com/go-laoji/wecom-go-sdk/v2
+
+* 增加SetProxy(proxyUrl string) 对绕过IP限制有用,可参考[OpenResty(nginx)配置正向代理绕过企微自建IP限制](https://mp.weixin.qq.com/s/ZDUZyIaz3HOsrqRUQx8w-w)
+* 增加SetDebug(debug bool) 可以监控http请求,看如下的输出
+
+
+    ~~~ REQUEST ~~~
+    GET  /cgi-bin/gettoken?corpid=wp0k1qEQAAiwQMWYzF8JOr99RJRX1_1A&corpsecret=Y2YbFpt95RcGTs9CvriQ2uj23Wl8B3IxtbRM9nKfjVU  HTTP/1.1
+    HOST   : qyapi.weixin.qq.com
+    HEADERS:
+        Accept: application/json;charset=UTF-8
+        Content-Type: application/json;charset=UTF-8
+        User-Agent: wecom-go-sdk-v2
+    BODY   :
+    ***** NO CONTENT *****
+    ------------------------------------------------------------------------------
+    ~~~ RESPONSE ~~~
+    STATUS       : 200 OK
+    PROTO        : HTTP/2.0
+    RECEIVED AT  : 2023-06-10T21:03:57.834584+08:00
+    TIME DURATION: 181.642531ms
+    HEADERS      :
+        Content-Length: 176
+        Content-Type: application/json; charset=UTF-8
+        Date: Sat, 10 Jun 2023 13:03:58 GMT
+        Error-Code: 40001
+        Error-Msg: invalid credential, hint: [1686402237354962763423746], from ip: 123.116.182.237, more info at https://open.work.weixin.qq.com/devtool/query?e=40001
+        Server: nginx
+    BODY         :
+    {
+       "errcode": 40001,
+       "errmsg": "invalid credential, hint: [1686402237354962763423746], from ip: 123.116.182.237, more info at https://open.work.weixin.qq.com/devtool/query?e=40001"
+    }
+    ==============================================================================
+
+
 ## 配置文件格式
 
     CorpId: wwxxx
@@ -37,15 +79,15 @@
 
 ## 第三方包
 
-- [github.com/dgraph-io/badger/v3 v3.2103.2](https://github.com/dgraph-io/badger) 一个KeyValue数据库,类redis
-- [github.com/gin-gonic/gin  v1.7.4](https://github.com/gin-gonic/gin) web框架
+- [github.com/dgraph-io/badger/v3 v3.2103.5](https://github.com/dgraph-io/badger) 一个KeyValue数据库,类redis
+- [github.com/gin-gonic/gin  v1.9.1](https://github.com/gin-gonic/gin) web框架
 - [github.com/go-laoji/wxbizmsgcrypt v1.0.0](https://github.com/go-laoji/wxbizmsgcrypt) 微信数据加解密
-- [github.com/jinzhu/copier v0.3.2](https://github.com/jinzhu/copier) jinzhu大神的数据拷贝库
-- [go.uber.org/zap v1.19.1](https://go.uber.org/zap) 日志库
-- [gopkg.in/natefinch/lumberjack.v2 v2.0.0](https://gopkg.in/natefinch/lumberjack.v2) 日志切割
-- [gopkg.in/yaml.v2 v2.2.8](https://gopkg.in/yaml.v2) yaml解析
-- [gorm.io/driver/mysql v1.2.0](https://gorm.io/driver/mysql) 同属jinzhu大神的mysql驱动
-- [gorm.io/gorm v1.22.3](https://gorm.io/gorm) 同属jinzhu大神的orm库
+- [github.com/jinzhu/copier v0.3.5](https://github.com/jinzhu/copier) jinzhu大神的数据拷贝库
+- [go.uber.org/zap v1.24.0](https://go.uber.org/zap) 日志库
+- [gopkg.in/natefinch/lumberjack.v2 v2.2.1](https://gopkg.in/natefinch/lumberjack.v2) 日志切割
+- [gopkg.in/yaml.v2 v2.4.0](https://gopkg.in/yaml.v2) yaml解析
+- [gorm.io/driver/mysql v1.5.1](https://gorm.io/driver/mysql) 同属jinzhu大神的mysql驱动
+- [gorm.io/gorm v1.25.1](https://gorm.io/gorm) 同属jinzhu大神的orm库
 
 ## API列表
 
