@@ -2,8 +2,8 @@ package logic
 
 import (
 	"encoding/xml"
-	"github.com/go-laoji/wecom-go-sdk"
-	"github.com/go-laoji/wecom-go-sdk/pkg/svr/models"
+	"github.com/go-laoji/wecom-go-sdk/v2"
+	"github.com/go-laoji/wecom-go-sdk/v2/pkg/svr/models"
 	"github.com/jinzhu/copier"
 )
 

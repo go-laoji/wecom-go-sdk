@@ -1,10 +1,7 @@
 package wework
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
-	"net/url"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type IdConvertExternalTagIdResponse struct {
@@ -23,13 +20,11 @@ func (ww weWork) IdConvertExternalTagId(corpId uint, tagIdList []string) (resp I
 		return
 	}
 	p := H{"external_tagid_list": tagIdList}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/idconvert/external_tagid?%s", queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/idconvert/external_tagid")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -41,14 +36,11 @@ type CorpIdToOpenCorpIdResponse struct {
 
 func (ww weWork) CorpIdToOpenCorpId(corpId string) (resp CorpIdToOpenCorpIdResponse) {
 	p := H{"corpid": corpId}
-	queryParams := url.Values{}
-	queryParams.Add("provider_access_token", ww.getProviderToken())
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/service/corpid_to_opencorpid?%s", queryParams.Encode()), p)
+	_, err := ww.getProviderRequest().SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/service/corpid_to_opencorpid")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -69,13 +61,11 @@ func (ww weWork) UserIdToOpenUserId(corpId uint, userIdList []string) (resp User
 		return
 	}
 	p := H{"userid_list": userIdList}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/batch/userid_to_openuserid?%s", queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/batch/userid_to_openuserid")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -95,13 +85,11 @@ func (ww weWork) GetNewExternalUserId(corpId uint, userIdList []string) (resp Ge
 		return
 	}
 	p := H{"external_userid_list": userIdList}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/get_new_external_userid?%s", queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/get_new_external_userid")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -117,13 +105,11 @@ func (ww weWork) GroupChatGetNewExternalUserId(corpId uint, request GroupChatGet
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/groupchat/get_new_external_userid?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/groupchat/get_new_external_userid")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -144,13 +130,11 @@ func (ww weWork) IdConvertOpenKfId(corpId uint, kfList []string) (resp IdConvert
 		return
 	}
 	p := H{"open_kfid_list": kfList}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/idconvert/open_kfid?%s", queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/idconvert/open_kfid")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

@@ -1,9 +1,7 @@
 package wework
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type InvoiceInfoQuery struct {
@@ -50,13 +48,11 @@ func (ww weWork) GetInvoiceInfo(corpId uint, query InvoiceInfoQuery) (resp GetIn
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/card/invoice/reimburse/getinvoiceinfo?%s", queryParams.Encode()), query)
+	_, err := ww.getRequest(corpId).SetBody(query).SetResult(&resp).
+		Post("/cgi-bin/card/invoice/reimburse/getinvoiceinfo")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -81,13 +77,11 @@ func (ww weWork) UpdateInvoiceStatus(corpId uint, request UpdateInvoiceStatusReq
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/card/invoice/reimburse/updateinvoicestatus?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/card/invoice/reimburse/updateinvoicestatus")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -106,13 +100,11 @@ func (ww weWork) UpdateInvoiceStatusBatch(corpId uint, request UpdateInvoiceStat
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/card/invoice/reimburse/updatestatusbatch?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/card/invoice/reimburse/updatestatusbatch")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -134,13 +126,11 @@ func (ww weWork) GetInvoiceInfoBatch(corpId uint, query InvoiceInfoQueryBatch) (
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/card/invoice/reimburse/getinvoiceinfobatch?%s", queryParams.Encode()), query)
+	_, err := ww.getRequest(corpId).SetBody(query).SetResult(&resp).
+		Post("/cgi-bin/card/invoice/reimburse/getinvoiceinfobatch")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

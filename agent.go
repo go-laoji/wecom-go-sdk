@@ -1,9 +1,8 @@
 package wework
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type AgentGetResponse struct {
@@ -33,15 +32,13 @@ type AgentGetResponse struct {
 // AgentGet 获取指定的应用详情
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90363#%E8%8E%B7%E5%8F%96access_token%E5%AF%B9%E5%BA%94%E7%9A%84%E5%BA%94%E7%94%A8%E5%88%97%E8%A1%A8
 func (ww weWork) AgentGet(corpId uint, agentId int) (resp AgentGetResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
-	queryParams.Add("agentid", fmt.Sprintf("%v", agentId))
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/agent/get?%s",
-		queryParams.Encode()))
+	_, err := ww.getRequest(corpId).
+		SetQueryParam("agentid", fmt.Sprintf("%v", agentId)).
+		SetResult(&resp).
+		Get("/cgi-bin/agent/get")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -58,14 +55,12 @@ type AgentListResponse struct {
 // AgentList 获取access_token对应的应用列表
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90363#%E8%8E%B7%E5%8F%96access_token%E5%AF%B9%E5%BA%94%E7%9A%84%E5%BA%94%E7%94%A8%E5%88%97%E8%A1%A8
 func (ww weWork) AgentList(corpId uint) (resp AgentListResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/agent/list?%s",
-		queryParams.Encode()))
+	_, err := ww.getRequest(corpId).
+		SetResult(&resp).
+		Get("/cgi-bin/agent/list")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

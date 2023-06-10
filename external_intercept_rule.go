@@ -1,9 +1,7 @@
 package wework
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type InterceptRule struct {
@@ -29,13 +27,11 @@ func (ww weWork) AddInterceptRule(corpId uint, interceptRule InterceptRule) (res
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/add_intercept_rule?%s", queryParams.Encode()), interceptRule)
+	_, err := ww.getRequest(corpId).SetBody(interceptRule).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/add_intercept_rule")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -52,13 +48,11 @@ type GetInterceptRuleListResponse struct {
 // GetInterceptRuleList 获取敏感词规则列表
 // https://open.work.weixin.qq.com/api/doc/90001/90143/95130#%E8%8E%B7%E5%8F%96%E6%95%8F%E6%84%9F%E8%AF%8D%E8%A7%84%E5%88%99%E5%88%97%E8%A1%A8
 func (ww weWork) GetInterceptRuleList(corpId uint) (resp GetInterceptRuleListResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/externalcontact/get_intercept_rule_list?%s", queryParams.Encode()))
+	_, err := ww.getRequest(corpId).SetResult(&resp).
+		Get("/cgi-bin/externalcontact/get_intercept_rule_list")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -74,15 +68,13 @@ type GetInterceptRuleResponse struct {
 // GetInterceptRule 获取敏感词规则详情
 // https://open.work.weixin.qq.com/api/doc/90001/90143/95130#%E8%8E%B7%E5%8F%96%E6%95%8F%E6%84%9F%E8%AF%8D%E8%A7%84%E5%88%99%E8%AF%A6%E6%83%85
 func (ww weWork) GetInterceptRule(corpId uint, ruleId string) (resp GetInterceptRuleResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
 	h := H{}
 	h["rule_id"] = ruleId
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/get_intercept_rule?%s", queryParams.Encode()), h)
+	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/get_intercept_rule")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -112,13 +104,11 @@ func (ww weWork) UpdateInterceptRule(corpId uint, request UpdateInterceptRuleReq
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/update_intercept_rule?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/update_intercept_rule")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -126,15 +116,13 @@ func (ww weWork) UpdateInterceptRule(corpId uint, request UpdateInterceptRuleReq
 // DeleteInterceptRule 删除敏感词规则
 // https://open.work.weixin.qq.com/api/doc/90001/90143/95130#%E5%88%A0%E9%99%A4%E6%95%8F%E6%84%9F%E8%AF%8D%E8%A7%84%E5%88%99
 func (ww weWork) DeleteInterceptRule(corpId uint, ruleId string) (resp internal.BizResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
 	h := H{}
 	h["rule_id"] = ruleId
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/del_intercept_rule?%s", queryParams.Encode()), h)
+	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/del_intercept_rule")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

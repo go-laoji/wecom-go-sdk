@@ -1,9 +1,7 @@
 package wework
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type ConclusionsText struct {
@@ -65,13 +63,11 @@ func (ww weWork) ExternalAddContactWay(corpId uint, me ContactMe) (resp ContactM
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/add_contact_way?%s", queryParams.Encode()), me)
+	_, err := ww.getRequest(corpId).SetBody(me).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/add_contact_way")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -84,13 +80,11 @@ func (ww weWork) ExternalUpdateContactWay(corpId uint, me ContactMe) (resp inter
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/update_contact_way?%s", queryParams.Encode()), me)
+	_, err := ww.getRequest(corpId).SetBody(me).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/update_contact_way")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -107,13 +101,11 @@ type ContactMeGetResponse struct {
 // https://open.work.weixin.qq.com/api/doc/90001/90143/92577#%E8%8E%B7%E5%8F%96%E4%BC%81%E4%B8%9A%E5%B7%B2%E9%85%8D%E7%BD%AE%E7%9A%84%E3%80%8C%E8%81%94%E7%B3%BB%E6%88%91%E3%80%8D%E6%96%B9%E5%BC%8F
 func (ww weWork) ExternalGetContactWay(corpId uint, configId string) (resp ContactMeGetResponse) {
 	p := H{"config_id": configId}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/get_contact_way?%s", queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/get_contact_way")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -131,13 +123,11 @@ type ContactMeListResponse struct {
 // https://open.work.weixin.qq.com/api/doc/90001/90143/92577#%E8%8E%B7%E5%8F%96%E4%BC%81%E4%B8%9A%E5%B7%B2%E9%85%8D%E7%BD%AE%E7%9A%84%E3%80%8C%E8%81%94%E7%B3%BB%E6%88%91%E3%80%8D%E5%88%97%E8%A1%A8
 func (ww weWork) ExternalListContactWay(corpId uint, startTime, endTime int64, cursor string, limit int) (resp ContactMeListResponse) {
 	p := H{"start_time": startTime, "end_time": endTime, "cursor": cursor, "limit": limit}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/list_contact_way?%s", queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/list_contact_way")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -146,28 +136,24 @@ func (ww weWork) ExternalListContactWay(corpId uint, startTime, endTime int64, c
 // https://open.work.weixin.qq.com/api/doc/90001/90143/92577#%E5%88%A0%E9%99%A4%E4%BC%81%E4%B8%9A%E5%B7%B2%E9%85%8D%E7%BD%AE%E7%9A%84%E3%80%8C%E8%81%94%E7%B3%BB%E6%88%91%E3%80%8D%E6%96%B9%E5%BC%8F
 func (ww weWork) ExternalDeleteContactWay(corpId uint, configId string) (resp internal.BizResponse) {
 	p := H{"config_id": configId}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/del_contact_way?%s", queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/del_contact_way")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
 
 // ExternalCloseTempChat 结束临时会话
-// https://open.work.weixin.qq.com/api/doc/90001/90143/92577#%E7%BB%93%E6%9D%9F%E4%B8%B4%E6%97%B6%E4%BC%9A%E8%AF%9D
+// https://developer.work.weixin.qq.com/document/path/95724#%E7%BB%93%E6%9D%9F%E4%B8%B4%E6%97%B6%E4%BC%9A%E8%AF%9D
 func (ww weWork) ExternalCloseTempChat(corpId uint, userId, externalUserId string) (resp internal.BizResponse) {
 	p := H{"userid": userId, "external_userid": externalUserId}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/del_contact_way?%s", queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/close_temp_chat")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

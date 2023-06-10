@@ -3,7 +3,7 @@ package wework
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 	"strings"
 )
 
@@ -77,13 +77,11 @@ func (ww weWork) UserCreate(corpId uint, user User) (resp internal.BizResponse) 
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/user/create?%s", queryParams.Encode()), user)
+	_, err := ww.getRequest(corpId).SetBody(user).SetResult(&resp).
+		Post("/cgi-bin/user/create")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -95,14 +93,11 @@ type UserGetResponse struct {
 
 // UserGet 读取成员
 func (ww weWork) UserGet(corpId uint, userId string) (resp UserGetResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
-	queryParams.Add("userid", userId)
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/user/get?%s", queryParams.Encode()))
+	_, err := ww.getRequest(corpId).SetQueryParam("userid", userId).SetResult(&resp).
+		Get("/cgi-bin/user/get")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -114,27 +109,22 @@ func (ww weWork) UserUpdate(corpId uint, user User) (resp internal.BizResponse) 
 		resp.ErrorMsg = "userid can not empty"
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/user/update?%s", queryParams.Encode()), user)
+	_, err := ww.getRequest(corpId).SetBody(user).SetResult(&resp).
+		Post("/cgi-bin/user/update")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
 
 // UserDelete 删除成员
 func (ww weWork) UserDelete(corpId uint, userId string) (resp internal.BizResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
-	queryParams.Add("userid", userId)
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/user/delete?%s", queryParams.Encode()))
+	_, err := ww.getRequest(corpId).SetQueryParam("userid", userId).SetResult(&resp).
+		Get("/cgi-bin/user/delete")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -152,23 +142,17 @@ type UserSimpleListResponse struct {
 // UserSimpleList 获取部门成员
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90332
 func (ww weWork) UserSimpleList(corpId uint, departId int32, fetchChild int) (resp UserSimpleListResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
 	if departId <= 0 {
 		return UserSimpleListResponse{internal.Error{ErrorMsg: "部门ID必需大于0", ErrCode: 403}, nil}
 	}
-	queryParams.Add("department_id", fmt.Sprintf("%v", departId))
-	queryParams.Add("fetch_child", fmt.Sprintf("%v", fetchChild))
-	apiUrl := fmt.Sprintf("/cgi-bin/user/simplelist?%s", queryParams.Encode())
-	body, err := internal.HttpGet(apiUrl)
+	_, err := ww.getRequest(corpId).
+		SetQueryParam("department_id", fmt.Sprintf("%v", departId)).
+		SetQueryParam("fetch_child", fmt.Sprintf("%v", fetchChild)).
+		SetResult(&resp).
+		Get("/cgi-bin/user/simplelist")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-		return
-	}
-	if err = json.Unmarshal(body, &resp); err != nil {
-		resp.ErrCode = 500
-		resp.ErrorMsg = err.Error()
-		return
 	}
 	return
 }
@@ -181,21 +165,19 @@ type UserListResponse struct {
 // UserList 获取部门成员详情
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90337
 func (ww weWork) UserList(corpId uint, departId int32, fetchChild int) (resp UserListResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
 	if departId <= 0 {
 		resp.ErrCode = 403
 		resp.ErrorMsg = "部门ID必需大于0"
 		return
 	}
-	queryParams.Add("department_id", fmt.Sprintf("%v", departId))
-	queryParams.Add("fetch_child", fmt.Sprintf("%v", fetchChild))
-	apiUrl := fmt.Sprintf("/cgi-bin/user/list?%s", queryParams.Encode())
-	body, err := internal.HttpGet(apiUrl)
+	_, err := ww.getRequest(corpId).
+		SetQueryParam("department_id", fmt.Sprintf("%v", departId)).
+		SetQueryParam("fetch_child", fmt.Sprintf("%v", fetchChild)).
+		SetResult(&resp).
+		Get("/cgi-bin/user/list")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -209,14 +191,11 @@ type UserId2OpenIdResponse struct {
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90338
 func (ww weWork) UserId2OpenId(corpId uint, userId string) (resp UserId2OpenIdResponse) {
 	p := H{"userid": userId}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/user/convert_to_openid?%s",
-		queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/user/convert_to_openid")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -230,14 +209,11 @@ type OpenId2UserIdResponse struct {
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90338
 func (ww weWork) OpenId2UserId(corpId uint, openId string) (resp OpenId2UserIdResponse) {
 	p := H{"openid": openId}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/user/convert_to_userid?%s",
-		queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/user/convert_to_userid")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -254,14 +230,11 @@ type ListMemberAuthResponse struct {
 // https://open.work.weixin.qq.com/api/doc/90001/90143/94513
 func (ww weWork) ListMemberAuth(corpId uint, cursor string, limit int) (resp ListMemberAuthResponse) {
 	p := H{"cursor": cursor, "limit": limit}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/user/list_member_auth?%s",
-		queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/user/list_member_auth")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -275,14 +248,11 @@ type CheckMemberAuthResponse struct {
 // https://open.work.weixin.qq.com/api/doc/90001/90143/94514
 func (ww weWork) CheckMemberAuth(corpId uint, openUserId string) (resp CheckMemberAuthResponse) {
 	p := H{"open_userid": openUserId}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/user/check_member_auth?%s",
-		queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/user/check_member_auth")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -296,14 +266,11 @@ type GetUserIdResponse struct {
 // https://open.work.weixin.qq.com/api/doc/90001/90143/91693
 func (ww weWork) GetUserId(corpId uint, mobile string) (resp GetUserIdResponse) {
 	p := H{"mobile": mobile}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/user/getuserid?%s",
-		queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/user/getuserid")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -320,14 +287,11 @@ type ListSelectedTicketUserResponse struct {
 // https://open.work.weixin.qq.com/api/doc/90001/90143/94894
 func (ww weWork) ListSelectedTicketUser(corpId uint, ticket string) (resp ListSelectedTicketUserResponse) {
 	p := H{"selected_ticket": ticket}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/user/list_selected_ticket_user?%s",
-		queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/user/list_selected_ticket_user")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -346,13 +310,11 @@ type UserListIdResponse struct {
 // https://developer.work.weixin.qq.com/document/40856
 func (ww weWork) UserListId(corpId uint, cursor string, limit int) (resp UserListIdResponse) {
 	p := H{"cursor": cursor, "limit": limit}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/user/list_id?%s", queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/user/list_id")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

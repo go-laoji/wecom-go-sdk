@@ -1,9 +1,8 @@
 package wework
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type SchoolDepartment struct {
@@ -35,13 +34,11 @@ func (ww weWork) SchoolDepartmentCreate(corpId uint, department SchoolDepartment
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/school/department/create?%s", queryParams.Encode()), department)
+	_, err := ww.getRequest(corpId).SetBody(department).SetResult(&resp).
+		Post("/cgi-bin/school/department/create")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -54,13 +51,11 @@ func (ww weWork) SchoolDepartmentUpdate(corpId uint, department SchoolDepartment
 		resp.ErrorMsg = "department id must be uint32"
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/school/department/update?%s", queryParams.Encode()), department)
+	_, err := ww.getRequest(corpId).SetBody(department).SetResult(&resp).
+		Post("/cgi-bin/school/department/update")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -68,14 +63,12 @@ func (ww weWork) SchoolDepartmentUpdate(corpId uint, department SchoolDepartment
 // SchoolDepartmentDelete 删除部门
 // https://open.work.weixin.qq.com/api/doc/90001/90143/92298
 func (ww weWork) SchoolDepartmentDelete(corpId uint, departmentId int32) (resp internal.BizResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
-	queryParams.Add("id", fmt.Sprintf("%v", departmentId))
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/school/department/delete?%s", queryParams.Encode()))
+	_, err := ww.getRequest(corpId).
+		SetQueryParam("id", fmt.Sprintf("%v", departmentId)).
+		SetResult(&resp).Get("/cgi-bin/school/department/delete")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -103,14 +96,12 @@ type SchoolDepartmentListResponse struct {
 // SchoolDepartmentList 获取部门列表
 // https://open.work.weixin.qq.com/api/doc/90001/90143/92299
 func (ww weWork) SchoolDepartmentList(corpId uint, departmentId int32) (resp SchoolDepartmentListResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
-	queryParams.Add("id", fmt.Sprintf("%v", departmentId))
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/school/department/list?%s", queryParams.Encode()))
+	_, err := ww.getRequest(corpId).
+		SetQueryParam("id", fmt.Sprintf("%v", departmentId)).
+		SetResult(&resp).Get("/cgi-bin/school/department/list")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

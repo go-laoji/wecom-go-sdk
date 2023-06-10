@@ -1,9 +1,7 @@
 package wework
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type ExternalMsg struct {
@@ -62,13 +60,11 @@ func (ww weWork) AddMsgTemplate(corpId uint, msg ExternalMsg) (resp AddMsgTempla
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/add_msg_template?%s", queryParams.Encode()), msg)
+	_, err := ww.getRequest(corpId).SetBody(msg).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/add_msg_template")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -97,20 +93,18 @@ type GroupMsgList struct {
 }
 
 // GetGroupMsgListV2 获取群发记录列表
-//　参考连接　https://open.work.weixin.qq.com/api/doc/90001/90143/93439#%E8%8E%B7%E5%8F%96%E7%BE%A4%E5%8F%91%E8%AE%B0%E5%BD%95%E5%88%97%E8%A1%A8
+// 　参考连接　https://open.work.weixin.qq.com/api/doc/90001/90143/93439#%E8%8E%B7%E5%8F%96%E7%BE%A4%E5%8F%91%E8%AE%B0%E5%BD%95%E5%88%97%E8%A1%A8
 func (ww weWork) GetGroupMsgListV2(corpId uint, filter GroupMsgListFilter) (resp GetGroupMsgListV2Response) {
 	if ok := validate.Struct(filter); ok != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/get_groupmsg_list_v2?%s", queryParams.Encode()), filter)
+	_, err := ww.getRequest(corpId).SetBody(filter).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/get_groupmsg_list_v2")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -139,13 +133,11 @@ func (ww weWork) GetGroupMsgTask(corpId uint, filter GroupMsgTaskFilter) (resp G
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/get_groupmsg_task?%s", queryParams.Encode()), filter)
+	_, err := ww.getRequest(corpId).SetBody(filter).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/get_groupmsg_task")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -176,13 +168,11 @@ func (ww weWork) GetGroupMsgSendResult(corpId uint, filter GroupMsgSendResultFil
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/get_groupmsg_send_result?%s", queryParams.Encode()), filter)
+	_, err := ww.getRequest(corpId).SetBody(filter).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/get_groupmsg_send_result")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -190,15 +180,13 @@ func (ww weWork) GetGroupMsgSendResult(corpId uint, filter GroupMsgSendResultFil
 // RemindGroupMsgSend 提醒成员群发
 // https://developer.work.weixin.qq.com/document/path/97610
 func (ww weWork) RemindGroupMsgSend(corpId uint, msgid string) (resp internal.BizResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
 	h := H{}
 	h["msgid"] = msgid
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/remind_groupmsg_send?%s", queryParams.Encode()), h)
+	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/remind_groupmsg_send")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -206,15 +194,13 @@ func (ww weWork) RemindGroupMsgSend(corpId uint, msgid string) (resp internal.Bi
 // CancelGroupMsgSend 停止企业群发
 // https://developer.work.weixin.qq.com/document/path/97611
 func (ww weWork) CancelGroupMsgSend(corpId uint, msgId string) (resp internal.BizResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
 	h := H{}
 	h["msgid"] = msgId
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/cancel_groupmsg_send?%s", queryParams.Encode()), h)
+	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/cancel_groupmsg_send")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

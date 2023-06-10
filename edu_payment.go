@@ -1,9 +1,7 @@
 package wework
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type GetPaymentResultResponse struct {
@@ -23,13 +21,11 @@ type GetPaymentResultResponse struct {
 func (ww weWork) GetPaymentResult(corpId uint, paymentId string) (resp GetPaymentResultResponse) {
 	h := H{}
 	h["payment_id"] = paymentId
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/school/get_payment_result?%s", queryParams.Encode()), h)
+	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).
+		Post("/cgi-bin/school/get_payment_result")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -52,13 +48,11 @@ func (ww weWork) GetTrade(corpId uint, request GetTradeRequest) (resp GetTradeRe
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/school/get_trade?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/school/get_trade")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

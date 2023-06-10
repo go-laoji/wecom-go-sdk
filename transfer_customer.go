@@ -1,9 +1,7 @@
 package wework
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type TransferCustomerRequest struct {
@@ -30,13 +28,11 @@ func (ww weWork) TransferCustomer(corpId uint, request TransferCustomerRequest) 
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/transfer_customer?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/transfer_customer")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -66,13 +62,11 @@ func (ww weWork) TransferResult(corpId uint, request TransferResultRequest) (res
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/transfer_result?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/transfer_result")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -104,13 +98,11 @@ func (ww weWork) GetUnassignedList(corpId uint, request UnAssignedRequest) (resp
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/get_unassigned_list?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/get_unassigned_list")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -125,13 +117,11 @@ func (ww weWork) TransferCustomerResigned(corpId uint, request TransferCustomerR
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/resigned/transfer_customer?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/resigned/transfer_customer")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -144,13 +134,11 @@ func (ww weWork) TransferResultResigned(corpId uint, request TransferResultReque
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/resigned/transfer_result?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/resigned/transfer_result")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -178,13 +166,11 @@ type GroupChatTransferResponse struct {
 // 同一个人的群，限制每天最多分配300个给新群主
 // 参考连接　https://open.work.weixin.qq.com/api/doc/90001/90143/93242
 func (ww weWork) TransferGroupChat(corpId uint, request GroupChatTransferRequest) (resp GroupChatTransferResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/groupchat/transfer?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/groupchat/transfer")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

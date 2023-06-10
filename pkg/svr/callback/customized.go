@@ -3,8 +3,8 @@ package callback
 import (
 	"encoding/xml"
 	"github.com/gin-gonic/gin"
-	"github.com/go-laoji/wecom-go-sdk"
-	"github.com/go-laoji/wecom-go-sdk/pkg/svr/logic"
+	"github.com/go-laoji/wecom-go-sdk/v2"
+	"github.com/go-laoji/wecom-go-sdk/v2/pkg/svr/logic"
 	"github.com/go-laoji/wxbizmsgcrypt"
 	"io/ioutil"
 	"log"

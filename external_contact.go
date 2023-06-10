@@ -1,9 +1,7 @@
 package wework
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type ExternalContactGetFollowUserListResponse struct {
@@ -14,13 +12,11 @@ type ExternalContactGetFollowUserListResponse struct {
 // ExternalContactGetFollowUserList 获取配置了客户联系功能的成员列表
 // 参考连接　https://open.work.weixin.qq.com/api/doc/90001/90143/92576
 func (ww weWork) ExternalContactGetFollowUserList(corpId uint) (resp ExternalContactGetFollowUserListResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/externalcontact/get_follow_user_list?%s", queryParams.Encode()))
+	_, err := ww.getRequest(corpId).SetResult(&resp).
+		Get("/cgi-bin/externalcontact/get_follow_user_list")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -33,14 +29,11 @@ type ExternalContactListResponse struct {
 // ExternalContactList 获取客户列表
 // 参考连接　https://open.work.weixin.qq.com/api/doc/90001/90143/92264
 func (ww weWork) ExternalContactList(corpId uint, userId string) (resp ExternalContactListResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
-	queryParams.Add("userid", userId)
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/externalcontact/list?%s", queryParams.Encode()))
+	_, err := ww.getRequest(corpId).SetResult(&resp).SetQueryParam("userid", userId).
+		Get("/cgi-bin/externalcontact/list")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -108,15 +101,13 @@ type ExternalContactGetResponse struct {
 // 参考连接　https://open.work.weixin.qq.com/api/doc/90001/90143/92265
 // 当客户在企业内的跟进人超过500人时需要使用cursor参数进行分页获取
 func (ww weWork) ExternalContactGet(corpId uint, externalUserId, cursor string) (resp ExternalContactGetResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
-	queryParams.Add("external_userid", externalUserId)
-	queryParams.Add("cursor", cursor)
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/externalcontact/get?%s", queryParams.Encode()))
+	_, err := ww.getRequest(corpId).SetResult(&resp).
+		SetQueryParam("external_userid", externalUserId).
+		SetQueryParam("cursor", cursor).
+		Get("/cgi-bin/externalcontact/get")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -135,13 +126,11 @@ type ExternalContactBatchGetByUserResponse struct {
 // 参考连接 https://open.work.weixin.qq.com/api/doc/90001/90143/93010
 func (ww weWork) ExternalContactBatchGetByUser(corpId uint, userIds []string, cursor string, limit int) (resp ExternalContactBatchGetByUserResponse) {
 	p := H{"userid_list": userIds, "cursor": cursor, "limit": limit}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/batch/get_by_user?%s", queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/batch/get_by_user")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -164,13 +153,11 @@ func (ww weWork) ExternalContactRemark(corpId uint, remark ExternalContactRemark
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/remark?%s", queryParams.Encode()), remark)
+	_, err := ww.getRequest(corpId).SetBody(remark).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/remark")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -184,13 +171,11 @@ type UnionId2ExternalUserIdResponse struct {
 // https://open.work.weixin.qq.com/api/doc/90001/90143/93274
 func (ww weWork) UnionId2ExternalUserId(corpId uint, unionid, openid string) (resp UnionId2ExternalUserIdResponse) {
 	p := H{"unionid": unionid, "openid": openid}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/unionid_to_external_userid?%s", queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/unionid_to_external_userid")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -203,13 +188,11 @@ type ToServiceExternalUseridResponse struct {
 // https://open.work.weixin.qq.com/api/doc/90001/90143/95195
 func (ww weWork) ToServiceExternalUserid(corpId uint, externalUserId string) (resp ToServiceExternalUseridResponse) {
 	p := H{"external_userid": externalUserId}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/to_service_external_userid?%s", queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/to_service_external_userid")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

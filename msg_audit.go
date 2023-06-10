@@ -1,10 +1,8 @@
 package wework
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type GetPermitUserListResponse struct {
@@ -19,17 +17,15 @@ func (ww weWork) GetPermitUserList(corpId uint, T int) (resp GetPermitUserListRe
 		err = errors.New("type 取值范围出错,只能是1、2、3")
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
 	h := H{}
 	if T != 0 {
 		h["type"] = T
 	}
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/msgaudit/get_permit_user_list?%s", queryParams.Encode()), h)
+	_, err = ww.getRequest(corpId).SetBody(h).SetResult(&resp).
+		Post("/cgi-bin/msgaudit/get_permit_user_list")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		err = json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -57,13 +53,11 @@ func (ww weWork) CheckSingleAgree(corpId uint, request CheckSingleAgreeRequest) 
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/msgaudit/check_single_agree?%s", queryParams.Encode()), request)
+	_, err = ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/msgaudit/check_single_agree")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		err = json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -87,15 +81,13 @@ func (ww weWork) GetAuditGroupChat(corpId uint, roomId string) (resp GetAuditGro
 		err = errors.New("roomId 必填,且只能为内部群ID")
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
 	h := H{}
 	h["roomid"] = roomId
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/msgaudit/groupchat/get?%s", queryParams.Encode()), h)
+	_, err = ww.getRequest(corpId).SetBody(h).SetResult(&resp).
+		Post("/cgi-bin/msgaudit/groupchat/get")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		err = json.Unmarshal(body, &resp)
 	}
 	return
 }

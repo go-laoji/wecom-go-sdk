@@ -1,9 +1,7 @@
 package wework
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type MomentTask struct {
@@ -62,13 +60,11 @@ func (ww weWork) AddMomentTask(corpId uint, task MomentTask) (resp AddMomentTask
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/add_moment_task?%s", queryParams.Encode()), task)
+	_, err := ww.getRequest(corpId).SetBody(task).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/add_moment_task")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -93,14 +89,11 @@ type GetMomentTaskResultResponse struct {
 // GetMomentTaskResult 获取任务创建结果
 // https://open.work.weixin.qq.com/api/doc/90001/90143/95095#%E8%8E%B7%E5%8F%96%E4%BB%BB%E5%8A%A1%E5%88%9B%E5%BB%BA%E7%BB%93%E6%9E%9C
 func (ww weWork) GetMomentTaskResult(corpId uint, jobId string) (resp GetMomentTaskResultResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
-	queryParams.Add("jobid", jobId)
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/externalcontact/get_moment_task_result?%s", queryParams.Encode()))
+	_, err := ww.getRequest(corpId).SetQueryParam("jobid", jobId).SetResult(&resp).
+		Get("/cgi-bin/externalcontact/get_moment_task_result")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -146,13 +139,11 @@ func (ww weWork) GetMomentList(corpId uint, filter MomentListFilter) (resp GetMo
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/get_moment_list?%s", queryParams.Encode()), filter)
+	_, err := ww.getRequest(corpId).SetBody(filter).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/get_moment_list")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -179,13 +170,11 @@ func (ww weWork) GetMomentTask(corpId uint, filter MomentTaskFilter) (resp GetMo
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/get_moment_task?%s", queryParams.Encode()), filter)
+	_, err := ww.getRequest(corpId).SetBody(filter).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/get_moment_task")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -212,13 +201,11 @@ func (ww weWork) GetMomentCustomerList(corpId uint, filter MomentCustomerFilter)
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/get_moment_customer_list?%s", queryParams.Encode()), filter)
+	_, err := ww.getRequest(corpId).SetBody(filter).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/get_moment_customer_list")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -238,13 +225,11 @@ func (ww weWork) GetMomentSendResult(corpId uint, filter MomentCustomerFilter) (
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/get_moment_send_result?%s", queryParams.Encode()), filter)
+	_, err := ww.getRequest(corpId).SetBody(filter).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/get_moment_send_result")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -265,13 +250,11 @@ type GetMomentCommentsResponse struct {
 // https://open.work.weixin.qq.com/api/doc/90001/90143/93443#%E8%8E%B7%E5%8F%96%E5%AE%A2%E6%88%B7%E6%9C%8B%E5%8F%8B%E5%9C%88%E7%9A%84%E4%BA%92%E5%8A%A8%E6%95%B0%E6%8D%AE
 func (ww weWork) GetMomentComments(corpId uint, momentId string, userId string) (resp GetMomentCommentsResponse) {
 	p := H{"userid": userId, "moment_id": momentId}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/get_moment_comments?%s", queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/get_moment_comments")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -279,14 +262,11 @@ func (ww weWork) GetMomentComments(corpId uint, momentId string, userId string) 
 // CancelMomentTask 停止发表企业朋友圈
 // https://developer.work.weixin.qq.com/document/path/97612
 func (ww weWork) CancelMomentTask(corpId uint, momentId string) (resp internal.BizResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
-	queryParams.Add("moment_id", momentId)
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/externalcontact/cancel_moment_task?%s", queryParams.Encode()))
+	_, err := ww.getRequest(corpId).SetQueryParam("moment_id", momentId).SetResult(&resp).
+		Get("/cgi-bin/externalcontact/cancel_moment_task")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

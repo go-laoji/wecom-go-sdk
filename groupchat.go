@@ -1,9 +1,7 @@
 package wework
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type GroupChatListFilter struct {
@@ -33,13 +31,11 @@ func (ww weWork) GroupChatList(corpId uint, filter GroupChatListFilter) (resp Gr
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/groupchat/list?%s", queryParams.Encode()), filter)
+	_, err := ww.getRequest(corpId).SetBody(filter).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/groupchat/list")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -85,13 +81,11 @@ func (ww weWork) GroupChat(corpId uint, request GroupChatRequest) (resp GroupCha
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/groupchat/get?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/groupchat/get")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -106,13 +100,11 @@ type GroupOpengId2ChatIdResponse struct {
 // 参考连接　https://open.work.weixin.qq.com/api/doc/90001/90143/94828
 func (ww weWork) GroupOpengId2ChatId(corpId uint, opengid string) (resp GroupOpengId2ChatIdResponse) {
 	p := H{"opengid": opengid}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/opengid_to_chatid?%s", queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/opengid_to_chatid")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

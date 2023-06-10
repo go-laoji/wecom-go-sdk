@@ -1,10 +1,7 @@
 package wework
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
-	"net/url"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type CreateOrderRequest struct {
@@ -31,14 +28,11 @@ func (ww weWork) CreateNewOrder(request CreateOrderRequest) (resp OrderResponse)
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := url.Values{}
-	queryParams.Add("provider_access_token", ww.getProviderToken())
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/license/create_new_order?%s", queryParams.Encode()), request)
+	_, err := ww.getProviderRequest().SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/license/create_new_order")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -70,14 +64,11 @@ func (ww weWork) CreateReNewOrderJob(request CreateReNewOrderJobRequest) (resp C
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := url.Values{}
-	queryParams.Add("provider_access_token", ww.getProviderToken())
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/license/create_renew_order_job?%s", queryParams.Encode()), request)
+	_, err := ww.getProviderRequest().SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/license/create_renew_order_job")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -97,14 +88,11 @@ func (ww weWork) SubmitOrderJob(request SubmitOrderJobRequest) (resp OrderRespon
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := url.Values{}
-	queryParams.Add("provider_access_token", ww.getProviderToken())
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/license/submit_order_job?%s", queryParams.Encode()), request)
+	_, err := ww.getProviderRequest().SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/license/submit_order_job")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -134,14 +122,11 @@ func (ww weWork) ListOrder(request ListOrderRequest) (resp ListOrderResponse) {
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := url.Values{}
-	queryParams.Add("provider_access_token", ww.getProviderToken())
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/license/list_order?%s", queryParams.Encode()), request)
+	_, err := ww.getProviderRequest().SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/license/list_order")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -178,14 +163,11 @@ func (ww weWork) GetOrder(request GetOrderRequest) (resp GetOrderResponse) {
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := url.Values{}
-	queryParams.Add("provider_access_token", ww.getProviderToken())
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/license/get_order?%s", queryParams.Encode()), request)
+	_, err := ww.getProviderRequest().SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/license/get_order")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -215,14 +197,11 @@ func (ww weWork) ListOrderAccount(request ListOrderAccountRequest) (resp ListOrd
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := url.Values{}
-	queryParams.Add("provider_access_token", ww.getProviderToken())
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/license/list_order_account?%s", queryParams.Encode()), request)
+	_, err := ww.getProviderRequest().SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/license/list_order_account")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -241,14 +220,11 @@ func (ww weWork) ActiveAccount(request ActiveAccountRequest) (resp internal.BizR
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := url.Values{}
-	queryParams.Add("provider_access_token", ww.getProviderToken())
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/license/active_account?%s", queryParams.Encode()), request)
+	_, err := ww.getProviderRequest().SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/license/active_account")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -278,14 +254,11 @@ func (ww weWork) BatchActiveAccount(request BatchActiveAccountRequest) (resp Bat
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := url.Values{}
-	queryParams.Add("provider_access_token", ww.getProviderToken())
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/license/batch_active_account?%s", queryParams.Encode()), request)
+	_, err := ww.getProviderRequest().SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/license/batch_active_account")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -317,14 +290,11 @@ func (ww weWork) GetActiveInfoByCode(request GetActiveInfoByCodeRequest) (resp G
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := url.Values{}
-	queryParams.Add("provider_access_token", ww.getProviderToken())
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/license/get_active_info_by_code?%s", queryParams.Encode()), request)
+	_, err := ww.getProviderRequest().SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/license/get_active_info_by_code")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -346,14 +316,11 @@ func (ww weWork) BatchGetActiveInfoByCode(request BatchGetActiveInfoByCodeReques
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := url.Values{}
-	queryParams.Add("provider_access_token", ww.getProviderToken())
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/license/batch_get_active_info_by_code?%s", queryParams.Encode()), request)
+	_, err := ww.getProviderRequest().SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/license/batch_get_active_info_by_code")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -379,14 +346,11 @@ func (ww weWork) ListActivedAccount(request ListActivedAccountRequest) (resp Lis
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := url.Values{}
-	queryParams.Add("provider_access_token", ww.getProviderToken())
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/license/list_actived_account?%s", queryParams.Encode()), request)
+	_, err := ww.getProviderRequest().SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/license/list_actived_account")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -415,14 +379,11 @@ func (ww weWork) GetActiveInfoByUser(request GetActiveInfoByUserRequest) (resp G
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := url.Values{}
-	queryParams.Add("provider_access_token", ww.getProviderToken())
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/license/get_active_info_by_user?%s", queryParams.Encode()), request)
+	_, err := ww.getProviderRequest().SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/license/get_active_info_by_user")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -452,14 +413,11 @@ func (ww weWork) BatchTransferLicense(request BatchTransferLicenseRequest) (resp
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := url.Values{}
-	queryParams.Add("provider_access_token", ww.getProviderToken())
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/license/batch_transfer_license?%s", queryParams.Encode()), request)
+	_, err := ww.getProviderRequest().SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/license/batch_transfer_license")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -475,14 +433,11 @@ func (ww weWork) SetAutoActiveStatus(request SetAutoActiveStatusRequest) (resp i
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := url.Values{}
-	queryParams.Add("provider_access_token", ww.getProviderToken())
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/license/set_auto_active_status?%s", queryParams.Encode()), request)
+	_, err := ww.getProviderRequest().SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/license/set_auto_active_status")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -499,14 +454,11 @@ func (ww weWork) GetAutoActiveStatus(corpid string) (resp GetAutoActiveStatusRes
 		return
 	}
 	request := H{"corpid": corpid}
-	queryParams := url.Values{}
-	queryParams.Add("provider_access_token", ww.getProviderToken())
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/license/get_auto_active_status?%s", queryParams.Encode()), request)
+	_, err := ww.getProviderRequest().SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/license/get_auto_active_status")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

@@ -1,7 +1,7 @@
 package test
 
 import (
-	"github.com/go-laoji/wecom-go-sdk"
+	"github.com/go-laoji/wecom-go-sdk/v2"
 	"net/url"
 	"testing"
 )

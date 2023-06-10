@@ -1,9 +1,7 @@
 package wework
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type GetUserBehaviorDataResponse struct {
@@ -23,13 +21,11 @@ func (ww weWork) GetUserBehaviorData(corpId uint, filter GetUserBehaviorFilter) 
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/get_user_behavior_data?%s", queryParams.Encode()), filter)
+	_, err := ww.getRequest(corpId).SetBody(filter).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/get_user_behavior_data")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -71,13 +67,11 @@ func (ww weWork) GroupChatStatistic(corpId uint, filter GroupChatStatisticFilter
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/groupchat/statistic?%s", queryParams.Encode()), filter)
+	_, err := ww.getRequest(corpId).SetBody(filter).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/groupchat/statistic")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -97,13 +91,11 @@ func (ww weWork) GroupChatStatisticGroupByDay(corpId uint, filter GroupChatStati
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/groupchat/statistic_group_by_day?%s", queryParams.Encode()), filter)
+	_, err := ww.getRequest(corpId).SetBody(filter).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/groupchat/statistic_group_by_day")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

@@ -1,9 +1,7 @@
 package wework
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type Product struct {
@@ -29,13 +27,11 @@ func (ww weWork) AddProductAlbum(corpId uint, product Product) (resp AddProductA
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/add_product_album?%s", queryParams.Encode()), product)
+	_, err := ww.getRequest(corpId).SetBody(product).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/add_product_album")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -52,15 +48,13 @@ type GetProductAlbumResponse struct {
 // GetProductAlbum 获取商品图册
 // https://open.work.weixin.qq.com/api/doc/90001/90143/95131#%E8%8E%B7%E5%8F%96%E5%95%86%E5%93%81%E5%9B%BE%E5%86%8C
 func (ww weWork) GetProductAlbum(corpId uint, productId string) (resp GetProductAlbumResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
 	h := H{}
 	h["product_id"] = productId
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/get_product_album?%s", queryParams.Encode()), h)
+	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/get_product_album")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -77,16 +71,14 @@ type GetProductAlbumListResponse struct {
 // GetProductAlbumList 获取商品图册列表
 // https://open.work.weixin.qq.com/api/doc/90001/90143/95131#%E8%8E%B7%E5%8F%96%E5%95%86%E5%93%81%E5%9B%BE%E5%86%8C%E5%88%97%E8%A1%A8
 func (ww weWork) GetProductAlbumList(corpId uint, limit int, cursor string) (resp GetProductAlbumListResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
 	h := H{}
 	h["limit"] = limit
 	h["cursor"] = cursor
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/get_product_album?%s", queryParams.Encode()), h)
+	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/get_product_album_list")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -111,13 +103,11 @@ func (ww weWork) UpdateProductAlbum(corpId uint, request ProductUpdateRequest) (
 		resp.ErrCode = 500
 		resp.ErrorMsg = ok.Error()
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/update_product_album?%s", queryParams.Encode()), request)
+	_, err := ww.getRequest(corpId).SetBody(request).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/update_product_album")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -125,15 +115,13 @@ func (ww weWork) UpdateProductAlbum(corpId uint, request ProductUpdateRequest) (
 // DeleteProductAlbum 删除商品图册
 // https://open.work.weixin.qq.com/api/doc/90001/90143/95131#%E5%88%A0%E9%99%A4%E5%95%86%E5%93%81%E5%9B%BE%E5%86%8C
 func (ww weWork) DeleteProductAlbum(corpId uint, productId string) (resp internal.BizResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
 	h := H{}
 	h["product_id"] = productId
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/externalcontact/delete_product_album?%s", queryParams.Encode()), h)
+	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).
+		Post("/cgi-bin/externalcontact/delete_product_album")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

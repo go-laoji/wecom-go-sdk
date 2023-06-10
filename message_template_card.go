@@ -2,8 +2,7 @@ package wework
 
 import (
 	"encoding/json"
-	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type TemplateCardType string
@@ -188,14 +187,11 @@ func (ww weWork) MessageUpdateTemplateCard(corpId uint, msg TemplateCardUpdateMe
 	buf, _ := json.Marshal(msg)
 	json.Unmarshal(buf, &h)
 	h["agentid"] = ww.GetAgentId(corpId)
-
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/message/update_template_card?%s", queryParams.Encode()), h)
+	_, err := ww.getRequest(corpId).SetBody(h).SetResult(&resp).
+		Post("/cgi-bin/message/update_template_card")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }

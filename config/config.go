@@ -2,7 +2,7 @@ package config
 
 import (
 	"gopkg.in/yaml.v2"
-	"io/ioutil"
+	"os"
 )
 
 type Config struct {
@@ -20,7 +20,7 @@ func ParseFile(yml string) (c *Config) {
 	if yml == "" {
 		yml = "suite.yml"
 	}
-	yamlFile, err := ioutil.ReadFile(yml)
+	yamlFile, err := os.ReadFile(yml)
 	if err != nil {
 		panic(err)
 	}

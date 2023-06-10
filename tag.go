@@ -1,9 +1,8 @@
 package wework
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type Tag struct {
@@ -24,13 +23,11 @@ func (ww weWork) TagCreate(corpId uint, tag Tag) (resp TagCreateResponse) {
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/tag/create?%s", queryParams.Encode()), tag)
+	_, err := ww.getRequest(corpId).SetBody(tag).SetResult(&resp).
+		Post("/cgi-bin/tag/create")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -43,13 +40,11 @@ func (ww weWork) TagUpdate(corpId uint, tag Tag) (resp internal.BizResponse) {
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/tag/update?%s", queryParams.Encode()), tag)
+	_, err := ww.getRequest(corpId).SetBody(tag).SetResult(&resp).
+		Post("/cgi-bin/tag/update")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -57,14 +52,11 @@ func (ww weWork) TagUpdate(corpId uint, tag Tag) (resp internal.BizResponse) {
 // TagDelete 删除标签
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90348
 func (ww weWork) TagDelete(corpId uint, id int) (resp internal.BizResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
-	queryParams.Add("tagid", fmt.Sprintf("%v", id))
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/tag/delete?%s", queryParams.Encode()))
+	_, err := ww.getRequest(corpId).SetQueryParam("tagid", fmt.Sprintf("%v", id)).SetResult(&resp).
+		Get("/cgi-bin/tag/delete")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -77,13 +69,11 @@ type TagListResponse struct {
 // TagList 获取标签列表
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90352
 func (ww weWork) TagList(corpId uint) (resp TagListResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/tag/list?%s", queryParams.Encode()))
+	_, err := ww.getRequest(corpId).SetResult(&resp).
+		Get("/cgi-bin/tag/list")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -101,14 +91,11 @@ type TagUserListResponse struct {
 // TagUserList 获取标签成员
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90349
 func (ww weWork) TagUserList(corpId uint, id int) (resp TagUserListResponse) {
-	queryParams := ww.buildCorpQueryToken(corpId)
-	queryParams.Add("tagid", fmt.Sprintf("%v", id))
-	body, err := internal.HttpGet(fmt.Sprintf("/cgi-bin/tag/get?%s", queryParams.Encode()))
+	_, err := ww.getRequest(corpId).SetQueryParam("tagid", fmt.Sprintf("%v", id)).SetResult(&resp).
+		Get("/cgi-bin/tag/get")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -123,13 +110,11 @@ type TagAddOrDelUsersResponse struct {
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90350
 func (ww weWork) TagAddUsers(corpId uint, tagId int, userIds []string, partyIds []int32) (resp TagAddOrDelUsersResponse) {
 	p := H{"tagid": tagId, "userlist": userIds, "partylist": partyIds}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/tag/addtagusers?%s", queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/tag/addtagusers")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
@@ -138,13 +123,11 @@ func (ww weWork) TagAddUsers(corpId uint, tagId int, userIds []string, partyIds 
 // https://open.work.weixin.qq.com/api/doc/90001/90143/90351
 func (ww weWork) TagDelUsers(corpId uint, tagId int, userIds []string, partyIds []int32) (resp TagAddOrDelUsersResponse) {
 	p := H{"tagid": tagId, "userlist": userIds, "partylist": partyIds}
-	queryParams := ww.buildCorpQueryToken(corpId)
-	body, err := internal.HttpPost(fmt.Sprintf("/cgi-bin/tag/deltagusers?%s", queryParams.Encode()), p)
+	_, err := ww.getRequest(corpId).SetBody(p).SetResult(&resp).
+		Post("/cgi-bin/tag/deltagusers")
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
-	} else {
-		json.Unmarshal(body, &resp)
 	}
 	return
 }
