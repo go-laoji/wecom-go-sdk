@@ -1,14 +1,15 @@
 package wework
 
 import (
+	"net/url"
+	"os"
+
 	badger "github.com/dgraph-io/badger/v3"
 	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 	"github.com/go-resty/resty/v2"
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"net/url"
-	"os"
 )
 
 type IWeWork interface {
@@ -109,6 +110,7 @@ type IWeWork interface {
 	MediaUploadAttachment(corpId uint, attrs Media) (resp MediaUploadResponse)
 	MediaUpload(corpId uint, fileType MediaType, filePath string) (resp MediaUploadResponse)
 	MediaUploadImg(corpId uint, filePath string) (resp MediaUploadImgResponse)
+	MediaGet(corpId uint, mediaId string) (resp MediaGetResponse)
 
 	MessageSend(corpId uint, msg interface{}) (resp MessageSendResponse)
 	MessageReCall(corpId uint, msgId string) (resp internal.BizResponse)
