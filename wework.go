@@ -112,6 +112,8 @@ type IWeWork interface {
 	MediaUploadImg(corpId uint, filePath string) (resp MediaUploadImgResponse)
 	MediaGet(corpId uint, mediaId string) (resp MediaGetResponse)
 
+	GetBillList(corpId uint, req GetBillListRequest) (resp GetBillListResponse)
+
 	MessageSend(corpId uint, msg interface{}) (resp MessageSendResponse)
 	MessageReCall(corpId uint, msgId string) (resp internal.BizResponse)
 
