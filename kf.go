@@ -241,7 +241,7 @@ type KfSyncMsgRequest struct {
 type KfSyncMsgResponse struct {
 	internal.BizResponse
 	NextCursor string `json:"next_cursor"`
-	HasMore    bool   `json:"has_more"`
+	HasMore    int    `json:"has_more"`
 	MsgList    []struct {
 		MsgId               string                 `json:"msgid"`
 		OpenKfId            string                 `json:"open_kfid"`
