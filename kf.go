@@ -303,25 +303,32 @@ type MsgMiniProgram struct {
 	PagePath     string `json:"pagepath"`
 	ThumbMediaId string `json:"thumb_media_id"`
 }
+type MenuItemClick struct {
+	ID      string `json:"id"`
+	Content string `json:"content"`
+}
+
+type MenuItemView struct {
+	URL     string `json:"url"`
+	Content string `json:"content"`
+}
+
+type MenuItemMiniProgram struct {
+	Appid    string `json:"appid"`
+	PagePath string `json:"pagepath"`
+	Content  string `json:"content"`
+}
+
+type MenuItem struct {
+	Type        string               `json:"type"`
+	Click       *MenuItemClick       `json:"click,omitempty"`
+	View        *MenuItemView        `json:"view,omitempty"`
+	MiniProgram *MenuItemMiniProgram `json:"miniprogram,omitempty"`
+}
 type MsgMenu struct {
-	HeadContent string `json:"head_content"`
-	List        []struct {
-		Type  string `json:"type"`
-		Click struct {
-			ID      string `json:"id"`
-			Content string `json:"content"`
-		} `json:"click,omitempty"`
-		View struct {
-			URL     string `json:"url"`
-			Content string `json:"content"`
-		} `json:"view,omitempty"`
-		Miniprogram struct {
-			Appid    string `json:"appid"`
-			Pagepath string `json:"pagepath"`
-			Content  string `json:"content"`
-		} `json:"miniprogram,omitempty"`
-	} `json:"list"`
-	TailContent string `json:"tail_content"`
+	HeadContent string     `json:"head_content"`
+	List        []MenuItem `json:"list"`
+	TailContent string     `json:"tail_content"`
 }
 type MsgChannelsShopProduct struct {
 	ProductID    string `json:"product_id"`
