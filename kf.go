@@ -378,8 +378,8 @@ func (ww *weWork) KfSyncMsg(corpId uint, request KfSyncMsgRequest) (resp KfSyncM
 type SendMsgRequest struct {
 	ToUser      string          `json:"touser" validate:"required"`
 	OpenKfId    string          `json:"open_kfid" validate:"required"`
-	MsgId       string          `json:"msgid"  validate:"required"`
-	MsgType     string          `json:"msgtype"`
+	MsgId       string          `json:"msgid,omitempty"`
+	MsgType     string          `json:"msgtype" validate:"required"`
 	Text        *MsgText        `json:"text,omitempty"`
 	Image       *MsgImage       `json:"image,omitempty"`
 	Voice       *MsgVoice       `json:"voice,omitempty"`
@@ -412,8 +412,8 @@ func (ww *weWork) KfSendMsg(corpId uint, request SendMsgRequest) (resp SendMsgRe
 }
 
 type SendMsgOnEventRequest struct {
-	Code    string   `json:"code"`
-	MsgId   string   `json:"msgid"`
+	Code    string   `json:"code" validate:"required"`
+	MsgId   string   `json:"msgid,omitempty"`
 	MsgType string   `json:"msgtype" validate:"required,oneof=text msgmenu"`
 	Text    *MsgText `json:"text,omitempty"`
 	MsgMenu *MsgMenu `json:"msgmenu,omitempty"`
