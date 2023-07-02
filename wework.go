@@ -1,6 +1,7 @@
 package wework
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 
@@ -285,6 +286,7 @@ type WeWorkConfig struct {
 	SuiteToken          string
 	SuiteEncodingAesKey string
 	Dsn                 string
+	CacheId             int
 }
 
 const (
@@ -301,7 +303,12 @@ func NewWeWork(c WeWorkConfig) IWeWork {
 	ww.suiteSecret = c.SuiteSecret
 	ww.suiteToken = c.SuiteToken
 	ww.suiteEncodingAesKey = c.SuiteEncodingAesKey
-	ww.cache, _ = badger.Open(badger.DefaultOptions("./cache.db").WithIndexCacheSize(10 << 20))
+	cac, err := badger.Open(badger.DefaultOptions(fmt.Sprintf("./cache_%d.db", c.CacheId)).WithIndexCacheSize(10 << 20))
+	if err != nil {
+		panic(err)
+	}
+	ww.cache = cac
+
 	ww.logger = logger
 	ww.httpClient = resty.New().
 		SetHeader("User-Agent", UserAgent).

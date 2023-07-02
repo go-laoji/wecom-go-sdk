@@ -289,10 +289,10 @@ type MsgLocation struct {
 	Address   string  `json:"address"`
 }
 type MsgLink struct {
-	Title  string `json:"title"`
-	Desc   string `json:"desc"`
-	Url    string `json:"url"`
-	PicUrl string `json:"pic_url"`
+	Title        string `json:"title"`
+	Desc         string `json:"desc"`
+	Url          string `json:"url"`
+	ThumbMediaId string `json:"thumb_media_id"`
 }
 type MsgBusinessCard struct {
 	UserId string `json:"userid"`
