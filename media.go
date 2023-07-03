@@ -2,8 +2,9 @@ package wework
 
 import (
 	"fmt"
-	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 	"os"
+
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
 type MediaType string
@@ -106,6 +107,34 @@ func (ww *weWork) MediaUploadImg(corpId uint, filePath string) (resp MediaUpload
 	if err != nil {
 		resp.ErrCode = 500
 		resp.ErrorMsg = err.Error()
+	}
+	return
+}
+
+type MediaGetResponse struct {
+	internal.BizResponse
+	File        []byte
+	ContentType string
+}
+
+// MediaGet 获取临时素材, TODO: 支持断点下载（分块下载）
+// https://developer.work.weixin.qq.com/document/path/90254
+func (ww *weWork) MediaGet(corpId uint, mediaId string) (resp MediaGetResponse) {
+	if mediaId == "" {
+		resp.ErrCode = 404
+		resp.ErrorMsg = "资源不存在"
+		return
+	}
+	httpResp, err := ww.getRequest(corpId).
+		SetQueryParam("media_id", mediaId).
+		Get("/cgi-bin/media/get")
+	if err != nil {
+		resp.ErrCode = 500
+		resp.ErrorMsg = err.Error()
+	} else {
+		// TODO: 处理 response 返回的错误信息; 即 response 包含 errcode 和 errmsg.
+		resp.File = httpResp.Body()
+		resp.ContentType = httpResp.Header().Get("Content-Type")
 	}
 	return
 }
