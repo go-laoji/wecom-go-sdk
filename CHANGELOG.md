@@ -1,5 +1,8 @@
 # 变更记录
 
+## v2.0.1 2023-07-03
+* 增加获取临时素材功能,感谢[xzvwang](https://github.com/xzvwang)贡献
+
 ## v2.0.0 2023-06-10
 使用go-resty代替原生http.Client
 * 增加SetProxy(proxyUrl string) 对绕过IP限制有用
