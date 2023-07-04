@@ -302,7 +302,6 @@ func NewWeWork(c WeWorkConfig) IWeWork {
 	ww.suiteToken = c.SuiteToken
 	ww.suiteEncodingAesKey = c.SuiteEncodingAesKey
 	ww.cache, _ = badger.Open(badger.DefaultOptions("./cache.db").WithIndexCacheSize(10 << 20))
-
 	ww.logger = logger
 	ww.httpClient = resty.New().
 		SetHeader("User-Agent", UserAgent).
