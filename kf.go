@@ -238,32 +238,34 @@ type KfSyncMsgRequest struct {
 	OpenKfId    string `json:"open_kfid"`
 }
 
+type KfMessage struct {
+	MsgId               string                 `json:"msgid"`
+	OpenKfId            string                 `json:"open_kfid"`
+	ExternalUserId      string                 `json:"external_userid"`
+	SendTime            int                    `json:"send_time"`
+	Origin              int                    `json:"origin"`
+	ServicerUserId      string                 `json:"servicer_userid"`
+	MsgType             string                 `json:"msgtype"`
+	Text                MsgText                `json:"text,omitempty"`
+	Image               MsgImage               `json:"image,omitempty"`
+	Voice               MsgVoice               `json:"voice,omitempty"`
+	Video               MsgVideo               `json:"video,omitempty"`
+	File                MsgFile                `json:"file,omitempty"`
+	Location            MsgLocation            `json:"location,omitempty"`
+	Link                MsgLink                `json:"link,omitempty"`
+	BusinessCard        MsgBusinessCard        `json:"business_card,omitempty"`
+	MiniProgram         MsgMiniProgram         `json:"miniprogram,omitempty"`
+	MsgMenu             MsgMenu                `json:"msgmenu,omitempty"`
+	ChannelsShopProduct MsgChannelsShopProduct `json:"channels_shop_product,omitempty"`
+	ChannelsShopOrder   MsgChannelsShopOrder   `json:"channels_shop_order,omitempty"`
+	Event               MsgEvent               `json:"event,omitempty"`
+}
+
 type KfSyncMsgResponse struct {
 	internal.BizResponse
-	NextCursor string `json:"next_cursor"`
-	HasMore    int    `json:"has_more"`
-	MsgList    []struct {
-		MsgId               string                 `json:"msgid"`
-		OpenKfId            string                 `json:"open_kfid"`
-		ExternalUserId      string                 `json:"external_userid"`
-		SendTime            int                    `json:"send_time"`
-		Origin              int                    `json:"origin"`
-		ServicerUserId      string                 `json:"servicer_userid"`
-		MsgType             string                 `json:"msgtype"`
-		Text                MsgText                `json:"text,omitempty"`
-		Image               MsgImage               `json:"image,omitempty"`
-		Voice               MsgVoice               `json:"voice,omitempty"`
-		Video               MsgVideo               `json:"video,omitempty"`
-		File                MsgFile                `json:"file,omitempty"`
-		Location            MsgLocation            `json:"location,omitempty"`
-		Link                MsgLink                `json:"link,omitempty"`
-		BusinessCard        MsgBusinessCard        `json:"business_card,omitempty"`
-		MiniProgram         MsgMiniProgram         `json:"miniprogram,omitempty"`
-		MsgMenu             MsgMenu                `json:"msgmenu,omitempty"`
-		ChannelsShopProduct MsgChannelsShopProduct `json:"channels_shop_product,omitempty"`
-		ChannelsShopOrder   MsgChannelsShopOrder   `json:"channels_shop_order,omitempty"`
-		Event               MsgEvent               `json:"event,omitempty"`
-	} `json:"msg_list"`
+	NextCursor string      `json:"next_cursor"`
+	HasMore    int         `json:"has_more"`
+	MsgList    []KfMessage `json:"msg_list"`
 }
 
 type MsgText struct {
