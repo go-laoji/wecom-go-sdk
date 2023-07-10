@@ -321,11 +321,18 @@ type MenuItemMiniProgram struct {
 	Content  string `json:"content"`
 }
 
+type MenuItemText struct {
+	Content     string  `json:"content"`
+	NoNewLine   int     `json:"no_newline,omitempty"`
+	TailContent *string `json:"tail_content,omitempty"`
+}
+
 type MenuItem struct {
 	Type        string               `json:"type"`
 	Click       *MenuItemClick       `json:"click,omitempty"`
 	View        *MenuItemView        `json:"view,omitempty"`
 	MiniProgram *MenuItemMiniProgram `json:"miniprogram,omitempty"`
+	Text        *MenuItemText        `json:"text,omitempty"`
 }
 type MsgMenu struct {
 	HeadContent string     `json:"head_content"`
