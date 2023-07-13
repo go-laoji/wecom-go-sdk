@@ -1,5 +1,12 @@
 # 变更记录
 
+## v2.0.2 2023-07-13
+* feature: GetBillList 获取对外收款记录
+* fix: 修改 KfSyncMsgResponse 的 HasMore 类型, 由 bool -> int
+* refactor: 修改 MsgMenu 结构, 将 menu 中的 Click, View, Miniprogram 独立为 struct
+* fix: 删掉 MsgLink struct 的 PicUrl, 使用 ThumbMediaId 代替
+* refactor: extract item of MsgList as struct KfMessage
+
 ## v2.0.1 2023-07-03
 * 增加获取临时素材功能,感谢[xzvwang](https://github.com/xzvwang)贡献
 
