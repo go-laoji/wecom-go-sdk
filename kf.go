@@ -238,32 +238,34 @@ type KfSyncMsgRequest struct {
 	OpenKfId    string `json:"open_kfid"`
 }
 
+type KfMessage struct {
+	MsgId               string                 `json:"msgid"`
+	OpenKfId            string                 `json:"open_kfid"`
+	ExternalUserId      string                 `json:"external_userid"`
+	SendTime            int                    `json:"send_time"`
+	Origin              int                    `json:"origin"`
+	ServicerUserId      string                 `json:"servicer_userid"`
+	MsgType             string                 `json:"msgtype"`
+	Text                MsgText                `json:"text,omitempty"`
+	Image               MsgImage               `json:"image,omitempty"`
+	Voice               MsgVoice               `json:"voice,omitempty"`
+	Video               MsgVideo               `json:"video,omitempty"`
+	File                MsgFile                `json:"file,omitempty"`
+	Location            MsgLocation            `json:"location,omitempty"`
+	Link                MsgLink                `json:"link,omitempty"`
+	BusinessCard        MsgBusinessCard        `json:"business_card,omitempty"`
+	MiniProgram         MsgMiniProgram         `json:"miniprogram,omitempty"`
+	MsgMenu             MsgMenu                `json:"msgmenu,omitempty"`
+	ChannelsShopProduct MsgChannelsShopProduct `json:"channels_shop_product,omitempty"`
+	ChannelsShopOrder   MsgChannelsShopOrder   `json:"channels_shop_order,omitempty"`
+	Event               MsgEvent               `json:"event,omitempty"`
+}
+
 type KfSyncMsgResponse struct {
 	internal.BizResponse
-	NextCursor string `json:"next_cursor"`
-	HasMore    bool   `json:"has_more"`
-	MsgList    []struct {
-		MsgId               string                 `json:"msgid"`
-		OpenKfId            string                 `json:"open_kfid"`
-		ExternalUserId      string                 `json:"external_userid"`
-		SendTime            int                    `json:"send_time"`
-		Origin              int                    `json:"origin"`
-		ServicerUserId      string                 `json:"servicer_userid"`
-		MsgType             string                 `json:"msgtype"`
-		Text                MsgText                `json:"text,omitempty"`
-		Image               MsgImage               `json:"image,omitempty"`
-		Voice               MsgVoice               `json:"voice,omitempty"`
-		Video               MsgVideo               `json:"video,omitempty"`
-		File                MsgFile                `json:"file,omitempty"`
-		Location            MsgLocation            `json:"location,omitempty"`
-		Link                MsgLink                `json:"link,omitempty"`
-		BusinessCard        MsgBusinessCard        `json:"business_card,omitempty"`
-		MiniProgram         MsgMiniProgram         `json:"miniprogram,omitempty"`
-		MsgMenu             MsgMenu                `json:"msgmenu,omitempty"`
-		ChannelsShopProduct MsgChannelsShopProduct `json:"channels_shop_product,omitempty"`
-		ChannelsShopOrder   MsgChannelsShopOrder   `json:"channels_shop_order,omitempty"`
-		Event               MsgEvent               `json:"event,omitempty"`
-	} `json:"msg_list"`
+	NextCursor string      `json:"next_cursor"`
+	HasMore    int         `json:"has_more"`
+	MsgList    []KfMessage `json:"msg_list"`
 }
 
 type MsgText struct {
@@ -289,10 +291,10 @@ type MsgLocation struct {
 	Address   string  `json:"address"`
 }
 type MsgLink struct {
-	Title  string `json:"title"`
-	Desc   string `json:"desc"`
-	Url    string `json:"url"`
-	PicUrl string `json:"pic_url"`
+	Title        string `json:"title"`
+	Desc         string `json:"desc"`
+	Url          string `json:"url"`
+	ThumbMediaId string `json:"thumb_media_id"`
 }
 type MsgBusinessCard struct {
 	UserId string `json:"userid"`
@@ -303,25 +305,39 @@ type MsgMiniProgram struct {
 	PagePath     string `json:"pagepath"`
 	ThumbMediaId string `json:"thumb_media_id"`
 }
+type MenuItemClick struct {
+	ID      string `json:"id"`
+	Content string `json:"content"`
+}
+
+type MenuItemView struct {
+	URL     string `json:"url"`
+	Content string `json:"content"`
+}
+
+type MenuItemMiniProgram struct {
+	Appid    string `json:"appid"`
+	PagePath string `json:"pagepath"`
+	Content  string `json:"content"`
+}
+
+type MenuItemText struct {
+	Content     string  `json:"content"`
+	NoNewLine   int     `json:"no_newline,omitempty"`
+	TailContent *string `json:"tail_content,omitempty"`
+}
+
+type MenuItem struct {
+	Type        string               `json:"type"`
+	Click       *MenuItemClick       `json:"click,omitempty"`
+	View        *MenuItemView        `json:"view,omitempty"`
+	MiniProgram *MenuItemMiniProgram `json:"miniprogram,omitempty"`
+	Text        *MenuItemText        `json:"text,omitempty"`
+}
 type MsgMenu struct {
-	HeadContent string `json:"head_content"`
-	List        []struct {
-		Type  string `json:"type"`
-		Click struct {
-			ID      string `json:"id"`
-			Content string `json:"content"`
-		} `json:"click,omitempty"`
-		View struct {
-			URL     string `json:"url"`
-			Content string `json:"content"`
-		} `json:"view,omitempty"`
-		Miniprogram struct {
-			Appid    string `json:"appid"`
-			Pagepath string `json:"pagepath"`
-			Content  string `json:"content"`
-		} `json:"miniprogram,omitempty"`
-	} `json:"list"`
-	TailContent string `json:"tail_content"`
+	HeadContent string     `json:"head_content"`
+	List        []MenuItem `json:"list"`
+	TailContent string     `json:"tail_content"`
 }
 type MsgChannelsShopProduct struct {
 	ProductID    string `json:"product_id"`
@@ -371,8 +387,8 @@ func (ww *weWork) KfSyncMsg(corpId uint, request KfSyncMsgRequest) (resp KfSyncM
 type SendMsgRequest struct {
 	ToUser      string          `json:"touser" validate:"required"`
 	OpenKfId    string          `json:"open_kfid" validate:"required"`
-	MsgId       string          `json:"msgid"  validate:"required"`
-	MsgType     string          `json:"msgtype"`
+	MsgId       string          `json:"msgid,omitempty"`
+	MsgType     string          `json:"msgtype" validate:"required"`
 	Text        *MsgText        `json:"text,omitempty"`
 	Image       *MsgImage       `json:"image,omitempty"`
 	Voice       *MsgVoice       `json:"voice,omitempty"`
@@ -405,8 +421,8 @@ func (ww *weWork) KfSendMsg(corpId uint, request SendMsgRequest) (resp SendMsgRe
 }
 
 type SendMsgOnEventRequest struct {
-	Code    string   `json:"code"`
-	MsgId   string   `json:"msgid"`
+	Code    string   `json:"code" validate:"required"`
+	MsgId   string   `json:"msgid,omitempty"`
 	MsgType string   `json:"msgtype" validate:"required,oneof=text msgmenu"`
 	Text    *MsgText `json:"text,omitempty"`
 	MsgMenu *MsgMenu `json:"msgmenu,omitempty"`
