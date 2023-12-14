@@ -9,8 +9,8 @@ type Department struct {
 	Id               int32    `json:"id"`
 	Order            int32    `json:"order,omitempty"`
 	ParentId         int32    `json:"parentid,omitempty" validate:"required"`
-	Name             string   `json:"name,omitempty" validate:"required,min=1,max=32"`
-	NameEn           string   `json:"name_en,omitempty" validate:"omitempty,min=1,max=32"`
+	Name             string   `json:"name,omitempty" validate:"required,min=1,max=64"`
+	NameEn           string   `json:"name_en,omitempty" validate:"omitempty,min=1,max=64"`
 	DepartmentLeader []string `json:"department_leader,omitempty"`
 }
 
