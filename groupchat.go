@@ -68,6 +68,7 @@ type GroupChatResponse struct {
 		AdminList []struct {
 			Userid string `json:"userid"`
 		} `json:"admin_list"`
+		MemberVersion string `json:"member_version"`
 	} `json:"group_chat"`
 }
 

@@ -339,6 +339,9 @@ type MsgMenu struct {
 	List        []MenuItem `json:"list"`
 	TailContent string     `json:"tail_content"`
 }
+type MsgCaLink struct {
+	LinkUrl string `json:"link_url"`
+}
 type MsgChannelsShopProduct struct {
 	ProductID    string `json:"product_id"`
 	HeadImg      string `json:"head_img"`
@@ -398,6 +401,7 @@ type SendMsgRequest struct {
 	Link        *MsgLink        `json:"link,omitempty"`
 	MiniProgram *MsgMiniProgram `json:"miniprogram,omitempty"`
 	MsgMenu     *MsgMenu        `json:"msgmenu,omitempty"`
+	CaLink      *MsgCaLink      `json:"ca_link,omitempty"`
 }
 
 type SendMsgResponse struct {
