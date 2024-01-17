@@ -4,13 +4,20 @@ import (
 	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 )
 
+type GroupList struct {
+	TagList []string `json:"tag_list"`
+}
 type ExternalMsg struct {
-	ChatType       string                `json:"chat_type,omitempty" validate:"omitempty,oneof=single group"`
-	ExternalUserid []string              `json:"external_userid,omitempty" validate:"required_without=Sender"`
-	Sender         string                `json:"sender,omitempty" validate:"required_without=ExternalUserid"`
-	AllowSelect    bool                  `json:"allow_select,omitempty"`
-	Text           ExternalText          `json:"text,omitempty" validate:"required_without=Attachments"`
-	Attachments    []ExternalAttachments `json:"attachments,omitempty" validate:"required_without=Text"`
+	ChatType       string   `json:"chat_type,omitempty" validate:"omitempty,oneof=single group"`
+	ExternalUserid []string `json:"external_userid,omitempty" validate:"required_without=Sender"`
+	ChatIdList     []string `json:"chat_id_list,omitempty"`
+	TagFilter      struct {
+		GroupList []GroupList `json:"group_list"`
+	} `json:"tag_filter"`
+	Sender      string                `json:"sender,omitempty" validate:"required_without=ExternalUserid"`
+	AllowSelect bool                  `json:"allow_select,omitempty"`
+	Text        ExternalText          `json:"text,omitempty" validate:"required_without=Attachments"`
+	Attachments []ExternalAttachments `json:"attachments,omitempty" validate:"required_without=Text"`
 }
 type ExternalText struct {
 	Content string `json:"content"`
