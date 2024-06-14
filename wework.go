@@ -1,15 +1,15 @@
 package wework
 
 import (
-	"net/url"
-	"os"
-
+	"encoding/json"
 	badger "github.com/dgraph-io/badger/v3"
 	"github.com/go-laoji/wecom-go-sdk/v2/internal"
 	"github.com/go-resty/resty/v2"
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"net/url"
+	"os"
 )
 
 type IWeWork interface {
@@ -307,6 +307,15 @@ func NewWeWork(c WeWorkConfig) IWeWork {
 		SetHeader("User-Agent", UserAgent).
 		SetHeader("Content-Type", ContentType).
 		SetBaseURL(qyApiHost)
+	ww.httpClient.AddRetryCondition(func(r *resty.Response, err error) bool {
+		var biz internal.BizResponse
+		json.Unmarshal(r.Body(), &biz)
+		if biz.ErrCode == 42001 {
+			ww.cache.DropAll()
+			return true
+		}
+		return false
+	})
 	if c.Dsn != "" {
 		ww.engine, _ = gorm.Open(mysql.Open(c.Dsn), &gorm.Config{})
 	}
