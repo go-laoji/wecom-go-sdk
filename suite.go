@@ -447,7 +447,7 @@ func (ww *weWork) GetAdminList(request GetAdminListRequest) (resp GetAdminListRe
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	_, err := ww.httpClient.R().SetQueryParam("suite_access_token", ww.GetSuiteToken()).
+	_, err := ww.httpClient.R().SetQueryParam("suite_access_token", ww.GetSuiteAccessToken()).
 		SetBody(request).SetResult(&resp).
 		Post("/cgi-bin/service/get_admin_list")
 	if err != nil {
