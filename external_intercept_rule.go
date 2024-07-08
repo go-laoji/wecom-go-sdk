@@ -12,7 +12,7 @@ type InterceptRule struct {
 	ApplicableRange struct {
 		UserList       []string `json:"user_list" validate:"required_without=DepartmentList,max=1000"`
 		DepartmentList []uint   `json:"department_list" validate:"required_without=UserList,max=1000"`
-	} `json:"applicable_range"validate:"required"`
+	} `json:"applicable_range" validate:"required"`
 }
 
 type AddInterceptRuleResponse struct {

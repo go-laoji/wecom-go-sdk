@@ -1,5 +1,10 @@
 # 变更记录
 
+## v2.0.5 2024-07-08
+* fix pull [P10](https://github.com/go-laoji/wecom-go-sdk/pull/10)
+* fix pull [P11](https://github.com/go-laoji/wecom-go-sdk/pull/11)
+* 感谢 [yiGmMk](https://github.com/yiGmMk)
+
 ## v2.0.4 2024-06-14
 * 当请求返回42001时(token过期)则清空缓存触发重试
 
