@@ -2,12 +2,13 @@ package wework
 
 import (
 	"fmt"
-	"github.com/dgraph-io/badger/v3"
-	"github.com/go-laoji/wecom-go-sdk/v2/internal"
-	"github.com/go-laoji/wecom-go-sdk/v2/pkg/svr/models"
 	"net/url"
 	"os"
 	"time"
+
+	"github.com/dgraph-io/badger/v3"
+	"github.com/go-laoji/wecom-go-sdk/v2/internal"
+	"github.com/go-laoji/wecom-go-sdk/v2/pkg/svr/models"
 )
 
 // UpdateSuiteTicket 用于接收回调后更新sdk实例的suite ticket
@@ -447,7 +448,7 @@ func (ww *weWork) GetAdminList(request GetAdminListRequest) (resp GetAdminListRe
 		resp.ErrorMsg = ok.Error()
 		return
 	}
-	_, err := ww.httpClient.R().SetQueryParam("suite_access_token", ww.GetSuiteToken()).
+	_, err := ww.httpClient.R().SetQueryParam("suite_access_token", ww.getSuiteAccessToken()).
 		SetBody(request).SetResult(&resp).
 		Post("/cgi-bin/service/get_admin_list")
 	if err != nil {
