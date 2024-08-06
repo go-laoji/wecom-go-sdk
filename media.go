@@ -2,6 +2,7 @@ package wework
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/go-laoji/wecom-go-sdk/v2/internal"
@@ -113,8 +114,8 @@ func (ww *weWork) MediaUploadImg(corpId uint, filePath string) (resp MediaUpload
 
 type MediaGetResponse struct {
 	internal.BizResponse
-	File        []byte
-	ContentType string
+	File    []byte
+	Headers http.Header
 }
 
 // MediaGet 获取临时素材, TODO: 支持断点下载（分块下载）
@@ -134,7 +135,7 @@ func (ww *weWork) MediaGet(corpId uint, mediaId string) (resp MediaGetResponse) 
 	} else {
 		// TODO: 处理 response 返回的错误信息; 即 response 包含 errcode 和 errmsg.
 		resp.File = httpResp.Body()
-		resp.ContentType = httpResp.Header().Get("Content-Type")
+		resp.Headers = httpResp.Header()
 	}
 	return
 }
