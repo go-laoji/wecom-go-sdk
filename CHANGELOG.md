@@ -1,5 +1,12 @@
 # 变更记录
 
+## v2.1.0 2024-08-06
+
+* MediaGetResponse 返回http.Header,满足文件名、文件长度、文件类型等其它需求
+* feat [Issues12](https://github.com/go-laoji/wecom-go-sdk/issues/12)
+
+因修改了返回类型，不兼容之前的`Content-Type`,使用临时素材获取接口需要注意sdk版本
+
 ## v2.0.5 2024-07-08
 * fix pull [P10](https://github.com/go-laoji/wecom-go-sdk/pull/10)
 * fix pull [P11](https://github.com/go-laoji/wecom-go-sdk/pull/11)
