@@ -1,5 +1,10 @@
 # 变更记录
 
+## v2.1.1 2024-09-24
+
+* fix pull [P14](https://github.com/go-laoji/wecom-go-sdk/pull/14) 以前缀删除缓存的key，避免服务商模式删除suite_ticket
+* 感谢 [yiGmMk](https://github.com/yiGmMk)
+
 ## v2.1.0 2024-08-06
 
 * MediaGetResponse 返回http.Header,满足文件名、文件长度、文件类型等其它需求
