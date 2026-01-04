@@ -1,5 +1,9 @@
 # 变更记录
 
+## v2.1.2 2026-01-04
+
+* 增加打卡相关：添加打卡记录　接口
+
 ## v2.1.1 2024-09-24
 
 * fix pull [P14](https://github.com/go-laoji/wecom-go-sdk/pull/14) 以前缀删除缓存的key，避免服务商模式删除suite_ticket
