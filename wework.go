@@ -258,6 +258,8 @@ type IWeWork interface {
 	RemindGroupMsgSend(corpId uint, msgid string) (resp internal.BizResponse)
 	CancelMomentTask(corpId uint, momentId string) (resp internal.BizResponse)
 
+	AddCheckInRecord(corpId uint, records Records) (resp internal.BizResponse)
+
 	SetProxy(proxyUrl string)
 	SetDebug(debug bool)
 }
